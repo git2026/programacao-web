@@ -1,0 +1,96 @@
+Node.js + Express.js back-end integration exercise designed to follow the Developer Portfolio Site, now introducing authentication, authorization, and a structured API back end. GitHub for version control and documentation.
+Full-Stack Integration Exercise – Auth-Enabled Portfolio Backend
+
+Objective:
+Enhance your existing Developer Portfolio Site by building a back-end server using Node.js and Express.js that supports:
+
+User authentication and authorization
+
+Protected routes
+
+Dynamic data fetching from the server
+
+Project Requirements
+Back-End Features:
+User Registration and Login
+
+Use JWT (JSON Web Tokens) for secure stateless authentication.
+
+Store user credentials securely (hashed passwords with bcrypt).
+
+User Roles and Authorization
+
+Two roles: admin and guest
+
+Admins can POST new project entries; guests can only read data.
+
+Projects API
+
+Provide routes like:
+
+GET /projects – Public
+
+POST /projects – Admin only (requires token)
+
+Store projects in memory or a local JSON file (for simplicity). In a future project, database integration will be done.
+
+Protected Route
+
+GET /dashboard – Return personalized message only for logged-in users.
+
+Recommended Server Folder Structure
+portfolio-backend/
+├── controllers/
+│   └── projectController.js
+│   └── authController.js
+├── middleware/
+│   └── authMiddleware.js
+│   └── roleMiddleware.js
+├── models/
+│   └── userModel.js
+│   └── projectModel.js
+├── routes/
+│   └── projectRoutes.js
+│   └── authRoutes.js
+├── utils/
+│   └── tokenUtils.js
+├── config/
+│   └── serverConfig.js
+├── .env
+├── server.js
+├── package.json
+Technologies and Libraries to Use
+Purpose	Library / Tool
+Server framework	express
+Password hashing	bcryptjs
+JWT handling	jsonwebtoken
+Environment variables	dotenv
+CORS for API access	cors
+Request validation (optional)	express-validator
+
+Student Responsibilities
+Setup and configure the back-end server independently.
+
+Integrate front-end with back-end for fetching and submitting project data.
+
+Use GitHub to commit and push regularly, ideally in a public or private repo.
+
+Document the API briefly in the README (endpoints + usage).
+
+Research and setup of Express
+
+JWT-based authentication and authorization
+
+Testing routes via Postman, VSCode plugins or fetch from React
+
+Integration with existing React portfolio (basic dynamic display)
+
+
+Additional Recommendations:
+Use Postman or browser dev tools or VSCode REST plugins to test API endpoints.
+
+Avoid overengineering; keep models and logic simple.
+
+Use middleware for token and role verification to reinforce modular code design.
+
+Encourage README updates and simple documentation practices (describe endpoints, usage, setup steps).
