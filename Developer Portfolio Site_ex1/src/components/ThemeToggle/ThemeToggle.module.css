@@ -1,0 +1,10 @@
+.toggle {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-primary);
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.toggle:hover, .toggle:focus-visible { background: var(--hover); }
+

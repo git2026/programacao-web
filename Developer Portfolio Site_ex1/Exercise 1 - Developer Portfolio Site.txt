@@ -1,0 +1,73 @@
+Exercise: Developer Portfolio Site
+
+Scenario:
+
+You have been hired as a freelance front-end developer to create a personal portfolio site 
+that showcases your professional identity, technical skills, and previous projects. 
+The goal is to design a clean, responsive, single-page application that can serve as
+a public-facing resume for future clients or employers.
+The site must be visually structured, mobile-friendly, and easily navigable.
+It should reflect a professional tone and modern design sensibilities.
+
+Project Purpose:
+To design and build a personal portfolio website using modern web technologies, without external templates or UI builders. Students must handle layout, content structuring, styling, and navigation themselves.
+
+Technologies and Tools to Use:
+Visual Studio Code (VSCode) as the development environment
+
+React (with or without TypeScript)
+
+React Router for page-like navigation (e.g., sections for About, Projects, Contact)
+
+Basic CSS or Tailwind CSS (optional)
+
+GitHub for code versioning (optional but encouraged)
+
+Required Features:
+
+Header Section
+
+Name, short tagline, and navigation menu
+
+About Me Section
+
+Short biography and a profile image
+
+Projects Section
+
+At least 3 sample projects with title, short description, and links
+
+Skills Section
+
+List of technical skills (technologies, tools, etc.)
+
+Contact Section
+
+Email address and links to LinkedIn and GitHub profiles
+
+Footer
+
+Notes:
+Students must research independently how to install and configure React in VSCode.
+No design framework (like Bootstrap) should be used unless built from scratch or styled manually.
+All images and content must be student-generated or royalty-free.
+The final site should be visually coherent, with consistent typography and spacing.
+
+
+Evaluation:
+
+Criteria	                Description	Points
+1. Structure and Content	 Includes all required sections (Header, About, Projects, Skills, Contact, Footer)	4 pts
+2. React Usage	                 Correct use of React components, props, and JSX syntax	                                4 pts
+3. Routing and Navigation	 Functional navigation between sections using React Router or in-page anchors	        2 pts
+4. Styling and Layout	         Visual consistency, responsive layout, good use of CSS or utility classes	        3 pts
+5. Code                          Quality	Clean, readable, and organized code with appropriate file structure	2 pts
+6. Research and Autonomy	 Demonstrated ability to set up and configure React app independently	                2 pts
+7. Creativity and Personalizatio Thoughtful design choices, personalized content, and effort in presentation	        2 pts
+8. Bonus – GitHub Integration	 Project hosted on GitHub with commits showing development progression	                +1 pt
+
+Scoring Guide:
+18–20 points: Excellent – Outstanding implementation and presentation
+15–17 points: Good – Well-executed with minor issues
+12–14 points: Satisfactory – Meets core requirements with some gaps
+< 12 points: Needs Improvement – Major elements missing or poorly implemented
