@@ -58,7 +58,7 @@ export const projects: Project[] = [
     title: 'Sistema de Gestão Mensal',
     description:
       'Sistema de gestão de despesas mensais com interface gráfica desenvolvido em Python Tkinter. Implementa arquitetura MVC com listas ligadas para armazenamento de dados. Inclui registo de utilizadores, gestão de despesas por categoria, definição de orçamento, filtros por data, ordenação múltipla e alertas de gastos. Validação de NIF português e persistência em JSON.',
-    tech: ['Python', 'Tkinter', 'MVC', 'Listas Ligadas', 'JSON', 'tkcalendar', 'Algoritmos'],
+    tech: ['Python', 'Tkinter', 'MVC', 'LinkedLists', 'JSON', 'tkcalendar', 'Algoritmos'],
     links: { repo: 'https://github.com/git2026/algoritmos-estruturas-dados' },
     image: '/assets/projeto6.png',
   },

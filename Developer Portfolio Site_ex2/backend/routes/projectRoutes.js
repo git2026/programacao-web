@@ -1,16 +1,18 @@
 import express from 'express';
-import { getProjects, addProject, getProject } from '../controllers/projectController.js';
+import { getProjects, addProject, getProject, editProject, removeProject } from '../controllers/projectController.js';
 import { authMiddleware } from '../middleware/authMiddleware.js';
 import { requireAdmin } from '../middleware/roleMiddleware.js';
 
 const router = express.Router();
 
-// Public route
+// Public routes
 router.get('/', getProjects);
 router.get('/:id', getProject);
 
-// Protected route - Admin only
+// Protected routes - Admin only
 router.post('/', authMiddleware, requireAdmin, addProject);
+router.put('/:id', authMiddleware, requireAdmin, editProject);
+router.delete('/:id', authMiddleware, requireAdmin, removeProject);
 
 export default router;
 

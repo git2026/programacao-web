@@ -1,136 +1,153 @@
-# Developer Portfolio - Full-Stack Application
+# Developer Portfolio - Projeto Full-Stack
 
-Modern developer portfolio with React frontend and Node.js backend featuring JWT authentication and role-based authorization.
+Portfólio de desenvolvedor moderno com frontend em React e backend em Node.js, incluindo autenticação JWT e autorização baseada em roles.
 
-## 🚀 Quick Start
+## 1. Ferramentas e Tecnologias Utilizadas
+
+### Frontend (Exercício 1)
+- **Framework**: React 18 com TypeScript
+- **Build Tool**: Vite para desenvolvimento rápido
+- **Routing**: React Router DOM v6 para navegação
+- **Estilização**: CSS Modules para componentes isolados
+- **Tema**: Toggle dark/light mode com persistência
+
+### Backend (Exercício 2)
+- **Runtime**: Node.js com Express
+- **Autenticação**: JWT (JSON Web Tokens) com expiração de 24h
+- **Segurança**: bcryptjs para hashing de passwords
+- **CORS**: Configurado para comunicação frontend-backend
+- **Autorização**: Sistema de roles (admin, editor, guest)
+
+## 2. Requisitos para Execução do Projeto
+
+### Instalação
 
 **Frontend:**
 ```bash
 npm install
-npm start          # Visit http://localhost:5173
+npm start
 ```
+Aceda ao frontend em: http://localhost:5173
 
 **Backend:**
 ```bash
 cd backend
 npm install
-npm run dev        # API runs on http://localhost:5000
+npm start
+```
+API disponível em: http://localhost:5000
+
+### Testes do Backend
+
+O backend foi testado com sucesso. Resultados dos testes:
+
+✅ **Servidor**: Running on http://localhost:5000  
+✅ **Registo de Utilizadores**: Admin e Guest criados com sucesso  
+✅ **Login**: Autenticação com JWT funcional  
+✅ **Autorização**: Proteção de rotas por token  
+✅ **Roles**: Admin pode criar projetos, Guest bloqueado  
+✅ **Projetos API**: GET (todos), GET (individual), POST (criar)  
+✅ **Error Handling**: Retorna erros apropriados (401, 404)
+
+**Credenciais de Teste:**
+- Admin: `admin@example.com` / `admin123`
+- Guest: `guest@example.com` / `guest123`
+
+## Estrutura do Projeto
+
+```
+Developer Portfolio Site_ex2/
+├── backend/                      # API Express (Exercício 2)
+│   ├── config/
+│   │   └── serverConfig.js       # Configuração do servidor
+│   ├── controllers/
+│   │   ├── authController.js     # Lógica de autenticação
+│   │   └── projectController.js  # Lógica de projetos
+│   ├── data/
+│   │   └── projects.json         # Base de dados de projetos
+│   ├── middleware/
+│   │   ├── authMiddleware.js     # Verificação JWT
+│   │   └── roleMiddleware.js     # Verificação de roles
+│   ├── models/
+│   │   ├── userModel.js          # Modelo de utilizador
+│   │   └── projectModel.js       # Modelo de projeto
+│   ├── routes/
+│   │   ├── authRoutes.js         # Rotas de autenticação
+│   │   └── projectRoutes.js      # Rotas de projetos
+│   ├── utils/
+│   │   └── tokenUtils.js         # Utilidades JWT
+│   ├── server.js                 # Entry point da API
+│   ├── package.json
+│   └── README.md                 # Documentação do backend
+├── src/                          # Frontend React (Exercício 1)
+│   ├── components/
+│   │   ├── Header/               # Cabeçalho com navegação
+│   │   ├── Footer/               # Rodapé
+│   │   ├── ThemeToggle/          # Toggle dark/light mode
+│   │   └── ScrollToTop.tsx       # Scroll to top automático
+│   ├── sections/
+│   │   ├── About/                # Secção sobre mim
+│   │   ├── Projects/             # Secção de projetos
+│   │   └── Skills/               # Secção de skills
+│   ├── data/
+│   │   ├── config.ts             # Configuração global
+│   │   ├── profile.ts            # Dados do perfil
+│   │   └── projects.ts           # Dados dos projetos
+│   ├── styles/
+│   │   └── globals.css           # Estilos globais
+│   ├── types/
+│   │   └── css-modules.d.ts      # Type definitions
+│   ├── App.tsx                   # Componente principal
+│   └── main.tsx                  # Entry point
+├── public/
+│   └── assets/                   # Imagens e recursos
+├── index.html                    # HTML principal
+├── package.json
+├── tsconfig.json
+├── vite.config.ts
+├── EXERCICIO_1_README.md         # Documentação Exercício 1
+└── README.md                     # Este ficheiro
 ```
 
-## 📁 Structure
+## 3. Endpoints da API
 
-```
-├── backend/          # Express API (Exercise 2)
-│   ├── controllers/  # Auth & Projects handlers
-│   ├── middleware/   # JWT auth & role verification
-│   ├── models/       # User & Project models
-│   ├── routes/       # API routes
-│   ├── server.js     # Entry point
-│   └── README.md     # Detailed API docs
-├── src/              # React frontend (Exercise 1)
-│   ├── components/   # Header, Footer, ThemeToggle
-│   ├── sections/     # About, Projects, Skills
-│   ├── data/         # Typed data (profile, projects)
-│   └── styles/       # CSS Modules
-└── public/           # Static assets
-```
+| Método | Endpoint | Acesso | Descrição |
+|--------|----------|--------|-----------|
+| GET | `/` | Público | Info da API |
+| POST | `/api/auth/register` | Público | Registar utilizador |
+| POST | `/api/auth/login` | Público | Login (obtém JWT) |
+| GET | `/api/auth/dashboard` | Protegido | Dashboard do utilizador |
+| GET | `/api/projects` | Público | Listar todos os projetos |
+| GET | `/api/projects/:id` | Público | Obter projeto específico |
+| POST | `/api/projects` | Admin | Criar novo projeto |
 
-## Frontend (Exercise 1)
+## 4. Funcionalidades Principais
 
-**Tech:** React 18 + TypeScript + Vite + React Router + CSS Modules
+### Frontend
+- ✅ Layout responsivo (mobile, tablet, desktop)
+- ✅ Tema dark/light com persistência em localStorage
+- ✅ Navegação com React Router
+- ✅ Três secções principais: About, Projects, Skills
+- ✅ Componentes TypeScript tipados
+- ✅ CSS Modules para isolamento de estilos
 
-**Features:**
-- Responsive layout with dark/light theme toggle
-- Three main sections: About, Projects, Skills
-- React Router with active navigation states
-- Typed data models and CSS Modules for styling
+### Backend
+- ✅ Sistema de autenticação JWT
+- ✅ Registro e login de utilizadores
+- ✅ Hash de passwords com bcrypt (10 rounds)
+- ✅ Autorização baseada em roles (admin, editor, guest)
+- ✅ API RESTful para gestão de projetos
+- ✅ Middleware de proteção de rotas
+- ✅ Tratamento de erros apropriado
+- ✅ CORS configurado para desenvolvimento
 
-**Scripts:**
-- `npm start` - Dev server
-- `npm run build` - Production build
-- `npm run preview` - Preview build
+## 5. Personalização
 
-## Backend (Exercise 2)
+**Frontend:** Edite `src/data/profile.ts` e `src/data/projects.ts`  
+**Backend:** Configure `JWT_SECRET` no ficheiro `.env`
+**Imagens:** Substitua as imagens em `public/assets/`
 
-**Tech:** Express + JWT + bcrypt + CORS
-
-**Features:**
-- User registration/login with JWT (24h expiration)
-- Role-based access: `admin` and `guest`
-- Password hashing with bcrypt
-- Projects API with public GET and admin-only POST
-- Protected dashboard route
-
-**Setup:**
-```bash
-cd backend
-npm install
-copy .env.example .env    # Configure PORT and JWT_SECRET
-npm run dev
-```
-
-## API Endpoints
-
-| Method | Endpoint | Access | Description |
-|--------|----------|--------|-------------|
-| POST | `/api/auth/register` | Public | Register user |
-| POST | `/api/auth/login` | Public | Login (get JWT) |
-| GET | `/api/auth/dashboard` | Protected | User dashboard |
-| GET | `/api/projects` | Public | List projects |
-| GET | `/api/projects/:id` | Public | Get project |
-| POST | `/api/projects` | Admin | Create project |
-
-**Example - Register:**
-```bash
-POST http://localhost:5000/api/auth/register
-Content-Type: application/json
-
-{
-  "email": "admin@example.com",
-  "password": "secure123",
-  "name": "Admin User",
-  "role": "admin"
-}
-```
-
-**Example - Create Project (Admin):**
-```bash
-POST http://localhost:5000/api/projects
-Authorization: Bearer <your_jwt_token>
-Content-Type: application/json
-
-{
-  "title": "My Project",
-  "description": "Project description",
-  "technologies": ["React", "Node.js"]
-}
-```
-
-See `backend/README.md` for complete API documentation.
-
-## Testing
-
-Use Postman, VS Code REST Client, curl, or browser fetch/axios to test endpoints.
-
-## Personalization
-
-**Frontend:** Update `src/data/profile.ts` and `src/data/projects.ts`, replace images in `public/assets/`
-
-**Backend:** Change `JWT_SECRET` in `.env` to a strong random value
-
-## Security Notes
-
-- Passwords hashed with bcrypt (10 rounds)
-- JWT tokens expire after 24h
-- User data in memory (use DB in production)
-- Projects in JSON file (use DB in production)
-
-## Deployment
-
-**Frontend:** `npm run build` → Deploy `dist/` to Vercel/Netlify
-
-**Backend:** Deploy to Heroku/Railway/Render (set env variables)
-
-## License
-
-MIT
+## 6. Notas de Segurança
+- Passwords protegidas com bcrypt
+- Tokens JWT expiram após 24 horas
+- CORS configurado para desenvolvimento
