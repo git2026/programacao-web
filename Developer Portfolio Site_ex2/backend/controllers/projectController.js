@@ -5,7 +5,7 @@ export const getProjects = (req, res) => {
     const projects = getAllProjects();
     res.json(projects);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch projects' });
+    res.status(500).json({ error: 'Falha ao carregar projetos' });
   }
 };
 
@@ -15,7 +15,7 @@ export const addProject = (req, res) => {
 
     // Validation
     if (!title || !description) {
-      return res.status(400).json({ error: 'Title and description are required' });
+      return res.status(400).json({ error: 'Título e descrição são obrigatórios' });
     }
 
     const project = createProject({
@@ -28,11 +28,11 @@ export const addProject = (req, res) => {
     });
 
     res.status(201).json({
-      message: 'Project created successfully',
+      message: 'Projeto criado com sucesso',
       project
     });
   } catch (error) {
-    res.status(500).json({ error: 'Failed to create project' });
+    res.status(500).json({ error: 'Falha ao criar projeto' });
   }
 };
 
@@ -41,12 +41,12 @@ export const getProject = (req, res) => {
     const project = getProjectById(req.params.id);
     
     if (!project) {
-      return res.status(404).json({ error: 'Project not found' });
+      return res.status(404).json({ error: 'Projeto não encontrado' });
     }
 
     res.json(project);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch project' });
+    res.status(500).json({ error: 'Falha ao carregar projeto' });
   }
 };
 
@@ -57,7 +57,7 @@ export const editProject = (req, res) => {
 
     // Validation - at least one field should be provided
     if (!title && !description && !technologies && image === undefined && github === undefined) {
-      return res.status(400).json({ error: 'At least one field is required to update' });
+      return res.status(400).json({ error: 'Pelo menos um campo é obrigatório para atualizar' });
     }
 
     const updatedProject = updateProject(id, {
@@ -69,15 +69,15 @@ export const editProject = (req, res) => {
     });
     
     if (!updatedProject) {
-      return res.status(404).json({ error: 'Project not found' });
+      return res.status(404).json({ error: 'Projeto não encontrado' });
     }
 
     res.json({
-      message: 'Project updated successfully',
+      message: 'Projeto atualizado com sucesso',
       project: updatedProject
     });
   } catch (error) {
-    res.status(500).json({ error: 'Failed to update project' });
+    res.status(500).json({ error: 'Falha ao atualizar projeto' });
   }
 };
 
@@ -87,15 +87,15 @@ export const removeProject = (req, res) => {
     const deletedProject = deleteProject(id);
     
     if (!deletedProject) {
-      return res.status(404).json({ error: 'Project not found' });
+      return res.status(404).json({ error: 'Projeto não encontrado' });
     }
 
     res.json({
-      message: 'Project deleted successfully',
+      message: 'Projeto eliminado com sucesso',
       project: deletedProject
     });
   } catch (error) {
-    res.status(500).json({ error: 'Failed to delete project' });
+    res.status(500).json({ error: 'Falha ao eliminar projeto' });
   }
 };
 

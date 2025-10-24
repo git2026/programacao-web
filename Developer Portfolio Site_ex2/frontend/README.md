@@ -15,8 +15,10 @@ Portfólio de desenvolvedor moderno com frontend em React e backend em Node.js, 
 - **Runtime**: Node.js com Express
 - **Autenticação**: JWT (JSON Web Tokens) com expiração de 24h
 - **Segurança**: bcryptjs para hashing de passwords
+- **Validação**: express-validator para validação de dados
 - **CORS**: Configurado para comunicação frontend-backend
 - **Autorização**: Sistema de roles (admin, editor, guest)
+- **Persistência**: JSON files (users.json, projects.json)
 
 ## 2. Requisitos para Execução do Projeto
 
@@ -64,10 +66,12 @@ Developer Portfolio Site_ex2/
 │   │   ├── authController.js     # Lógica de autenticação
 │   │   └── projectController.js  # Lógica de projetos
 │   ├── data/
-│   │   └── projects.json         # Base de dados de projetos
+│   │   ├── projects.json         # Base de dados de projetos
+│   │   └── users.json            # Base de dados de utilizadores
 │   ├── middleware/
 │   │   ├── authMiddleware.js     # Verificação JWT
-│   │   └── roleMiddleware.js     # Verificação de roles
+│   │   ├── roleMiddleware.js     # Verificação de roles
+│   │   └── validationMiddleware.js # Validação express-validator
 │   ├── models/
 │   │   ├── userModel.js          # Modelo de utilizador
 │   │   └── projectModel.js       # Modelo de projeto

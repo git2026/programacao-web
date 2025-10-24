@@ -8,9 +8,11 @@ API RESTful desenvolvida com Node.js e Express para gestão de utilizadores e pr
 - **Framework**: Express para criação da API REST
 - **Autenticação**: JSON Web Tokens (JWT) com expiração de 24h
 - **Segurança**: bcryptjs para hashing de passwords (10 rounds)
+- **Validação**: express-validator para validação de dados
 - **CORS**: Habilitado para comunicação cross-origin
 - **Configuração**: dotenv para variáveis de ambiente
 - **Autorização**: Sistema de roles (admin, editor, guest)
+- **Persistência**: Ficheiros JSON para armazenamento de dados (users.json, projects.json)
 
 ## 2. Requisitos para Execução
 
@@ -34,7 +36,7 @@ O servidor estará disponível em: http://localhost:5000
 Crie um ficheiro `.env` na pasta `backend/`:
 ```env
 PORT=5000
-JWT_SECRET=chave_teste
+JWT_SECRET=chave_secreta
 NODE_ENV=development
 ```
 

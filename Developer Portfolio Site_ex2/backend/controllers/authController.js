@@ -8,13 +8,13 @@ export const register = async (req, res) => {
 
     // Validation
     if (!email || !password || !name) {
-      return res.status(400).json({ error: 'Email, password, and name are required' });
+      return res.status(400).json({ error: 'Email, palavra-passe e nome são obrigatórios' });
     }
 
     // Check if user exists
     const existingUser = findUserByEmail(email);
     if (existingUser) {
-      return res.status(400).json({ error: 'User already exists' });
+      return res.status(400).json({ error: 'Utilizador já existe' });
     }
 
     // Hash password
@@ -37,7 +37,7 @@ export const register = async (req, res) => {
     });
 
     res.status(201).json({
-      message: 'User registered successfully',
+      message: 'Utilizador registado com sucesso',
       token,
       user: {
         id: user.id,
@@ -47,7 +47,7 @@ export const register = async (req, res) => {
       }
     });
   } catch (error) {
-    res.status(500).json({ error: 'Registration failed' });
+    res.status(500).json({ error: 'Falha no registo' });
   }
 };
 
@@ -57,19 +57,19 @@ export const login = async (req, res) => {
 
     // Validation
     if (!email || !password) {
-      return res.status(400).json({ error: 'Email and password are required' });
+      return res.status(400).json({ error: 'Email e palavra-passe são obrigatórios' });
     }
 
     // Find user
     const user = findUserByEmail(email);
     if (!user) {
-      return res.status(401).json({ error: 'Invalid credentials' });
+      return res.status(401).json({ error: 'Credenciais inválidas' });
     }
 
     // Check password
     const isValidPassword = await bcrypt.compare(password, user.password);
     if (!isValidPassword) {
-      return res.status(401).json({ error: 'Invalid credentials' });
+      return res.status(401).json({ error: 'Credenciais inválidas' });
     }
 
     // Generate token
@@ -80,7 +80,7 @@ export const login = async (req, res) => {
     });
 
     res.json({
-      message: 'Login successful',
+      message: 'Login efetuado com sucesso',
       token,
       user: {
         id: user.id,
@@ -90,13 +90,13 @@ export const login = async (req, res) => {
       }
     });
   } catch (error) {
-    res.status(500).json({ error: 'Login failed' });
+    res.status(500).json({ error: 'Falha no login' });
   }
 };
 
 export const getDashboard = (req, res) => {
   res.json({
-    message: `Welcome to your dashboard, ${req.user.email}!`,
+    message: `Bem-vindo, ${req.user.name}!`,
     user: req.user
   });
 };
@@ -112,7 +112,7 @@ export const getUsers = (req, res) => {
     }));
     res.json(users);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch users' });
+    res.status(500).json({ error: 'Falha ao carregar utilizadores' });
   }
 };
 
@@ -123,25 +123,25 @@ export const editUser = (req, res) => {
 
     // Validation
     if (!name && !email && role === undefined) {
-      return res.status(400).json({ error: 'At least one field (name, email, or role) is required' });
+      return res.status(400).json({ error: 'Pelo menos um campo (nome, email ou cargo) é obrigatório' });
     }
 
     // Check if email is already taken by another user
     if (email) {
       const existingUser = findUserByEmail(email);
       if (existingUser && existingUser.id !== parseInt(id)) {
-        return res.status(400).json({ error: 'Email already in use' });
+        return res.status(400).json({ error: 'Email já está em uso' });
       }
     }
 
     const updatedUser = updateUser(parseInt(id), { name, email, role });
     
     if (!updatedUser) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: 'Utilizador não encontrado' });
     }
 
     res.json({
-      message: 'User updated successfully',
+      message: 'Utilizador atualizado com sucesso',
       user: {
         id: updatedUser.id,
         email: updatedUser.email,
@@ -151,7 +151,7 @@ export const editUser = (req, res) => {
       }
     });
   } catch (error) {
-    res.status(500).json({ error: 'Failed to update user' });
+    res.status(500).json({ error: 'Falha ao atualizar utilizador' });
   }
 };
 
@@ -161,11 +161,11 @@ export const removeUser = (req, res) => {
     const deletedUser = deleteUser(parseInt(id));
     
     if (!deletedUser) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: 'Utilizador não encontrado' });
     }
 
     res.json({
-      message: 'User deleted successfully',
+      message: 'Utilizador eliminado com sucesso',
       user: {
         id: deletedUser.id,
         email: deletedUser.email,
@@ -173,7 +173,7 @@ export const removeUser = (req, res) => {
       }
     });
   } catch (error) {
-    res.status(500).json({ error: 'Failed to delete user' });
+    res.status(500).json({ error: 'Falha ao eliminar utilizador' });
   }
 };
 

@@ -1,23 +1,26 @@
 {
-  "name": "developer-portfolio",
+  "name": "developer-portfolio-fullstack",
   "version": "1.0.0",
+  "description": "Full-stack Developer Portfolio with React frontend and Node.js backend",
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "vite",
-    "build": "tsc -b && vite build",
-    "preview": "vite preview"
+    "start": "node start.js",
+    "dev": "node start.js --dev",
+    "build": "cd frontend && npm run build",
+    "install-all": "npm install && cd frontend && npm install && cd ../backend && npm install",
+    "backend": "cd backend && npm start",
+    "frontend": "cd frontend && npm start",
+    "test-api": "start http://localhost:5000/api-tester.html"
   },
-  "dependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-router-dom": "^6.26.2"
-  },
-  "devDependencies": {
-    "@types/react": "^18.2.43",
-    "@types/react-dom": "^18.2.17",
-    "@vitejs/plugin-react": "^4.3.1",
-    "typescript": "^5.3.3",
-    "vite": "^7.1.10"
-  }
+  "keywords": [
+    "portfolio",
+    "react",
+    "nodejs",
+    "express",
+    "jwt",
+    "fullstack"
+  ],
+  "author": "Guilherme Carvalho",
+  "license": "GNU_V3.0"
 }

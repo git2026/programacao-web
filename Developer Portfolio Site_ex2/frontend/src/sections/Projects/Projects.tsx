@@ -12,7 +12,7 @@ type ApiProject = {
 };
 
 export default function Projects() {
-  const [projects, setProjects] = useState<any[]>(fallbackProjects);
+  const [projects, setProjects] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -20,8 +20,8 @@ export default function Projects() {
     fetch('http://localhost:5000/api/projects')
       .then((res) => res.json())
       .then((apiProjects: ApiProject[]) => {
-        if (apiProjects && apiProjects.length > 0) {
-          // Mapear projetos da API para o formato do frontend
+        // Sempre atualizar com os projetos da API, mesmo que esteja vazio
+        if (Array.isArray(apiProjects)) {
           const mappedProjects = apiProjects.map((p) => ({
             id: p.id,
             title: p.title,
@@ -50,6 +50,10 @@ export default function Projects() {
         <h2>Projetos</h2>
         {loading ? (
           <p style={{ textAlign: 'center', padding: '2rem' }}>Carregando projetos...</p>
+        ) : projects.length === 0 ? (
+          <p style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-secondary)' }}>
+            Nenhum projeto disponível
+          </p>
         ) : (
           <ul className={styles.grid}>
             {projects.map((p) => (
@@ -61,7 +65,7 @@ export default function Projects() {
                 <p className={styles.desc}>{p.description}</p>
                 {p.tech?.length ? (
                   <ul className={styles.tech}>
-                    {p.tech.map((t) => (
+                    {p.tech.map((t: string) => (
                       <li key={t}>{t}</li>
                     ))}
                   </ul>

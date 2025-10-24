@@ -64,20 +64,20 @@
         }
 
         .theme-toggle {
-            background: var(--hover);
-            border: 1px solid var(--border);
-            color: var(--text-primary);
+            background: #3b82f6;
+            border: none;
+            color: #fff;
             padding: 0.5rem 1rem;
             border-radius: 8px;
             cursor: pointer;
             font-size: 0.9rem;
+            font-weight: 500;
             transition: all 0.2s;
         }
 
         .theme-toggle:hover {
-            background: var(--accent);
-            color: #fff;
-            border-color: var(--accent);
+            background: #2563eb;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
         }
 
         .container {
@@ -108,13 +108,14 @@
         }
 
         .tab:hover {
-            color: var(--text-primary);
-            background: var(--hover);
+            color: #2563eb;
+            background: rgba(37, 99, 235, 0.08);
         }
 
         .tab.active {
-            color: var(--accent);
-            border-bottom-color: var(--accent);
+            color: #3b82f6;
+            border-bottom-color: #3b82f6;
+            font-weight: 600;
         }
 
         .section {
@@ -170,6 +171,12 @@
             font-family: inherit;
         }
 
+        input::placeholder, textarea::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.5;
+            font-weight: 300;
+        }
+
         input:focus, textarea:focus, select:focus {
             outline: none;
             border-color: var(--accent);
@@ -182,10 +189,10 @@
         }
 
         button {
-            background: var(--surface);
-            color: var(--text-primary);
+            background: #3b82f6;
+            color: #fff;
             padding: 0.875rem 1.75rem;
-            border: 1px solid var(--border);
+            border: none;
             border-radius: 8px;
             font-size: 0.95rem;
             font-weight: 500;
@@ -196,10 +203,8 @@
 
         button:hover {
             background: #2563eb;
-            color: #fff;
-            border-color: #2563eb;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
         }
 
         button:active {
@@ -335,13 +340,15 @@
         }
 
         .url-link {
-            color: var(--accent);
+            color: #3b82f6;
             text-decoration: none;
             font-size: 0.85rem;
+            font-weight: 500;
             word-break: break-all;
         }
 
         .url-link:hover {
+            color: #2563eb;
             text-decoration: underline;
         }
 
@@ -442,16 +449,14 @@
         }
 
         .button-secondary {
-            background: var(--surface);
-            color: var(--text-primary);
-            border: 1px solid var(--border);
+            background: #3b82f6;
+            color: #fff;
+            border: none;
         }
 
         .button-secondary:hover {
             background: #2563eb;
-            color: #fff;
-            border-color: #2563eb;
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
         }
 
         /* Notificações Toast */
@@ -625,11 +630,6 @@
                 </div>
             </div>
 
-            <div class="card">
-                <h3>Dashboard</h3>
-                <button onclick="getDashboard()">Aceder ao Dashboard</button>
-            </div>
-
             <div id="auth-response" class="response"></div>
         </div>
 
@@ -651,7 +651,7 @@
                 <h3>Atualizar Utilizador</h3>
                 <div class="form-group">
                     <label>ID</label>
-                    <input type="number" id="update-user-id" placeholder="1" onchange="loadUserData(this.value)">
+                    <input type="number" id="update-user-id" placeholder="1" oninput="loadUserData(this.value)">
                 </div>
                     <div class="form-group">
                         <label>Nome</label>
@@ -735,7 +735,7 @@
                 <h3>Atualizar Projeto</h3>
                 <div class="form-group">
                     <label>ID</label>
-                    <input type="text" id="update-project-id" placeholder="1" onchange="loadProjectData(this.value)">
+                    <input type="text" id="update-project-id" placeholder="1" oninput="loadProjectData(this.value)">
                 </div>
                 <div class="grid">
                     <div class="form-group">
@@ -791,7 +791,7 @@
                     <div class="url-card">
                         <div class="url-icon">⚙️</div>
                         <div>
-                            <h4>Backend API</h4>
+                            <h4>Backend</h4>
                             <a href="http://localhost:5000" target="_blank" class="url-link">http://localhost:5000</a>
                         </div>
                     </div>
@@ -844,6 +844,11 @@
                 <div style="margin-bottom: 20px;">
                     <h4 style="margin-bottom: 10px; color: var(--text-secondary);">👥 Utilizadores</h4>
                     <div class="button-group">
+                        <button class="button-secondary" onclick="exportUsers()">Exportar Utilizadores</button>
+                        <button class="button-secondary" onclick="document.getElementById('import-users-file').click()">Importar Utilizadores</button>
+                        <input type="file" id="import-users-file" accept=".json" style="display: none" onchange="importUsers(event)">
+                    </div>
+                    <div class="button-group" style="margin-top: 0.5rem;">
                         <button class="button-secondary" onclick="clearAllUsers()">Limpar Utilizadores</button>
                         <button class="button-secondary" onclick="resetUserIds()">Reset IDs de Utilizadores</button>
                     </div>
@@ -852,6 +857,11 @@
                 <div style="margin-bottom: 20px;">
                     <h4 style="margin-bottom: 10px; color: var(--text-secondary);">📁 Projetos</h4>
                     <div class="button-group">
+                        <button class="button-secondary" onclick="exportProjects()">Exportar Projetos</button>
+                        <button class="button-secondary" onclick="document.getElementById('import-projects-file').click()">Importar Projetos</button>
+                        <input type="file" id="import-projects-file" accept=".json" style="display: none" onchange="importProjects(event)">
+                    </div>
+                    <div class="button-group" style="margin-top: 0.5rem;">
                         <button class="button-secondary" onclick="clearAllProjects()">Limpar Projetos</button>
                         <button class="button-secondary" onclick="resetProjectIds()">Reset IDs de Projetos</button>
                     </div>
@@ -1069,13 +1079,14 @@
             const id = document.getElementById('update-user-id').value;
             const name = document.getElementById('update-user-name').value;
             const email = document.getElementById('update-user-email').value;
-            const role = document.getElementById('update-user-role').value;
+            const roleSelect = document.getElementById('update-user-role');
+            const role = roleSelect.value;
 
             const body = {};
             if (name) body.name = name;
             if (email) body.email = email;
-            // Se role estiver vazio, envia explicitamente para remover o cargo
-            body.role = role || null;
+            // Sempre enviar role (pode ser string vazia para remover cargo)
+            body.role = role === '' ? null : role;
 
             const { data, status } = await makeRequest(`/api/auth/users/${id}`, 'PUT', body, true);
             showResponse('users-response', data, status);
@@ -1301,6 +1312,144 @@
                 itemsCleared: itemsCleared,
                 info: 'Tema resetado para modo escuro, tokens removidos'
             }, 200);
+        }
+
+        // ==================== Import/Export Functions ====================
+
+        async function exportUsers() {
+            try {
+                const { data: users, status } = await makeRequest('/api/auth/users', 'GET', null, true);
+                
+                if (status === 200 && Array.isArray(users)) {
+                    const dataStr = JSON.stringify(users, null, 2);
+                    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+                    const url = URL.createObjectURL(dataBlob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = `users_${new Date().toISOString().split('T')[0]}.json`;
+                    link.click();
+                    URL.revokeObjectURL(url);
+                    
+                    showResponse('info-response', {
+                        message: '✅ Utilizadores exportados com sucesso',
+                        count: users.length
+                    }, 200);
+                } else {
+                    showResponse('info-response', { error: 'Falha ao exportar utilizadores' }, status);
+                }
+            } catch (error) {
+                showResponse('info-response', { error: 'Erro ao exportar: ' + error.message }, 500);
+            }
+        }
+
+        async function importUsers(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            try {
+                const text = await file.text();
+                const users = JSON.parse(text);
+                
+                if (!Array.isArray(users)) {
+                    showResponse('info-response', { error: 'Ficheiro inválido. Deve conter um array de utilizadores' }, 400);
+                    return;
+                }
+
+                let imported = 0;
+                let errors = 0;
+
+                for (const user of users) {
+                    // Registar cada utilizador
+                    const { status } = await makeRequest('/api/auth/register', 'POST', {
+                        email: user.email,
+                        password: user.password || 'DefaultPassword123!', // Password padrão se não existir
+                        name: user.name,
+                        role: user.role || 'guest'
+                    }, false);
+                    
+                    if (status === 201) imported++;
+                    else errors++;
+                }
+
+                showResponse('info-response', {
+                    message: `Importação concluída: ${imported} utilizador(es) importado(s), ${errors} erro(s)`,
+                    imported,
+                    errors
+                }, 200);
+            } catch (error) {
+                showResponse('info-response', { error: 'Erro ao importar: ' + error.message }, 500);
+            }
+            
+            // Reset input
+            event.target.value = '';
+        }
+
+        async function exportProjects() {
+            try {
+                const { data: projects, status } = await makeRequest('/api/projects');
+                
+                if (status === 200 && Array.isArray(projects)) {
+                    const dataStr = JSON.stringify(projects, null, 2);
+                    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+                    const url = URL.createObjectURL(dataBlob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = `projects_${new Date().toISOString().split('T')[0]}.json`;
+                    link.click();
+                    URL.revokeObjectURL(url);
+                    
+                    showResponse('info-response', {
+                        message: '✅ Projetos exportados com sucesso',
+                        count: projects.length
+                    }, 200);
+                } else {
+                    showResponse('info-response', { error: 'Falha ao exportar projetos' }, status);
+                }
+            } catch (error) {
+                showResponse('info-response', { error: 'Erro ao exportar: ' + error.message }, 500);
+            }
+        }
+
+        async function importProjects(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            try {
+                const text = await file.text();
+                const projects = JSON.parse(text);
+                
+                if (!Array.isArray(projects)) {
+                    showResponse('info-response', { error: 'Ficheiro inválido. Deve conter um array de projetos' }, 400);
+                    return;
+                }
+
+                let imported = 0;
+                let errors = 0;
+
+                for (const project of projects) {
+                    const { status } = await makeRequest('/api/projects', 'POST', {
+                        title: project.title,
+                        description: project.description,
+                        technologies: project.technologies || [],
+                        image: project.image || '',
+                        github: project.github || ''
+                    }, true);
+                    
+                    if (status === 201) imported++;
+                    else errors++;
+                }
+
+                showResponse('info-response', {
+                    message: `Importação concluída: ${imported} projeto(s) importado(s), ${errors} erro(s)`,
+                    imported,
+                    errors
+                }, 200);
+            } catch (error) {
+                showResponse('info-response', { error: 'Erro ao importar: ' + error.message }, 500);
+            }
+            
+            // Reset input
+            event.target.value = '';
         }
     </script>
 </body>
