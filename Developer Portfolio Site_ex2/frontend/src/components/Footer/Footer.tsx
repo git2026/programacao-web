@@ -1,3 +1,4 @@
+// Componente de rodapé
 import styles from './Footer.module.css';
 import { profile } from '../../data/profile';
 

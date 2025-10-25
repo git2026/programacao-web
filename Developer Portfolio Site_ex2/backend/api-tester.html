@@ -565,7 +565,7 @@
 </head>
 <body>
     <div class="header">
-        <h1>🚀 Backend API Tester</h1>
+        <h1>Backend API Tester</h1>
         <button class="theme-toggle" onclick="toggleTheme()">
             <span id="theme-icon">☀️</span>
         </button>
@@ -689,6 +689,10 @@
         <!-- PROJECTS SECTION -->
         <div id="projects" class="section">
             <h2>Gestão de Projetos</h2>
+            
+            <div class="alert warning">
+                ⚠️ Requer Cargo de Admin/Editor
+            </div>
 
             <div class="card">
                 <h3>Listar Projetos</h3>
@@ -819,7 +823,7 @@
                         <li><span class="method get">GET</span>/api/projects <span class="badge">Público</span></li>
                         <li><span class="method get">GET</span>/api/projects/:id <span class="badge">Público</span></li>
                         <li><span class="method post">POST</span>/api/projects <span class="badge admin">Admin/Editor</span></li>
-                        <li><span class="method put">PUT</span>/api/projects/:id <span class="badge admin">Admin</span></li>
+                        <li><span class="method put">PUT</span>/api/projects/:id <span class="badge admin">Admin/Editor</span></li>
                         <li><span class="method delete">DELETE</span>/api/projects/:id <span class="badge admin">Admin</span></li>
                     </ul>
                 </div>
@@ -834,10 +838,11 @@
                 <h3>⚙️ Operações Avançadas</h3>
                 
                 <div style="margin-bottom: 20px;">
-                    <h4 style="margin-bottom: 10px; color: var(--text-secondary);">🔧 Gerais</h4>
+                    <h4 style="margin-bottom: 10px; color: var(--text-secondary);">🔧 Servidor e Token</h4>
                     <div class="button-group">
                         <button onclick="testServer()">Testar Servidor</button>
-                        <button class="button-secondary" onclick="clearToken()">Limpar Token</button>
+                        <button class="button-secondary" onclick="clearAllTokens()">Limpar Tokens</button>
+                        <button class="button-secondary" onclick="clearLocalStorage()">Limpar Cache</button>
                     </div>
                 </div>
 
@@ -849,8 +854,8 @@
                         <input type="file" id="import-users-file" accept=".json" style="display: none" onchange="importUsers(event)">
                     </div>
                     <div class="button-group" style="margin-top: 0.5rem;">
-                        <button class="button-secondary" onclick="clearAllUsers()">Limpar Utilizadores</button>
-                        <button class="button-secondary" onclick="resetUserIds()">Reset IDs de Utilizadores</button>
+                        <button class="button-secondary" onclick="clearAllUsers()">Limpar Todos os Utilizadores</button>
+                        <button class="button-secondary" onclick="resetUserIds()">Reiniciar IDs dos Utilizadores</button>
                     </div>
                 </div>
 
@@ -862,16 +867,8 @@
                         <input type="file" id="import-projects-file" accept=".json" style="display: none" onchange="importProjects(event)">
                     </div>
                     <div class="button-group" style="margin-top: 0.5rem;">
-                        <button class="button-secondary" onclick="clearAllProjects()">Limpar Projetos</button>
-                        <button class="button-secondary" onclick="resetProjectIds()">Reset IDs de Projetos</button>
-                    </div>
-                </div>
-
-                <div style="margin-bottom: 20px;">
-                    <h4 style="margin-bottom: 10px; color: var(--text-secondary);">🔑 Autenticação</h4>
-                    <div class="button-group">
-                        <button class="button-secondary" onclick="clearAllTokens()">Limpar Tokens Armazenados</button>
-                        <button class="button-secondary" onclick="clearLocalStorage()">Limpar Cache</button>
+                        <button class="button-secondary" onclick="clearAllProjects()">Limpar Todos os Projetos</button>
+                        <button class="button-secondary" onclick="resetProjectIds()">Reiniciar IDs dos Projetos</button>
                     </div>
                 </div>
 
@@ -1206,81 +1203,76 @@
         // ==================== Operações Avançadas ====================
 
         async function clearAllUsers() {
-            if (!confirm('⚠️ Tem certeza que deseja eliminar TODOS os utilizadores? Esta ação é irreversível!')) {
+            if (!confirm('⚠️ Tem a certeza que deseja eliminar TODOS os utilizadores? Esta ação é irreversível!')) {
                 return;
             }
 
             try {
-                const { data: users } = await makeRequest('/api/auth/users', 'GET', null, true);
+                const { data, status } = await makeRequest('/api/auth/users', 'DELETE', null, true);
                 
-                if (!users || users.length === 0) {
-                    showResponse('info-response', { message: 'Não há utilizadores para eliminar' }, 200);
-                    return;
+                if (status === 200) {
+                    showResponse('info-response', data, status);
+                } else {
+                    showResponse('info-response', data || { error: 'Falha ao eliminar utilizadores' }, status);
                 }
-
-                let deleted = 0;
-                let errors = 0;
-
-                for (const user of users) {
-                    const { status } = await makeRequest(`/api/auth/users/${user.id}`, 'DELETE', null, true);
-                    if (status === 200) deleted++;
-                    else errors++;
-                }
-
-                showResponse('info-response', {
-                    message: `Operação concluída: ${deleted} utilizador(es) eliminado(s), ${errors} erro(s)`,
-                    deleted,
-                    errors
-                }, 200);
             } catch (error) {
                 showResponse('info-response', { error: 'Falha ao eliminar utilizadores: ' + error.message }, 500);
             }
         }
 
         async function resetUserIds() {
-            showResponse('info-response', {
-                message: '⚠️ Esta funcionalidade requer reiniciar o servidor',
-                info: 'Os IDs de utilizadores são geridos em memória e resetam automaticamente ao reiniciar o servidor'
-            }, 200);
-        }
-
-        async function clearAllProjects() {
-            if (!confirm('⚠️ Tem certeza que deseja eliminar TODOS os projetos? Esta ação é irreversível!')) {
+            if (!confirm('⚠️ Tem a certeza que deseja reiniciar os IDs dos utilizadores?')) {
                 return;
             }
 
             try {
-                const { data: projects } = await makeRequest('/api/projects');
+                const { data, status } = await makeRequest('/api/auth/users/reset-ids', 'POST', null, true);
                 
-                if (!projects || projects.length === 0) {
-                    showResponse('info-response', { message: 'Não há projetos para eliminar' }, 200);
-                    return;
+                if (status === 200) {
+                    showResponse('info-response', data, status);
+                } else {
+                    showResponse('info-response', data || { error: 'Falha ao reiniciar IDs' }, status);
+                }
+            } catch (error) {
+                showResponse('info-response', { error: 'Falha ao reiniciar IDs: ' + error.message }, 500);
+            }
+        }
+
+        async function clearAllProjects() {
+            if (!confirm('⚠️ Tem a certeza que deseja eliminar TODOS os projetos? Esta ação é irreversível!')) {
+                return;
+            }
+
+            try {
+                const { data, status } = await makeRequest('/api/projects', 'DELETE', null, true);
+                
+                if (status === 200) {
+                    showResponse('info-response', data, status);
+                } else {
+                    showResponse('info-response', data || { error: 'Falha ao eliminar projetos' }, status);
                 }
 
-                let deleted = 0;
-                let errors = 0;
-
-                for (const project of projects) {
-                    const { status } = await makeRequest(`/api/projects/${project.id}`, 'DELETE', null, true);
-                    if (status === 200) deleted++;
-                    else errors++;
-                }
-
-                showResponse('info-response', {
-                    message: `Operação concluída: ${deleted} projeto(s) eliminado(s), ${errors} erro(s)`,
-                    deleted,
-                    errors
-                }, 200);
             } catch (error) {
                 showResponse('info-response', { error: 'Falha ao eliminar projetos: ' + error.message }, 500);
             }
         }
 
         async function resetProjectIds() {
-            showResponse('info-response', {
-                message: '⚠️ Esta funcionalidade requer reiniciar o servidor',
-                info: 'Os IDs de projetos são geridos em memória e resetam automaticamente ao reiniciar o servidor'
-            }, 200);
+            if (!confirm('⚠️ Tem a certeza que deseja reiniciar os IDs dos projetos?')) {
+                return;
+            }
+
+            try {
+                const { data, status } = await makeRequest('/api/projects/reset-ids', 'POST', null, true);
+                
+                if (status === 200) {
+                    showResponse('info-response', data, status);
+                } else {
+                    showResponse('info-response', data || { error: 'Falha ao reiniciar IDs' }, status);
+                }
+            } catch (error) {
+                showResponse('info-response', { error: 'Falha ao reiniciar IDs: ' + error.message }, 500);
+            }
         }
 
         async function clearAllTokens() {
@@ -1294,7 +1286,7 @@
         }
 
         async function clearLocalStorage() {
-            if (!confirm('⚠️ Tem certeza que deseja limpar a cache? Isto inclui tokens e preferências de tema!')) {
+            if (!confirm('⚠️ Tem a certeza que deseja limpar a cache? Isto inclui tokens e preferências de tema!')) {
                 return;
             }
 
@@ -1303,18 +1295,18 @@
             authToken = '';
             updateTokenDisplay();
             
-            // Reset theme to default
+            // Reiniciar tema para padrão
             document.documentElement.setAttribute('data-theme', '');
             document.getElementById('theme-icon').textContent = '☀️';
 
             showResponse('info-response', {
                 message: `✅ Cache limpa com sucesso`,
                 itemsCleared: itemsCleared,
-                info: 'Tema resetado para modo escuro, tokens removidos'
+                info: 'Tema reiniciado para modo escuro e tokens removidos'
             }, 200);
         }
 
-        // ==================== Import/Export Functions ====================
+        // ==================== Funções de Import/Export ====================
 
         async function exportUsers() {
             try {
@@ -1380,7 +1372,7 @@
                 showResponse('info-response', { error: 'Erro ao importar: ' + error.message }, 500);
             }
             
-            // Reset input
+            // Limpar input
             event.target.value = '';
         }
 
@@ -1448,7 +1440,7 @@
                 showResponse('info-response', { error: 'Erro ao importar: ' + error.message }, 500);
             }
             
-            // Reset input
+            // Limpar input
             event.target.value = '';
         }
     </script>

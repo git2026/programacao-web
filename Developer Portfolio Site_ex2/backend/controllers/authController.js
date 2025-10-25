@@ -1,35 +1,35 @@
 import bcrypt from 'bcryptjs';
-import { createUser, findUserByEmail, getAllUsers, updateUser, deleteUser } from '../models/userModel.js';
+import { createUser, findUserByEmail, getAllUsers, updateUser, deleteUser, clearAllUsers, resetUserIds } from '../models/userModel.js';
 import { generateToken } from '../utils/tokenUtils.js';
 
 export const register = async (req, res) => {
   try {
     const { email, password, name, role } = req.body;
 
-    // Validation
+    // Validação
     if (!email || !password || !name) {
       return res.status(400).json({ error: 'Email, palavra-passe e nome são obrigatórios' });
     }
 
-    // Check if user exists
+    // Verificar se o utilizador existe
     const existingUser = findUserByEmail(email);
     if (existingUser) {
       return res.status(400).json({ error: 'Utilizador já existe' });
     }
 
-    // Hash password
+    // Encriptar palavra-passe
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create user (ID is auto-generated in the model)
+    // Criar utilizador (ID é gerado automaticamente no modelo)
     const user = createUser({
       email,
       password: hashedPassword,
       name,
-      role: role || 'guest', // default to guest
+      role: role || 'guest', // padrão: guest
       createdAt: new Date().toISOString()
     });
 
-    // Generate token
+    // Gerar token
     const token = generateToken({
       id: user.id,
       email: user.email,
@@ -55,24 +55,24 @@ export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Validation
+    // Validação
     if (!email || !password) {
       return res.status(400).json({ error: 'Email e palavra-passe são obrigatórios' });
     }
 
-    // Find user
+    // Encontrar utilizador
     const user = findUserByEmail(email);
     if (!user) {
       return res.status(401).json({ error: 'Credenciais inválidas' });
     }
 
-    // Check password
+    // Verificar palavra-passe
     const isValidPassword = await bcrypt.compare(password, user.password);
     if (!isValidPassword) {
       return res.status(401).json({ error: 'Credenciais inválidas' });
     }
 
-    // Generate token
+    // Gerar token
     const token = generateToken({
       id: user.id,
       email: user.email,
@@ -121,12 +121,12 @@ export const editUser = (req, res) => {
     const { id } = req.params;
     const { name, email, role } = req.body;
 
-    // Validation
+    // Validação
     if (!name && !email && role === undefined) {
       return res.status(400).json({ error: 'Pelo menos um campo (nome, email ou cargo) é obrigatório' });
     }
 
-    // Check if email is already taken by another user
+    // Verificar se o email já está a ser usado por outro utilizador
     if (email) {
       const existingUser = findUserByEmail(email);
       if (existingUser && existingUser.id !== parseInt(id)) {
@@ -174,6 +174,24 @@ export const removeUser = (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ error: 'Falha ao eliminar utilizador' });
+  }
+};
+
+export const clearUsers = (req, res) => {
+  try {
+    const result = clearAllUsers();
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: 'Falha ao limpar utilizadores' });
+  }
+};
+
+export const resetUsersIds = (req, res) => {
+  try {
+    const result = resetUserIds();
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: 'Falha ao reiniciar IDs dos utilizadores' });
   }
 };
 

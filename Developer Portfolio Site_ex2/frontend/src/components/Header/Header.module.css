@@ -1,3 +1,4 @@
+/* Cabeçalho fixo no topo */
 .header {
   position: sticky;
   top: 0;
@@ -6,6 +7,7 @@
   z-index: 10;
 }
 
+/* Barra de navegação */
 .nav {
   max-width: 1100px;
   margin: 0 auto;
@@ -16,6 +18,7 @@
   gap: 24px;
 }
 
+/* Nome */
 .brand {
   font-weight: 700;
   color: var(--text-primary);
@@ -26,6 +29,7 @@
   flex-shrink: 0;
 }
 
+/* Menu de navegação */
 .menu {
   display: flex;
   gap: 24px;
@@ -38,11 +42,13 @@
   margin-left: 0;
 }
 
+/* Botão de tema */
 .themeToggle {
   margin-left: auto;
   flex-shrink: 0;
 }
 
+/* Links do menu */
 .menu a {
   color: var(--text-primary);
   text-decoration: none;
@@ -59,11 +65,13 @@
   transform: translateY(-1px);
 }
 
+/* Link ativo */
 .active {
   color: var(--accent);
   background: var(--hover);
 }
 
+/* Indicador de link ativo */
 .active::after {
   content: '';
   position: absolute;
@@ -76,6 +84,7 @@
   border-radius: 1px;
 }
 
+/* Responsivo: ajustes para mobile */
 @media (max-width: 768px) {
   .nav {
     padding: 12px 16px;

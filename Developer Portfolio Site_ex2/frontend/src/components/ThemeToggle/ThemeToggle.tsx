@@ -1,7 +1,9 @@
+// Componente para alternar entre tema claro e escuro
 import { useEffect, useState } from 'react';
 import styles from './ThemeToggle.module.css';
 import { APP_CONFIG } from '../../data/config';
 
+// Obter tema inicial do localStorage ou preferência do sistema
 function getInitialTheme(): 'dark' | 'light' {
   const stored = localStorage.getItem(APP_CONFIG.theme.storageKey);
   if (stored === 'light' || stored === 'dark') return stored;
@@ -25,7 +27,7 @@ export default function ThemeToggle({ className }: ThemeToggleProps) {
     <button
       type="button"
       className={`${styles.toggle} ${className || ''}`}
-      aria-label="Toggle color theme"
+      aria-label="Alternar tema de cor"
       onClick={() => setTheme((t) => (t === 'dark' ? 'light' : 'dark'))}
     >
       {theme === 'dark' ? '🌙' : '☀️'}

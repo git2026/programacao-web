@@ -1,4 +1,4 @@
-import { getAllProjects, createProject, getProjectById, updateProject, deleteProject } from '../models/projectModel.js';
+import { getAllProjects, createProject, getProjectById, updateProject, deleteProject, clearAllProjects, resetProjectIds } from '../models/projectModel.js';
 
 export const getProjects = (req, res) => {
   try {
@@ -13,7 +13,7 @@ export const addProject = (req, res) => {
   try {
     const { title, description, technologies, image, github } = req.body;
 
-    // Validation
+    // Validação
     if (!title || !description) {
       return res.status(400).json({ error: 'Título e descrição são obrigatórios' });
     }
@@ -55,7 +55,7 @@ export const editProject = (req, res) => {
     const { id } = req.params;
     const { title, description, technologies, image, github } = req.body;
 
-    // Validation - at least one field should be provided
+    // Validação - pelo menos um campo deve ser fornecido
     if (!title && !description && !technologies && image === undefined && github === undefined) {
       return res.status(400).json({ error: 'Pelo menos um campo é obrigatório para atualizar' });
     }
@@ -96,6 +96,24 @@ export const removeProject = (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ error: 'Falha ao eliminar projeto' });
+  }
+};
+
+export const clearProjects = (req, res) => {
+  try {
+    const result = clearAllProjects();
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: 'Falha ao limpar projetos' });
+  }
+};
+
+export const resetProjectsIds = (req, res) => {
+  try {
+    const result = resetProjectIds();
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: 'Falha ao reiniciar IDs dos projetos' });
   }
 };
 

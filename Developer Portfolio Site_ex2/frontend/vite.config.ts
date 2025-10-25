@@ -22,8 +22,11 @@ export default defineConfig({
     },
   },
   server: {
+    host: '0.0.0.0',
+    port: 5173,
     headers: {
-      'Cache-Control': 'public, max-age=604800', // 7 dias
+      // Cache de 5 minutos para desenvolvimento
+      'Cache-Control': 'public, max-age=300',
     },
     proxy: {
       '/github-avatar': {

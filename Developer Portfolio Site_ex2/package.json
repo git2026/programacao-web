@@ -1,7 +1,6 @@
 {
   "name": "developer-portfolio-fullstack",
   "version": "1.0.0",
-  "description": "Full-stack Developer Portfolio with React frontend and Node.js backend",
   "private": true,
   "type": "module",
   "scripts": {
@@ -20,7 +19,5 @@
     "express",
     "jwt",
     "fullstack"
-  ],
-  "author": "Guilherme Carvalho",
-  "license": "GNU_V3.0"
+  ]
 }

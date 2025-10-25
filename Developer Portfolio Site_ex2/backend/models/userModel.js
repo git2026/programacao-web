@@ -7,7 +7,7 @@ const __dirname = path.dirname(__filename);
 
 const usersFilePath = path.join(__dirname, '../data/users.json');
 
-// Initialize users file if it doesn't exist
+// Inicializar ficheiro de utilizadores se não existir
 if (!fs.existsSync(path.dirname(usersFilePath))) {
   fs.mkdirSync(path.dirname(usersFilePath), { recursive: true });
 }
@@ -17,9 +17,9 @@ if (!fs.existsSync(usersFilePath)) {
 }
 
 let nextId = 1;
-const freedIds = []; // Stack of freed IDs for reuse
+const freedIds = []; // Pilha de IDs libertados para reutilização
 
-// Get next available ID (reuse freed IDs or increment)
+// Obter próximo ID disponível (reutilizar IDs libertados ou incrementar)
 const getNextId = () => {
   if (freedIds.length > 0) {
     return freedIds.pop();
@@ -27,7 +27,7 @@ const getNextId = () => {
   return nextId++;
 };
 
-// Initialize nextId based on existing users
+// Inicializar nextId com base nos utilizadores existentes
 const initializeUserId = () => {
   const users = getAllUsers();
   if (users.length > 0) {
@@ -67,10 +67,10 @@ export const updateUser = (id, updates) => {
   const users = getAllUsers();
   const user = users.find(user => user.id === id);
   if (user) {
-    // Update only provided fields (except password and id)
+    // Atualizar apenas campos fornecidos (exceto password e id)
     if (updates.name) user.name = updates.name;
     if (updates.email) user.email = updates.email;
-    if (updates.role !== undefined) user.role = updates.role; // Allow null to remove role
+    if (updates.role !== undefined) user.role = updates.role; // Permitir null para remover cargo
     user.updatedAt = new Date().toISOString();
     
     fs.writeFileSync(usersFilePath, JSON.stringify(users, null, 2));
@@ -84,14 +84,48 @@ export const deleteUser = (id) => {
   const index = users.findIndex(user => user.id === id);
   if (index !== -1) {
     const deletedUser = users.splice(index, 1)[0];
-    freedIds.push(id); // Add freed ID to the stack for reuse
-    freedIds.sort((a, b) => b - a); // Keep sorted descending for LIFO
+    freedIds.push(id); // Adicionar ID libertado à pilha para reutilização
+    freedIds.sort((a, b) => b - a); // Manter ordenado descendente para LIFO
     fs.writeFileSync(usersFilePath, JSON.stringify(users, null, 2));
     return deletedUser;
   }
   return null;
 };
 
-// Initialize on module load
+export const clearAllUsers = () => {
+  fs.writeFileSync(usersFilePath, JSON.stringify([], null, 2));
+  nextId = 1;
+  freedIds.length = 0; // Limpar array de IDs libertados
+  return { message: 'Todos os utilizadores foram eliminados' };
+};
+
+export const resetUserIds = () => {
+  const users = getAllUsers();
+  
+  if (users.length === 0) {
+    return { message: 'Não há utilizadores para resetar IDs', count: 0 };
+  }
+  
+  // Reiniciar IDs iterativamente de 1 até o número total de utilizadores
+  const resetUsers = users.map((user, index) => ({
+    ...user,
+    id: index + 1
+  }));
+  
+  // Reiniciar contadores
+  nextId = resetUsers.length + 1;
+  freedIds.length = 0;
+  
+  // Guardar no ficheiro
+  fs.writeFileSync(usersFilePath, JSON.stringify(resetUsers, null, 2));
+  
+  return { 
+    message: `IDs dos utilizadores foram reiniciados sequencialmente (1-${resetUsers.length})`, 
+    count: resetUsers.length,
+    ids: resetUsers.map(u => u.id)
+  };
+};
+
+// Inicializar ao carregar o módulo
 initializeUserId();
 

@@ -1,3 +1,4 @@
+/* Botão de alternância de tema */
 .toggle {
   border: 1px solid var(--border);
   background: var(--surface);
@@ -6,5 +7,7 @@
   border-radius: 6px;
   cursor: pointer;
 }
+
+/* Efeito hover no botão */
 .toggle:hover, .toggle:focus-visible { background: var(--hover); }
 

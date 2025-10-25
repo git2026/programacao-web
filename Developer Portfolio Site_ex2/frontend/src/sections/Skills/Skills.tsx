@@ -48,8 +48,7 @@ export default function Skills() {
         }
         setLoading(false);
       })
-      .catch((error) => {
-        console.error('Erro ao carregar competências:', error);
+      .catch(() => {
         // Fallback com competências padrão
         setPrimary(['Python', 'Java', 'JavaScript', 'TypeScript', 'PHP', 'HTML', 'CSS', 'MySQL', 'PostgreSQL', 'Flask', 'React']);
         setSecondary(['Bootstrap', 'Docker', 'Kubernetes', 'Redis', 'scikit-learn', 'pandas', 'numpy', 'matplotlib', 'Tkinter', 'Swing', 'Git']);
@@ -62,7 +61,7 @@ export default function Skills() {
       <section className={styles.skills}>
         <div className={styles.inner}>
           <h2>Competências Técnicas</h2>
-          <p style={{ textAlign: 'center', padding: '2rem' }}>Carregando competências...</p>
+          <p style={{ textAlign: 'center', padding: '2rem' }}>Carregando...</p>
         </div>
       </section>
     );

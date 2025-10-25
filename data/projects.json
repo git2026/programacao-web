@@ -19,7 +19,7 @@
   },
   {
     "id": "2",
-    "title": "Deteção de Fake News",
+    "title": "Detação de Fake News",
     "description": "Sistema avançado de detecção de fake news utilizando algoritmos de Machine Learning. Implementa múltiplos modelos de classificação incluindo Regressão Logística, SVM e Naive Bayes para análise precisa de conteúdo textual e identificação de notícias falsas.",
     "technologies": [
       "Python",
@@ -72,7 +72,7 @@
   {
     "id": "5",
     "title": "Sistema de Reserva de Voos",
-    "description": "Sistema de gestão de reservas de voos com interface gráfica desenvolvido em Java Swing. Inclui reserva e gestão de assentos (executivos/económicos), alteração e cancelamento de reservas, múltiplos métodos de pagamento e persistência de dados. Sistema de validação de NIF português e cálculo dinâmico de preços com extras.",
+    "description": "Sistema de gestão de reservas de voos com interface gráfica desenvolvido em Java Swing. Inclui reserva e gestão de assentos (executivos/econômicos), alteração e cancelamento de reservas, múltiplos métodos de pagamento e persistência de dados. Sistema de validação de NIF português e cálculo dinâmico de preços com extras.",
     "technologies": [
       "Java",
       "Swing",
@@ -104,5 +104,17 @@
     "image": "/assets/projeto6.png",
     "createdBy": "system",
     "createdAt": "2025-10-23T11:11:56.194Z"
+  },
+  {
+    "id": "7",
+    "title": "sdasdasd",
+    "description": "dasddasdasd as das d asd as dasds",
+    "technologies": [
+      "1"
+    ],
+    "image": "/assets/projeto.png",
+    "github": "https://github.com/git2026/programacao-web/",
+    "createdBy": "editor1@a.pt",
+    "createdAt": "2025-10-24T17:28:52.916Z"
   }
 ]

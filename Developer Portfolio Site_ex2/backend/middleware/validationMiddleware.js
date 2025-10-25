@@ -1,6 +1,6 @@
 import { body, param, validationResult } from 'express-validator';
 
-// Middleware to handle validation results
+// Middleware para tratar erros de validação
 export const handleValidationErrors = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -12,7 +12,7 @@ export const handleValidationErrors = (req, res, next) => {
   next();
 };
 
-// Auth validations
+// Validações de autenticação
 export const validateRegister = [
   body('email')
     .isEmail()
@@ -71,7 +71,7 @@ export const validateDeleteUser = [
   handleValidationErrors
 ];
 
-// Project validations
+// Validações de projetos
 export const validateCreateProject = [
   body('title')
     .trim()
@@ -83,7 +83,7 @@ export const validateCreateProject = [
     .withMessage('Descrição deve ter no mínimo 10 caracteres'),
   body('technologies')
     .optional()
-    .isArray()
+    .custom(value => Array.isArray(value) || value === null || value === undefined)
     .withMessage('Tecnologias deve ser um array'),
   body('image')
     .optional()
@@ -91,8 +91,8 @@ export const validateCreateProject = [
   body('github')
     .optional()
     .trim()
-    .isURL()
-    .withMessage('GitHub deve ser um URL válido'),
+    .custom(value => value === null || value === '' || /^https?:\/\//.test(value))
+    .withMessage('GitHub deve ser um URL válido ou vazio'),
   handleValidationErrors
 ];
 
@@ -112,7 +112,7 @@ export const validateUpdateProject = [
     .withMessage('Descrição deve ter no mínimo 10 caracteres'),
   body('technologies')
     .optional()
-    .isArray()
+    .custom(value => Array.isArray(value) || value === null || value === undefined)
     .withMessage('Tecnologias deve ser um array'),
   body('image')
     .optional()

@@ -8,8 +8,6 @@ export default function About() {
         <img 
           className={styles.avatar}
           src={`https://github.com/${profile.githubUsername}.png`}
-          alt={`Portrait of ${profile.name}`}
-          loading="eager"
           fetchPriority="high"
           decoding="async"
         />

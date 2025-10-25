@@ -70,10 +70,7 @@ function logWarning(message) {
 }
 
 function logBanner(text, color = colors.cyan) {
-  const banner = '═'.repeat(text.length + 4);
-  log(`╔${banner}╗`, color);
-  log(`║  ${text}  ║`, color);
-  log(`╚${banner}╝`, color);
+  log(`\n${text}\n`, color);
 }
 
 function logBox(title, content, color = colors.white) {
@@ -100,12 +97,12 @@ function checkDirectories() {
   const backendExists = existsSync(config.backend.path);
   
   if (!frontendExists) {
-    logError(`Frontend directory not found: ${config.frontend.path}`);
+    logError(`Diretório do frontend não encontrado: ${config.frontend.path}`);
     process.exit(1);
   }
   
   if (!backendExists) {
-    logError(`Backend directory not found: ${config.backend.path}`);
+    logError(`Diretório do backend não encontrado: ${config.backend.path}`);
     process.exit(1);
   }
   
@@ -118,17 +115,17 @@ function startProcess(name, config, color) {
     const spinner = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
     let spinnerIndex = 0;
     
-    log(`[${name}] ${spinner[spinnerIndex]} Starting ${name}...`, color);
+    log(`[${name}] ${spinner[spinnerIndex]} A iniciar ${name}...`, color);
     
     const spinnerInterval = setInterval(() => {
       spinnerIndex = (spinnerIndex + 1) % spinner.length;
-      process.stdout.write(`\r[${name}] ${spinner[spinnerIndex]} Starting ${name}...`);
+      process.stdout.write(`\r[${name}] ${spinner[spinnerIndex]} A iniciar ${name}...`);
     }, 100);
     
     const process = spawn(config.command, config.args, {
       cwd: config.path,
       stdio: 'pipe',
-      shell: false  // Fixed: Don't use shell to avoid security warning
+      shell: false  // Não usar shell para evitar aviso de segurança
     });
     
     let started = false;
@@ -138,37 +135,40 @@ function startProcess(name, config, color) {
       const output = data.toString();
       outputBuffer += output;
       
-      // Clear spinner and show output when we get data
+      // Limpar spinner e mostrar output quando recebemos dados
       if (!started) {
         clearInterval(spinnerInterval);
-        process.stdout.write('\r' + ' '.repeat(50) + '\r'); // Clear spinner line
+        process.stdout.write('\r' + ' '.repeat(50) + '\r'); // Limpar linha do spinner
       }
       
-      // Check for startup completion
+      // Verificar conclusão do arranque
       if (!started) {
         if (name === 'Frontend' && (output.includes('Local:') || output.includes('ready in'))) {
           started = true;
-          logSuccess(`✅ ${name} started successfully!`, color);
+          logSuccess(`${name} pronto!`, color);
           resolve({ process, started: true });
         } else if (name === 'Backend' && output.includes('Server running')) {
           started = true;
-          logSuccess(`✅ ${name} started successfully!`, color);
+          logSuccess(`${name} pronto!`, color);
           resolve({ process, started: true });
         }
       }
       
-      // Log output with color and better formatting
+      // Registar output com cor e melhor formatação
       const lines = output.split('\n').filter(line => line.trim());
       lines.forEach(line => {
-        // Skip npm output lines and show cleaner messages
+        // Saltar linhas de output do npm e mostrar mensagens mais limpas
         if (line.includes('> ') && line.includes('@')) {
-          return; // Skip npm command lines
+          return; // Saltar linhas de comando npm
         }
         if (line.includes('npm') && line.includes('start')) {
-          return; // Skip npm start lines
+          return; // Saltar linhas npm start
+        }
+        if (line.includes('vite') && line.includes('node_modules')) {
+          return; // Saltar linha do vite
         }
         
-        // Format different types of output
+        // Formatar diferentes tipos de output
         if (line.includes('ready in')) {
           log(`[${name}] ⚡ ${line}`, color);
         } else if (line.includes('Local:')) {
@@ -177,7 +177,7 @@ function startProcess(name, config, color) {
           log(`[${name}] 🚀 ${line}`, color);
         } else if (line.includes('Environment:')) {
           log(`[${name}] 📝 ${line}`, color);
-        } else {
+        } else if (line.trim() && !line.includes('node_modules')) {
           log(`[${name}] ${line}`, color);
         }
       });
@@ -191,31 +191,31 @@ function startProcess(name, config, color) {
     process.on('close', (code) => {
       clearInterval(spinnerInterval);
       if (code !== 0) {
-        logError(`${name} exited with code ${code}`);
-        reject(new Error(`${name} failed to start`));
+        logError(`${name} terminou com código ${code}`);
+        reject(new Error(`${name} falhou ao iniciar`));
       }
     });
     
     process.on('error', (error) => {
       clearInterval(spinnerInterval);
-      logError(`Failed to start ${name}: ${error.message}`);
+      logError(`Falha ao iniciar ${name}: ${error.message}`);
       reject(error);
     });
     
-    // Timeout after 30 seconds
+    // Timeout após 30 segundos
     setTimeout(() => {
       if (!started) {
         clearInterval(spinnerInterval);
-        logWarning(`${name} is taking longer than expected to start...`);
+        logWarning(`${name} está a demorar mais do que o esperado a iniciar...`);
       }
     }, 30000);
   });
 }
 
-// Install dependencies if needed
+// Instalar dependências se necessário
 async function installDependencies(name, path) {
   return new Promise((resolve, reject) => {
-    logInfo(`Installing ${name} dependencies...`);
+    logInfo(`A instalar dependências do ${name}...`);
     
     const command = isWindows ? 'cmd' : 'npm';
     const args = isWindows ? ['/c', 'npm', 'install'] : ['install'];
@@ -230,7 +230,7 @@ async function installDependencies(name, path) {
     
     npmInstall.stdout.on('data', (data) => {
       outputBuffer += data.toString();
-      // Show progress
+      // Mostrar progresso
       const lines = data.toString().split('\n').filter(line => line.trim());
       lines.forEach(line => {
         if (line.includes('added') || line.includes('packages')) {
@@ -245,40 +245,40 @@ async function installDependencies(name, path) {
     
     npmInstall.on('close', (code) => {
       if (code === 0) {
-        logSuccess(`${name} dependencies installed successfully!`);
+        logSuccess(`${name}: dependências instaladas!`);
         resolve();
       } else {
-        logError(`Failed to install ${name} dependencies`);
-        reject(new Error(`npm install failed for ${name}`));
+        logError(`Falha ao instalar dependências do ${name}`);
+        reject(new Error(`npm install falhou para ${name}`));
       }
     });
     
     npmInstall.on('error', (error) => {
-      logError(`Failed to run npm install for ${name}: ${error.message}`);
+      logError(`Falha ao executar npm install para ${name}: ${error.message}`);
       reject(error);
     });
   });
 }
 
-// Main startup function
+// Função principal de arranque
 async function startApplication() {
-  // Clear screen and show banner
+  // Limpar ecrã e mostrar banner
   console.clear();
-  logBanner('🚀 Developer Portfolio Full-Stack', colors.cyan);
+  logBanner(' Developer Portfolio Full-Stack', colors.cyan);
   log('');
   
-  // Check directories
+  // Verificar diretórios
   checkDirectories();
   
-  // Check if node_modules exist
+  // Verificar se node_modules existem
   const frontendNodeModules = existsSync(join(config.frontend.path, 'node_modules'));
   const backendNodeModules = existsSync(join(config.backend.path, 'node_modules'));
   
-  // Auto-install dependencies if missing
+  // Auto-instalar dependências se em falta
   if (!frontendNodeModules || !backendNodeModules) {
-    logBox('📦 First-Time Setup Detected', [
-      'Installing dependencies automatically...',
-      'This may take a few minutes on first run.'
+    logBox('📦 Primeira Execução', [
+      'A instalar dependências...',
+      'Pode demorar alguns minutos.'
     ], colors.cyan);
     log('');
     
@@ -293,13 +293,13 @@ async function startApplication() {
         log('');
       }
       
-      logSuccess('All dependencies installed successfully!');
+      logSuccess('Dependências instaladas!');
       log('');
     } catch (error) {
-      logBox('❌ Installation Failed', [
-        `Error: ${error.message}`,
+      logBox('❌ Erro na Instalação', [
+        `Erro: ${error.message}`,
         '',
-        'Please install manually:',
+        'Instale manualmente:',
         'cd frontend && npm install',
         'cd backend && npm install'
       ], colors.red);
@@ -309,38 +309,33 @@ async function startApplication() {
   }
   
   try {
-    // Start both processes concurrently
+    // Iniciar ambos os processos concorrentemente
     const [frontendResult, backendResult] = await Promise.allSettled([
       startProcess('Frontend', config.frontend, colors.green),
       startProcess('Backend', config.backend, colors.blue)
     ]);
     
-    // Check results
+    // Verificar resultados
     const frontendSuccess = frontendResult.status === 'fulfilled';
     const backendSuccess = backendResult.status === 'fulfilled';
     
     if (frontendSuccess && backendSuccess) {
-      log('');
-      logBanner('🎉 Services Started Successfully!', colors.green);
-      log('');
+      logBanner('✅ Tudo pronto', colors.green);
       
       // Application URLs box
-      logBox('📱 Application URLs', [
+      logBox('📱 URLs', [
         `Frontend:   http://localhost:${config.frontend.port}`,
         `Backend:    http://localhost:${config.backend.port}`,
         `API Tester: http://localhost:${config.backend.port}/api-tester.html`
       ], colors.white);
-      log('');
       
-      log(`${colors.dim}   Press Ctrl+C to stop all services${colors.reset}`);
-      log('');
+      log(`${colors.dim}Ctrl+C para parar${colors.reset}`);
       
-      // Keep the process alive
+      // Manter o processo ativo
       process.on('SIGINT', () => {
-        log('');
-        logBox('🛑 Shutting Down', [
-          'Stopping all services...',
-          'Thank you for using Developer Portfolio! 👋'
+        logBox('🛑 A Encerrar', [
+          'A parar serviços...',
+          'Até breve! 👋'
         ], colors.yellow);
         
         if (frontendSuccess) {
@@ -351,20 +346,20 @@ async function startApplication() {
         }
         
         log('');
-        logSuccess('All services stopped successfully!');
+        logSuccess('Serviços parados!');
         process.exit(0);
       });
       
-      // Keep the main process alive
+      // Manter o processo principal ativo
       process.stdin.resume();
       
     } else {
       log('');
-      logBox('❌ Startup Failed', [
-        'Failed to start one or more services',
+      logBox('❌ Erro ao Iniciar', [
+        'Não foi possível iniciar os serviços',
         '',
-        !frontendSuccess ? `Frontend error: ${frontendResult.reason}` : '',
-        !backendSuccess ? `Backend error: ${backendResult.reason}` : ''
+        !frontendSuccess ? `Frontend: ${frontendResult.reason}` : '',
+        !backendSuccess ? `Backend: ${backendResult.reason}` : ''
       ].filter(Boolean), colors.red);
       log('');
       process.exit(1);
@@ -372,26 +367,26 @@ async function startApplication() {
     
   } catch (error) {
     log('');
-    logBox('💥 Critical Error', [
-      `Startup failed: ${error.message}`,
+    logBox('💥 Erro', [
+      `${error.message}`,
       '',
-      'Please check your configuration and try again.'
+      'Verifique a configuração e tente novamente.'
     ], colors.red);
     log('');
     process.exit(1);
   }
 }
 
-// Handle uncaught exceptions
+// Tratar exceções não capturadas
 process.on('uncaughtException', (error) => {
-  logError(`Uncaught Exception: ${error.message}`);
+  logError(`Exceção não capturada: ${error.message}`);
   process.exit(1);
 });
 
 process.on('unhandledRejection', (reason, promise) => {
-  logError(`Unhandled Rejection at: ${promise}, reason: ${reason}`);
+  logError(`Rejeição não tratada: ${reason?.message || reason}`);
   process.exit(1);
 });
 
-// Start the application
+// Iniciar a aplicação
 startApplication();

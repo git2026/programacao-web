@@ -7,7 +7,7 @@ const __dirname = path.dirname(__filename);
 
 const projectsFilePath = path.join(__dirname, '../data/projects.json');
 
-// Initialize projects file if it doesn't exist
+// Inicializar ficheiro de projetos se não existir
 if (!fs.existsSync(path.dirname(projectsFilePath))) {
   fs.mkdirSync(path.dirname(projectsFilePath), { recursive: true });
 }
@@ -17,9 +17,9 @@ if (!fs.existsSync(projectsFilePath)) {
 }
 
 let nextProjectId = 1;
-const freedProjectIds = []; // Stack of freed project IDs for reuse
+const freedProjectIds = []; // Pilha de IDs de projetos libertados para reutilização
 
-// Get next available project ID
+// Obter próximo ID de projeto disponível
 const getNextProjectId = () => {
   if (freedProjectIds.length > 0) {
     return freedProjectIds.pop();
@@ -27,7 +27,7 @@ const getNextProjectId = () => {
   return nextProjectId++;
 };
 
-// Initialize nextProjectId based on existing projects
+// Inicializar nextProjectId com base nos projetos existentes
 const initializeProjectId = () => {
   const projects = getAllProjects();
   if (projects.length > 0) {
@@ -63,7 +63,7 @@ export const updateProject = (id, updates) => {
   const project = projects.find(project => project.id === id);
   
   if (project) {
-    // Update only provided fields
+    // Atualizar apenas campos fornecidos
     if (updates.title) project.title = updates.title;
     if (updates.description) project.description = updates.description;
     if (updates.technologies) project.technologies = updates.technologies;
@@ -83,13 +83,47 @@ export const deleteProject = (id) => {
   if (index !== -1) {
     const deletedProject = projects.splice(index, 1)[0];
     freedProjectIds.push(parseInt(id));
-    freedProjectIds.sort((a, b) => b - a); // Keep sorted descending
+    freedProjectIds.sort((a, b) => b - a); // Manter ordenado descendente
     fs.writeFileSync(projectsFilePath, JSON.stringify(projects, null, 2));
     return deletedProject;
   }
   return null;
 };
 
-// Initialize on module load
+export const clearAllProjects = () => {
+  fs.writeFileSync(projectsFilePath, JSON.stringify([], null, 2));
+  nextProjectId = 1;
+  freedProjectIds.length = 0; // Limpar array de IDs libertados
+  return { message: 'Todos os projetos foram eliminados' };
+};
+
+export const resetProjectIds = () => {
+  const projects = getAllProjects();
+  
+  if (projects.length === 0) {
+    return { message: 'Não há projetos para resetar IDs', count: 0 };
+  }
+  
+  // Reiniciar IDs iterativamente de 1 até o número total de projetos
+  const resetProjects = projects.map((project, index) => ({
+    ...project,
+    id: (index + 1).toString()
+  }));
+  
+  // Reiniciar contadores
+  nextProjectId = resetProjects.length + 1;
+  freedProjectIds.length = 0;
+  
+  // Guardar no ficheiro
+  fs.writeFileSync(projectsFilePath, JSON.stringify(resetProjects, null, 2));
+  
+  return { 
+    message: `IDs dos projetos foram reiniciados sequencialmente (1-${resetProjects.length})`, 
+    count: resetProjects.length,
+    ids: resetProjects.map(p => p.id)
+  };
+};
+
+// Inicializar ao carregar o módulo
 initializeProjectId();
 

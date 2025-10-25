@@ -1,0 +1,10 @@
+[
+  {
+    "email": "editor1@a.pt",
+    "password": "$2a$10$NYaZF40mFDXqptFAAMU40ecpkXYJUIBU31FDvnCprwSTSUYqyabAC",
+    "name": "editor1",
+    "role": "editor",
+    "createdAt": "2025-10-24T17:28:02.518Z",
+    "id": 1
+  }
+]

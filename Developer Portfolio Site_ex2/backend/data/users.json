@@ -1,11 +1,18 @@
 [
   {
-    "email": "admin@admin.com",
-    "password": "$2a$10$c1fN0BX7fIcAP5VqnXQsGeZSQmpbj64XijU9X6zoN9ybBszv./6nK",
-    "name": "admin",
-    "role": null,
-    "createdAt": "2025-10-23T22:29:34.821Z",
-    "id": 1,
-    "updatedAt": "2025-10-23T22:29:58.452Z"
+    "email": "editor1@a.pt",
+    "password": "$2a$10$NYaZF40mFDXqptFAAMU40ecpkXYJUIBU31FDvnCprwSTSUYqyabAC",
+    "name": "editor1",
+    "role": "editor",
+    "createdAt": "2025-10-24T17:28:02.518Z",
+    "id": 1
+  },
+  {
+    "email": "admin133@admin.com",
+    "password": "$2a$10$Ut89TqxgJqwunPIlDeqS/.ui9TpiEKOlk3pnY54xiqeVlHcNh3qfi",
+    "name": "admin133",
+    "role": "admin",
+    "createdAt": "2025-10-24T18:30:48.399Z",
+    "id": 2
   }
 ]
