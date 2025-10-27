@@ -1,4 +1,5 @@
 import { verifyToken } from '../utils/tokenUtils.js';
+import { findUserById } from '../models/userModel.js';
 
 export const authMiddleware = (req, res, next) => {
   const authHeader = req.headers.authorization;
@@ -14,7 +15,12 @@ export const authMiddleware = (req, res, next) => {
     return res.status(401).json({ error: 'Token inválido ou expirado' });
   }
 
+  // Verificar se o utilizador ainda existe
+  const user = findUserById(decoded.id);
+  if (!user) {
+    return res.status(401).json({ error: 'Token inválido: utilizador não existe' });
+  }
+
   req.user = decoded;
   next();
 };
-

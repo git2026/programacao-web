@@ -23,7 +23,7 @@ export default defineConfig({
   },
   server: {
     headers: {
-      'Cache-Control': 'public, max-age=604800', // 7 dias
+      'Cache-Control': 'public, max-age=604800',
     },
     proxy: {
       '/github-avatar': {

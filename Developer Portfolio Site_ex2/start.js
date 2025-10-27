@@ -147,7 +147,7 @@ function startProcess(name, config, color) {
           started = true;
           logSuccess(`${name} pronto!`, color);
           resolve({ process, started: true });
-        } else if (name === 'Backend' && output.includes('Server running')) {
+        } else if (name === 'Backend' && output.includes('Servidor em execução')) {
           started = true;
           logSuccess(`${name} pronto!`, color);
           resolve({ process, started: true });
@@ -173,7 +173,7 @@ function startProcess(name, config, color) {
           log(`[${name}] ⚡ ${line}`, color);
         } else if (line.includes('Local:')) {
           log(`[${name}] 🌐 ${line}`, color);
-        } else if (line.includes('Server running')) {
+        } else if (line.includes('Servidor em execução')) {
           log(`[${name}] 🚀 ${line}`, color);
         } else if (line.includes('Environment:')) {
           log(`[${name}] 📝 ${line}`, color);

@@ -70,9 +70,7 @@ export const updateUser = (id, updates) => {
     // Atualizar apenas campos fornecidos (exceto password e id)
     if (updates.name) user.name = updates.name;
     if (updates.email) user.email = updates.email;
-    if (updates.role !== undefined) user.role = updates.role; // Permitir null para remover cargo
-    user.updatedAt = new Date().toISOString();
-    
+    if (updates.role !== undefined) user.role = updates.role;
     fs.writeFileSync(usersFilePath, JSON.stringify(users, null, 2));
     return user;
   }
@@ -84,8 +82,8 @@ export const deleteUser = (id) => {
   const index = users.findIndex(user => user.id === id);
   if (index !== -1) {
     const deletedUser = users.splice(index, 1)[0];
-    freedIds.push(id); // Adicionar ID libertado à pilha para reutilização
-    freedIds.sort((a, b) => b - a); // Manter ordenado descendente para LIFO
+    freedIds.push(id);
+    freedIds.sort((a, b) => b - a);
     fs.writeFileSync(usersFilePath, JSON.stringify(users, null, 2));
     return deletedUser;
   }
@@ -95,7 +93,7 @@ export const deleteUser = (id) => {
 export const clearAllUsers = () => {
   fs.writeFileSync(usersFilePath, JSON.stringify([], null, 2));
   nextId = 1;
-  freedIds.length = 0; // Limpar array de IDs libertados
+  freedIds.length = 0;
   return { message: 'Todos os utilizadores foram eliminados' };
 };
 
@@ -128,4 +126,3 @@ export const resetUserIds = () => {
 
 // Inicializar ao carregar o módulo
 initializeUserId();
-

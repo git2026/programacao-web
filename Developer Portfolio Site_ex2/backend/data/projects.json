@@ -11,11 +11,10 @@
       "PHP",
       "MySQL"
     ],
-    "github": "https://github.com/git2026/desenvolvimento-web",
     "image": "/assets/projeto1.png",
-    "createdBy": "system",
-    "createdAt": "2025-10-23T11:11:56.190Z",
-    "updatedAt": "2025-10-24T18:27:19.968Z"
+    "github": "https://github.com/git2026/desenvolvimento-web",
+    "createdBy": "admin",
+    "createdAt": "2025-10-27T13:41:04.600Z"
   },
   {
     "id": "2",
@@ -29,10 +28,11 @@
       "numpy",
       "datasets"
     ],
+    "image": "/assets/projeto2.png",
     "github": "https://github.com/git2026/inteligencia-artificial",
-    "image": "/assets/projeto3.png",
-    "createdBy": "system",
-    "createdAt": "2025-10-23T11:11:56.194Z"
+    "createdBy": "admin",
+    "createdAt": "2025-10-27T13:41:04.611Z",
+    "updatedAt": "2025-10-27T13:43:04.390Z"
   },
   {
     "id": "3",
@@ -46,10 +46,11 @@
       "Docker",
       "Kubernetes"
     ],
+    "image": "/assets/projeto3.png",
     "github": "https://github.com/git2026/sistemas-distribuidos-paralelos",
-    "image": "/assets/projeto2.png",
-    "createdBy": "system",
-    "createdAt": "2025-10-23T11:11:56.194Z"
+    "createdBy": "admin",
+    "createdAt": "2025-10-27T13:41:04.620Z",
+    "updatedAt": "2025-10-27T13:43:14.393Z"
   },
   {
     "id": "4",
@@ -64,10 +65,10 @@
       "MVC",
       "Algoritmos"
     ],
-    "github": "https://github.com/git2026/algoritmia-programacao",
     "image": "/assets/projeto4.png",
-    "createdBy": "system",
-    "createdAt": "2025-10-23T11:11:56.194Z"
+    "github": "https://github.com/git2026/algoritmia-programacao",
+    "createdBy": "admin",
+    "createdAt": "2025-10-27T13:41:04.629Z"
   },
   {
     "id": "5",
@@ -82,10 +83,10 @@
       "Serialização",
       "Algoritmos"
     ],
-    "github": "https://github.com/git2026/programacao-orientada-objetos",
     "image": "/assets/projeto5.png",
-    "createdBy": "system",
-    "createdAt": "2025-10-23T11:11:56.194Z"
+    "github": "https://github.com/git2026/programacao-orientada-objetos",
+    "createdBy": "admin",
+    "createdAt": "2025-10-27T13:41:04.638Z"
   },
   {
     "id": "6",
@@ -100,9 +101,9 @@
       "tkcalendar",
       "Algoritmos"
     ],
-    "github": "https://github.com/git2026/algoritmos-estruturas-dados",
     "image": "/assets/projeto6.png",
-    "createdBy": "system",
-    "createdAt": "2025-10-23T11:11:56.194Z"
+    "github": "https://github.com/git2026/algoritmos-estruturas-dados",
+    "createdBy": "admin",
+    "createdAt": "2025-10-27T13:41:04.647Z"
   }
 ]

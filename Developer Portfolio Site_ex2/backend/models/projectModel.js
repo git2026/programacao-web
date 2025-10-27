@@ -17,7 +17,7 @@ if (!fs.existsSync(projectsFilePath)) {
 }
 
 let nextProjectId = 1;
-const freedProjectIds = []; // Pilha de IDs de projetos libertados para reutilização
+const freedProjectIds = [];
 
 // Obter próximo ID de projeto disponível
 const getNextProjectId = () => {
@@ -93,7 +93,7 @@ export const deleteProject = (id) => {
 export const clearAllProjects = () => {
   fs.writeFileSync(projectsFilePath, JSON.stringify([], null, 2));
   nextProjectId = 1;
-  freedProjectIds.length = 0; // Limpar array de IDs libertados
+  freedProjectIds.length = 0;
   return { message: 'Todos os projetos foram eliminados' };
 };
 
@@ -126,4 +126,3 @@ export const resetProjectIds = () => {
 
 // Inicializar ao carregar o módulo
 initializeProjectId();
-

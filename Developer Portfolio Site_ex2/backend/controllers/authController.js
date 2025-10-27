@@ -2,6 +2,26 @@ import bcrypt from 'bcryptjs';
 import { createUser, findUserByEmail, getAllUsers, updateUser, deleteUser, clearAllUsers, resetUserIds } from '../models/userModel.js';
 import { generateToken } from '../utils/tokenUtils.js';
 
+// Função auxiliar para gerar token
+const generateUserToken = (user) => {
+  return generateToken({
+    id: user.id,
+    email: user.email,
+    name: user.name,
+    role: user.role
+  });
+};
+
+// Função auxiliar para formatar resposta do utilizador
+const formatUserResponse = (user) => {
+  return {
+    id: user.id,
+    email: user.email,
+    name: user.name,
+    role: user.role
+  };
+};
+
 export const register = async (req, res) => {
   try {
     const { email, password, name, role } = req.body;
@@ -20,31 +40,21 @@ export const register = async (req, res) => {
     // Encriptar palavra-passe
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Criar utilizador (ID é gerado automaticamente no modelo)
+    // Criar utilizador (ID é gerado automaticamente no model)
     const user = createUser({
       email,
       password: hashedPassword,
       name,
-      role: role || 'guest', // padrão: guest
+      role: role || 'guest',
       createdAt: new Date().toISOString()
     });
 
-    // Gerar token
-    const token = generateToken({
-      id: user.id,
-      email: user.email,
-      role: user.role
-    });
+    const token = generateUserToken(user);
 
     res.status(201).json({
       message: 'Utilizador registado com sucesso',
       token,
-      user: {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-        role: user.role
-      }
+      user: formatUserResponse(user)
     });
   } catch (error) {
     res.status(500).json({ error: 'Falha no registo' });
@@ -72,22 +82,12 @@ export const login = async (req, res) => {
       return res.status(401).json({ error: 'Credenciais inválidas' });
     }
 
-    // Gerar token
-    const token = generateToken({
-      id: user.id,
-      email: user.email,
-      role: user.role
-    });
+    const token = generateUserToken(user);
 
     res.json({
       message: 'Login efetuado com sucesso',
       token,
-      user: {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-        role: user.role
-      }
+      user: formatUserResponse(user)
     });
   } catch (error) {
     res.status(500).json({ error: 'Falha no login' });
@@ -180,7 +180,10 @@ export const removeUser = (req, res) => {
 export const clearUsers = (req, res) => {
   try {
     const result = clearAllUsers();
-    res.json(result);
+    res.json({
+      ...result,
+      info: 'Tokens emitidos tornam-se inválidos imediatamente'
+    });
   } catch (error) {
     res.status(500).json({ error: 'Falha ao limpar utilizadores' });
   }
@@ -195,3 +198,80 @@ export const resetUsersIds = (req, res) => {
   }
 };
 
+export const importUsers = async (req, res) => {
+  // Verificação de segurança: apenas admins podem importar
+  if (!req.user || req.user.role !== 'admin') {
+    return res.status(403).json({ error: 'Acesso negado. Esta operação requer cargo de admin' });
+  }
+
+  try {
+    const { users } = req.body;
+
+    // Validação
+    if (!Array.isArray(users)) {
+      return res.status(400).json({ error: 'Deve ser fornecido um array de utilizadores' });
+    }
+
+    let imported = 0;
+    let errors = 0;
+    const errorMessages = [];
+
+    for (const userData of users) {
+      try {
+        // Validar campos obrigatórios
+        if (!userData.email || !userData.name) {
+          errors++;
+          errorMessages.push(`${userData.email || 'Desconhecido'}: Email e nome são obrigatórios`);
+          continue;
+        }
+
+        // Verificar se já existe
+        const existingUser = findUserByEmail(userData.email);
+        if (existingUser) {
+          errors++;
+          errorMessages.push(`${userData.email}: Utilizador já existe`);
+          continue;
+        }
+
+        // Validar password
+        if (!userData.password) {
+          errors++;
+          errorMessages.push(`${userData.email}: Password é obrigatório`);
+          continue;
+        }
+
+        // Encriptar palavra-passe
+        const hashedPassword = await bcrypt.hash(userData.password, 10);
+
+        // Validar role
+        if (!userData.role || !['admin', 'editor', 'guest'].includes(userData.role)) {
+          errors++;
+          errorMessages.push(`${userData.email}: Role inválido. Deve ser admin, editor ou guest`);
+          continue;
+        }
+
+        // Criar utilizador
+        const user = createUser({
+          email: userData.email,
+          password: hashedPassword,
+          name: userData.name,
+          role: userData.role
+        });
+
+        imported++;
+      } catch (error) {
+        errors++;
+        errorMessages.push(`${userData.email || 'Desconhecido'}: ${error.message}`);
+      }
+    }
+
+    res.json({
+      message: `Importação concluída: ${imported} utilizador(es) importado(s), ${errors} erro(s)`,
+      imported,
+      errors,
+      errorDetails: errorMessages.slice(0, 10)
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Falha ao importar utilizadores' });
+  }
+};

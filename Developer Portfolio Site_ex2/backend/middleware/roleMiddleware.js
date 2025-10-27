@@ -5,7 +5,7 @@ export const requireRole = (role) => {
     }
 
     if (req.user.role !== role) {
-      return res.status(403).json({ error: `Acesso negado. Cargo de ${role} obrigatório` });
+      return res.status(403).json({ error: `Acesso negado. Esta operação requer cargo de ${role}` });
     }
 
     next();
@@ -21,9 +21,8 @@ export const requireAdminOrEditor = (req, res, next) => {
   }
 
   if (req.user.role !== 'admin' && req.user.role !== 'editor') {
-    return res.status(403).json({ error: 'Acesso negado. Cargo de admin ou editor obrigatório' });
+    return res.status(403).json({ error: `Acesso negado. Esta operação requer cargo de admin ou editor. O seu cargo atual é: ${req.user.role}` });
   }
-
+  
   next();
 };
-

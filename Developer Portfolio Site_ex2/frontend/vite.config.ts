@@ -25,7 +25,6 @@ export default defineConfig({
     host: '0.0.0.0',
     port: 5173,
     headers: {
-      // Cache de 5 minutos para desenvolvimento
       'Cache-Control': 'public, max-age=300',
     },
     proxy: {
@@ -37,5 +36,3 @@ export default defineConfig({
     },
   },
 });
-
-

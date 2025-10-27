@@ -34,46 +34,10 @@ export default function Projects() {
     return `${imagePath}${separator}t=${Date.now()}`;
   };
 
-  useEffect(() => {
-    // Carregar projetos da API
-    fetch('http://localhost:5000/api/projects')
-      .then((res) => res.json())
-      .then((apiProjects: ApiProject[]) => {
-        // Sempre atualizar com os projetos da API, mesmo que esteja vazio
-        if (Array.isArray(apiProjects)) {
-          const mappedProjects = apiProjects.map((p) => ({
-            id: p.id,
-            title: p.title,
-            description: p.description,
-            tech: p.technologies || [],
-            links: {
-              repo: p.github || undefined,
-            },
-            image: p.image ? addCacheBusting(p.image) : undefined,
-          }));
-          setProjects(mappedProjects);
-        }
-        setLoading(false);
-      })
-      .catch(() => {
-        setProjects([]);
-        setLoading(false);
-      });
-  }, []);
-
-  // Registar função global
-  useEffect(() => {
-    setGlobalRefreshProjects(refreshProjects);
-  }, []);
-
   // Função para recarregar projetos
-  const refreshProjects = async () => {
+  const internalRefreshProjects = async () => {
     setLoading(true);
     try {
-      // Primeiro verificar se o servidor está disponível
-      await fetch('http://localhost:5000/api/projects/refresh');
-      
-      // Depois carregar os projetos
       const res = await fetch('http://localhost:5000/api/projects');
       const apiProjects: ApiProject[] = await res.json();
       
@@ -96,6 +60,16 @@ export default function Projects() {
       setLoading(false);
     }
   };
+
+  // Carregar projetos na inicialização
+  useEffect(() => {
+    internalRefreshProjects();
+  }, []);
+
+  // Registar função global para refresh
+  useEffect(() => {
+    setGlobalRefreshProjects(internalRefreshProjects);
+  }, []);
 
   return (
     <section className={styles.projects}>
@@ -137,5 +111,3 @@ export default function Projects() {
     </section>
   );
 }
-
-

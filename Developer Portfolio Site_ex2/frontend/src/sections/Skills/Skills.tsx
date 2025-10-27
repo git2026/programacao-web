@@ -32,13 +32,52 @@ export default function Skills() {
             }
           });
 
-          // Ordenar por frequência
-          const sortedTechs = Object.entries(techCount)
-            .sort((a, b) => b[1] - a[1])
-            .map(([tech]) => tech);
+          // Definir categorias e ordem de importância
+          const techCategories = {
+            'Frontend': ['React', 'Vue', 'Angular', 'HTML', 'CSS', 'JavaScript', 'TypeScript', 'SASS', 'SCSS', 'Tailwind', 'Bootstrap'],
+            'Backend': ['Node.js', 'Express', 'Python', 'Django', 'Flask', 'FastAPI', 'Java', 'Spring', 'PHP', 'Laravel', 'Symfony'],
+            'Database': ['MySQL', 'PostgreSQL', 'MongoDB', 'Redis', 'SQLite', 'MariaDB'],
+            'DevOps': ['Docker', 'Kubernetes', 'AWS', 'Azure', 'Git', 'GitHub', 'GitLab', 'Jenkins', 'CI/CD'],
+            'Mobile': ['React Native', 'Flutter', 'Ionic', 'Cordova'],
+            'Tools': ['VS Code', 'Webpack', 'Vite', 'npm', 'yarn', 'Figma', 'Photoshop']
+          };
 
-          // Dividir em principais (primeiros 50%) e secundárias (restantes 50%)
-          const splitIndex = Math.ceil(sortedTechs.length / 2);
+          // Função para determinar categoria e prioridade
+          const getTechPriority = (tech: string) => {
+            for (const [category, techs] of Object.entries(techCategories)) {
+              const index = techs.findIndex(t => t.toLowerCase() === tech.toLowerCase());
+              if (index !== -1) {
+                return { category, priority: index, frequency: techCount[tech] };
+              }
+            }
+            return { category: 'Other', priority: 999, frequency: techCount[tech] };
+          };
+
+          // Ordenar por categoria, depois por prioridade dentro da categoria, depois por frequência
+          const sortedTechs = Object.keys(techCount)
+            .map(tech => ({ tech, ...getTechPriority(tech) }))
+            .sort((a, b) => {
+              // Primeiro por categoria (ordem das chaves)
+              const categoryOrder = Object.keys(techCategories);
+              const aCategoryIndex = categoryOrder.indexOf(a.category);
+              const bCategoryIndex = categoryOrder.indexOf(b.category);
+              
+              if (aCategoryIndex !== bCategoryIndex) {
+                return aCategoryIndex - bCategoryIndex;
+              }
+              
+              // Depois por prioridade dentro da categoria
+              if (a.priority !== b.priority) {
+                return a.priority - b.priority;
+              }
+              
+              // Por último por frequência
+              return b.frequency - a.frequency;
+            })
+            .map(item => item.tech);
+
+          // Dividir em principais (primeiros 60%) e secundárias (restantes 40%)
+          const splitIndex = Math.ceil(sortedTechs.length * 0.6);
           setPrimary(sortedTechs.slice(0, splitIndex));
           setSecondary(sortedTechs.slice(splitIndex));
         } else {
@@ -117,5 +156,3 @@ export default function Skills() {
     </section>
   );
 }
-
-

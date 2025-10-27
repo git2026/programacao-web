@@ -138,4 +138,3 @@ export const validateGetProject = [
     .withMessage('ID do projeto inválido'),
   handleValidationErrors
 ];
-

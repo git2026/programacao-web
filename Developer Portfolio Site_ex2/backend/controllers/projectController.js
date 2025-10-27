@@ -24,7 +24,7 @@ export const addProject = (req, res) => {
       technologies: technologies || [],
       image: image || '',
       github: github || '',
-      createdBy: req.user.email
+      createdBy: req.user.name
     });
 
     res.status(201).json({

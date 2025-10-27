@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Backend API Tester</title>
+    <title>Backend Dashboard</title>
     <style>
         :root {
             --bg: #0f0f12;
@@ -458,94 +458,7 @@
             background: #2563eb;
             box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
         }
-
-        /* Notificações Toast */
-        .toast-container {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 1000;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            max-width: 350px;
-        }
-
-        .toast {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 1rem 1.25rem;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            animation: slideInRight 0.3s ease-out;
-            min-width: 280px;
-        }
-
-        .toast.success {
-            border-left: 4px solid var(--success);
-        }
-
-        .toast.error {
-            border-left: 4px solid var(--error);
-        }
-
-        .toast.warning {
-            border-left: 4px solid var(--warning);
-        }
-
-        .toast.info {
-            border-left: 4px solid var(--accent);
-        }
-
-        .toast-icon {
-            font-size: 1.5rem;
-            flex-shrink: 0;
-        }
-
-        .toast-content {
-            flex: 1;
-        }
-
-        .toast-title {
-            font-weight: 600;
-            font-size: 0.9rem;
-            margin-bottom: 0.25rem;
-        }
-
-        .toast-message {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-        }
-
-        @keyframes slideInRight {
-            from {
-                transform: translateX(400px);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-
-        @keyframes slideOutRight {
-            from {
-                transform: translateX(0);
-                opacity: 1;
-            }
-            to {
-                transform: translateX(400px);
-                opacity: 0;
-            }
-        }
-
-        .toast.removing {
-            animation: slideOutRight 0.3s ease-out forwards;
-        }
-
+        
         @media (max-width: 768px) {
             .container {
                 padding: 1rem;
@@ -565,14 +478,11 @@
 </head>
 <body>
     <div class="header">
-        <h1>Backend API Tester</h1>
+        <h1>Backend Dashboard</h1>
         <button class="theme-toggle" onclick="toggleTheme()">
             <span id="theme-icon">☀️</span>
         </button>
     </div>
-
-    <!-- Container para notificações -->
-    <div class="toast-container" id="toast-container"></div>
 
     <div class="container">
         <div class="tabs">
@@ -582,7 +492,7 @@
             <button class="tab" onclick="showTab('info')">ℹ️ Informações</button>
         </div>
 
-        <!-- AUTH SECTION -->
+        <!-- Autenticação -->
         <div id="auth" class="section active">
             <h2>Autenticação</h2>
             
@@ -633,7 +543,7 @@
             <div id="auth-response" class="response"></div>
         </div>
 
-        <!-- USERS SECTION -->
+        <!-- Utilizadores -->
         <div id="users" class="section">
             <h2>Gestão de Utilizadores</h2>
             
@@ -686,7 +596,7 @@
             <div id="users-response" class="response"></div>
         </div>
 
-        <!-- PROJECTS SECTION -->
+        <!-- Projetos -->
         <div id="projects" class="section">
             <h2>Gestão de Projetos</h2>
             
@@ -778,7 +688,7 @@
             <div id="projects-response" class="response"></div>
         </div>
 
-        <!-- INFO SECTION -->
+        <!-- Informações -->
         <div id="info" class="section">
             <h2>Informação</h2>
 
@@ -854,7 +764,7 @@
                         <input type="file" id="import-users-file" accept=".json" style="display: none" onchange="importUsers(event)">
                     </div>
                     <div class="button-group" style="margin-top: 0.5rem;">
-                        <button class="button-secondary" onclick="clearAllUsers()">Limpar Todos os Utilizadores</button>
+                        <button class="button-secondary" onclick="clearAllUsers()">Limpar Utilizadores</button>
                         <button class="button-secondary" onclick="resetUserIds()">Reiniciar IDs dos Utilizadores</button>
                     </div>
                 </div>
@@ -867,7 +777,7 @@
                         <input type="file" id="import-projects-file" accept=".json" style="display: none" onchange="importProjects(event)">
                     </div>
                     <div class="button-group" style="margin-top: 0.5rem;">
-                        <button class="button-secondary" onclick="clearAllProjects()">Limpar Todos os Projetos</button>
+                        <button class="button-secondary" onclick="clearAllProjects()">Limpar Projetos</button>
                         <button class="button-secondary" onclick="resetProjectIds()">Reiniciar IDs dos Projetos</button>
                     </div>
                 </div>
@@ -885,7 +795,7 @@
         const API_URL = 'http://localhost:5000';
         let authToken = localStorage.getItem('authToken') || '';
 
-        // Theme toggle
+        // Alternar tema
         function toggleTheme() {
             const html = document.documentElement;
             const currentTheme = html.getAttribute('data-theme');
@@ -895,7 +805,7 @@
             document.getElementById('theme-icon').textContent = newTheme === 'light' ? '🌙' : '☀️';
         }
 
-        // Load theme on startup
+        // Carregar tema guardado
         const savedTheme = localStorage.getItem('theme');
         if (savedTheme) {
             document.documentElement.setAttribute('data-theme', savedTheme);
@@ -903,38 +813,6 @@
         }
 
         if (authToken) updateTokenDisplay();
-
-        // ==================== Sistema de Notificações Toast ====================
-        function showToast(type, title, message) {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-            
-            const icons = {
-                success: '✅',
-                error: '❌',
-                warning: '⚠️',
-                info: 'ℹ️'
-            };
-            
-            toast.innerHTML = `
-                <div class="toast-icon">${icons[type]}</div>
-                <div class="toast-content">
-                    <div class="toast-title">${title}</div>
-                    ${message ? `<div class="toast-message">${message}</div>` : ''}
-                </div>
-            `;
-            
-            container.appendChild(toast);
-            
-            // Auto-remover após 5 segundos
-            setTimeout(() => {
-                toast.classList.add('removing');
-                setTimeout(() => {
-                    container.removeChild(toast);
-                }, 300); // Tempo da animação de saída
-            }, 5000);
-        }
 
         function showTab(tabName) {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
@@ -960,12 +838,6 @@
             updateTokenDisplay();
         }
 
-        function clearToken() {
-            authToken = '';
-            localStorage.removeItem('authToken');
-            updateTokenDisplay();
-            showResponse('info-response', { message: 'Token removido!' }, 200);
-        }
 
         function showResponse(elementId, data, status) {
             const responseEl = document.getElementById(elementId);
@@ -978,7 +850,7 @@
             `;
             responseEl.classList.add('show');
             
-            // Auto-scroll to response
+            // Deslocar automaticamente para a resposta
             setTimeout(() => {
                 responseEl.scrollIntoView({ 
                     behavior: 'smooth', 
@@ -998,13 +870,18 @@
                 const response = await fetch(API_URL + endpoint, options);
                 const data = await response.json();
                 if (data.token) saveToken(data.token);
+                if (response.status === 401) {
+                    authToken = '';
+                    localStorage.removeItem('authToken');
+                    updateTokenDisplay();
+                }
                 return { data, status: response.status };
             } catch (error) {
                 return { data: { error: error.message }, status: 500 };
             }
         }
 
-        // AUTH FUNCTIONS
+        // Funções de autenticação
         async function register() {
             const email = document.getElementById('reg-email').value;
             const password = document.getElementById('reg-password').value;
@@ -1023,12 +900,7 @@
             showResponse('auth-response', data, status);
         }
 
-        async function getDashboard() {
-            const { data, status } = await makeRequest('/api/auth/dashboard', 'GET', null, true);
-            showResponse('auth-response', data, status);
-        }
-
-        // USERS FUNCTIONS
+        // Funções de utilizadores
         async function getUsers() {
             const { data, status } = await makeRequest('/api/auth/users', 'GET', null, true);
             showResponse('users-response', data, status);
@@ -1082,7 +954,6 @@
             const body = {};
             if (name) body.name = name;
             if (email) body.email = email;
-            // Sempre enviar role (pode ser string vazia para remover cargo)
             body.role = role === '' ? null : role;
 
             const { data, status } = await makeRequest(`/api/auth/users/${id}`, 'PUT', body, true);
@@ -1095,7 +966,7 @@
             showResponse('users-response', data, status);
         }
 
-        // PROJECTS FUNCTIONS
+        // Funções de projetos
         async function getProjects() {
             const { data, status } = await makeRequest('/api/projects');
             showResponse('projects-response', data, status);
@@ -1187,21 +1058,13 @@
             showResponse('projects-response', data, status);
         }
 
-        // INFO FUNCTIONS
+        // Funções de informação
         async function testServer() {
             const { data, status } = await makeRequest('/');
             showResponse('info-response', data, status);
         }
 
-        async function clearToken() {
-            authToken = '';
-            localStorage.removeItem('authToken');
-            updateTokenDisplay();
-            showResponse('info-response', { message: 'Token limpo com sucesso' }, 200);
-        }
-
-        // ==================== Operações Avançadas ====================
-
+        // Operações avançadas
         async function clearAllUsers() {
             if (!confirm('⚠️ Tem a certeza que deseja eliminar TODOS os utilizadores? Esta ação é irreversível!')) {
                 return;
@@ -1211,6 +1074,9 @@
                 const { data, status } = await makeRequest('/api/auth/users', 'DELETE', null, true);
                 
                 if (status === 200) {
+                    authToken = '';
+                    localStorage.removeItem('authToken');
+                    updateTokenDisplay();
                     showResponse('info-response', data, status);
                 } else {
                     showResponse('info-response', data || { error: 'Falha ao eliminar utilizadores' }, status);
@@ -1281,7 +1147,7 @@
             updateTokenDisplay();
             showResponse('info-response', {
                 message: '✅ Todos os tokens foram limpos do armazenamento local',
-                info: 'Os tokens no servidor permanecem válidos até expirarem (24h)'
+                info: 'Os tokens tornam-se inválidos quando os utilizadores são eliminados ou quando expiram (12h)'
             }, 200);
         }
 
@@ -1295,7 +1161,7 @@
             authToken = '';
             updateTokenDisplay();
             
-            // Reiniciar tema para padrão
+            // Redefinir tema
             document.documentElement.setAttribute('data-theme', '');
             document.getElementById('theme-icon').textContent = '☀️';
 
@@ -1306,7 +1172,7 @@
             }, 200);
         }
 
-        // ==================== Funções de Import/Export ====================
+        // Funções de importação/exportação
 
         async function exportUsers() {
             try {
@@ -1327,7 +1193,8 @@
                         count: users.length
                     }, 200);
                 } else {
-                    showResponse('info-response', { error: 'Falha ao exportar utilizadores' }, status);
+                    const errorMsg = users && users.error ? users.error : 'Falha ao exportar utilizadores';
+                    showResponse('info-response', { error: errorMsg }, status);
                 }
             } catch (error) {
                 showResponse('info-response', { error: 'Erro ao exportar: ' + error.message }, 500);
@@ -1344,36 +1211,22 @@
                 
                 if (!Array.isArray(users)) {
                     showResponse('info-response', { error: 'Ficheiro inválido. Deve conter um array de utilizadores' }, 400);
+                    event.target.value = '';
                     return;
                 }
 
-                let imported = 0;
-                let errors = 0;
-
-                for (const user of users) {
-                    // Registar cada utilizador
-                    const { status } = await makeRequest('/api/auth/register', 'POST', {
-                        email: user.email,
-                        password: user.password || 'DefaultPassword123!', // Password padrão se não existir
-                        name: user.name,
-                        role: user.role || 'guest'
-                    }, false);
-                    
-                    if (status === 201) imported++;
-                    else errors++;
+                const { data, status } = await makeRequest('/api/auth/users/import', 'POST', { users }, true);
+                
+                if (status === 200) {
+                    showResponse('info-response', data, 200);
+                } else {
+                    showResponse('info-response', data || { error: 'Falha ao importar utilizadores' }, status);
                 }
-
-                showResponse('info-response', {
-                    message: `Importação concluída: ${imported} utilizador(es) importado(s), ${errors} erro(s)`,
-                    imported,
-                    errors
-                }, 200);
             } catch (error) {
                 showResponse('info-response', { error: 'Erro ao importar: ' + error.message }, 500);
             }
             
-            // Limpar input
-            event.target.value = '';
+                event.target.value = '';
         }
 
         async function exportProjects() {
@@ -1395,7 +1248,8 @@
                         count: projects.length
                     }, 200);
                 } else {
-                    showResponse('info-response', { error: 'Falha ao exportar projetos' }, status);
+                    const errorMsg = projects && projects.error ? projects.error : 'Falha ao exportar projetos';
+                    showResponse('info-response', { error: errorMsg }, status);
                 }
             } catch (error) {
                 showResponse('info-response', { error: 'Erro ao exportar: ' + error.message }, 500);
@@ -1417,9 +1271,10 @@
 
                 let imported = 0;
                 let errors = 0;
+                let errorMessages = [];
 
                 for (const project of projects) {
-                    const { status } = await makeRequest('/api/projects', 'POST', {
+                    const { data, status } = await makeRequest('/api/projects', 'POST', {
                         title: project.title,
                         description: project.description,
                         technologies: project.technologies || [],
@@ -1427,21 +1282,32 @@
                         github: project.github || ''
                     }, true);
                     
-                    if (status === 201) imported++;
-                    else errors++;
+                    if (status === 201) {
+                        imported++;
+                    } else {
+                        errors++;
+                        if (data && data.error) {
+                            errorMessages.push(`${project.title || 'Projeto sem título'}: ${data.error}`);
+                        }
+                    }
                 }
 
-                showResponse('info-response', {
+                const responseData = {
                     message: `Importação concluída: ${imported} projeto(s) importado(s), ${errors} erro(s)`,
                     imported,
                     errors
-                }, 200);
+                };
+
+                if (errorMessages.length > 0) {
+                    responseData.errorDetails = errorMessages.slice(0, 5);
+                }
+
+                showResponse('info-response', responseData, errors > 0 ? 400 : 200);
             } catch (error) {
                 showResponse('info-response', { error: 'Erro ao importar: ' + error.message }, 500);
             }
             
-            // Limpar input
-            event.target.value = '';
+                event.target.value = '';
         }
     </script>
 </body>

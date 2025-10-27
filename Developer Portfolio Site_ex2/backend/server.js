@@ -47,7 +47,7 @@ app.get('/', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/projects', projectRoutes);
 
-// Tratamento do erro (404()
+// Tratamento de erro 404
 app.use((req, res) => {
   res.status(404).json({ error: 'Rota não encontrada' });
 });
@@ -59,5 +59,5 @@ app.use((err, req, res, next) => {
 
 // Iniciar servidor
 app.listen(config.port, '0.0.0.0', () => {
-  console.log(`🚀 Server running on http://0.0.0.0:${config.port}`);
+  console.log(`🚀 Servidor em execução em http://0.0.0.0:${config.port}`);
 });

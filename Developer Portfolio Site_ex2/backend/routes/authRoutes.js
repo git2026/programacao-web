@@ -1,5 +1,5 @@
 import express from 'express';
-import { register, login, getDashboard, getUsers, editUser, removeUser, clearUsers, resetUsersIds } from '../controllers/authController.js';
+import { register, login, getDashboard, getUsers, editUser, removeUser, clearUsers, resetUsersIds, importUsers } from '../controllers/authController.js';
 import { authMiddleware } from '../middleware/authMiddleware.js';
 import { requireAdmin } from '../middleware/roleMiddleware.js';
 import { validateRegister, validateLogin, validateUpdateUser, validateDeleteUser } from '../middleware/validationMiddleware.js';
@@ -19,6 +19,6 @@ router.delete('/users/:id', authMiddleware, requireAdmin, validateDeleteUser, re
 // Apenas Admin - operações
 router.delete('/users', authMiddleware, requireAdmin, clearUsers); // Limpar todos os utilizadores
 router.post('/users/reset-ids', authMiddleware, requireAdmin, resetUsersIds); // Reiniciar IDs dos utilizadores
+router.post('/users/import', authMiddleware, requireAdmin, importUsers); // Importar utilizadores em lote
 
 export default router;
-
