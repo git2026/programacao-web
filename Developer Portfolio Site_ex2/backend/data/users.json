@@ -6,13 +6,5 @@
     "role": "admin",
     "createdAt": "2025-10-27T10:11:45.570Z",
     "id": 1
-  },
-  {
-    "email": "admin1@admin.pt",
-    "password": "$2a$10$XcDqc25YWTs23oXkzvqkNeFCXZqavhuoOaj6SySdaYrA54B3vqbAy",
-    "name": "admin1",
-    "role": "admin",
-    "createdAt": "2025-10-27T10:27:14.536Z",
-    "id": 2
   }
 ]
