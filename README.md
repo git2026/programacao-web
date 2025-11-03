@@ -44,7 +44,7 @@ Desenvolvimento de Website Full Stack progressivo ao logo dos exercicios, dispon
 
 **Runtime:** Node.js com Express para criação da API REST (ES Modules)
 
-**Base de Dados:** MySQL com mysql2/promise para operações assíncronas
+**Base de Dados:** MySQL com mysql2/promise para operações assíncronas, com tabelas para os utilizadores e os projetos
 
 **Autenticação:** JSON Web Tokens (JWT) com expiração de 12 horas
 
@@ -52,7 +52,7 @@ Desenvolvimento de Website Full Stack progressivo ao logo dos exercicios, dispon
 - Argon2 para hashing de passwords (configuração máxima de segurança: 128 MB memory, 5 iterações)
 - Validação de password (12 a 20 caracteres)
 - Validação de nome mínima (5 caracteres)
-- **Proteção XSS avançada:** Sanitização HTML completa, validação de URLs, proteção contra eventos JavaScript
+- Proteção XSS avançada: Sanitização HTML completa, validação de URLs, proteção contra eventos JavaScript
 - Validação de email
 - Normalização de dados (lowercase, trim)
 
@@ -60,23 +60,15 @@ Desenvolvimento de Website Full Stack progressivo ao logo dos exercicios, dispon
 
 **Import/Export:** Funcionalidade para importar e exportar dados entre JSON e MySQL
 
-**ID Management:** Sistema para garantir IDs sequenciais e reorganização de IDs
-
 **Skills Organization:** Sistema inteligente de organização de competências com scoring baseado em frequência e categoria
 
-**API URL:** Configuração dinâmica com proxy Vite em desenvolvimento e detecção automática em produção
+**API URL:** Configuração dinâmica com proxy Vite em desenvolvimento e detecção automática de ambientes em produção através do .env
 
-**Error Handling:** Tratamento centralizado de erros com detalhes condicionais (apenas em desenvolvimento)
+**Error Handling:** Tratamento centralizado de erros com detalhes condicionais (apenas em modo desenvolvimento)
 
 **Mobile Responsive:** Layout otimizado para dispositivos móveis
 
-**LAN Access:** Configuração para acesso via rede local
-
-**Testing:** Interface HTML interativa para testar endpoints
-
 **Process Management:** Script automatizado (start.js) para iniciar frontend e backend simultaneamente
-
-**GitHub Integration:** Proxy para acesso a avatares do GitHub via frontend
 
 ## 2. Requisitos para Execução do Projeto
 
@@ -87,22 +79,11 @@ cd "Developer Portfolio Site_ex1/frontend"
 npm install
 npm run dev
 
-URL Disponivel: http://localhost:5173
-
 ### Exercício 2 - Full-Stack
 
-**Método Recomendado (Automático):**
+Comandos:
 cd "Developer Portfolio Site_ex2"
 npm start
-
-**Método Manual:**
-cd "Developer Portfolio Site_ex2/backend"
-npm install
-npm start
-
-cd "Developer Portfolio Site_ex2/frontend"  
-npm install
-npm run dev
 
 **URLs Disponíveis:**
 - Frontend: http://localhost:5173
@@ -116,37 +97,15 @@ npm run dev
 - MySQL instalado e em execução
 - Base de dados criada (executar `SQL_BD.sql`)
 
-**Método Recomendado (Automático):**
+Comandos:
 cd "Developer Portfolio Site_ex3"
 npm start
-
-**Método Manual:**
-cd "Developer Portfolio Site_ex3/backend"
-npm install
-# Criar ficheiro .env com configurações MySQL (ver .env.example)
-npm start
-
-cd "Developer Portfolio Site_ex3/frontend"  
-npm install
-npm run dev
 
 **URLs Disponíveis:**
 - Frontend: http://localhost:5173
 - Backend: http://localhost:5000
 - API Tester: http://localhost:5000/api-tester.html
 - LAN Access: http://IP:5173 (frontend) e http://IP:5000 (backend)
-
-**Configuração:**
-1. Criar base de dados MySQL executando `SQL_BD.sql`
-2. Copiar `.env.example` para `.env` no diretório `backend/`
-3. Configurar credenciais MySQL no ficheiro `.env`
-
-**Requisitos de Segurança:**
-- Password: 12 a 20 caracteres
-- Nome mínimo: 5 caracteres
-- Email válido obrigatório
-- Argon2 para hashing (configuração máxima: 128 MB memory, 5 iterações)
-- Proteção XSS avançada: sanitização HTML, validação de URLs, proteção contra código malicioso
 
 ## Estrutura do Projeto
 
@@ -288,7 +247,6 @@ programacao-web/
 **Sistema de Roles:**
 - **admin:** Acesso total - CRUD completo de projetos e utilizadores, operações de reset e import/export
 - **editor:** Criar e editar projetos, importar projetos
-- **user:** Visualizar projetos (implementado no sistema mas não utilizado atualmente)
 - **guest:** Apenas visualizar projetos (padrão para novos utilizadores)
 
 ## Funcionalidades Principais
@@ -297,7 +255,6 @@ programacao-web/
 - **Integração com API:** Fetch automático de projetos do backend MySQL
 - **API URL Dinâmica:** Configuração automática com proxy Vite em dev e detecção em produção
 - **Cache-busting:** Sistema para forçar atualização de imagens via timestamp
-- **Loading States:** Estados de carregamento e feedback visual
 - **Skills Organizadas:** Competências inteligentemente organizadas por importância (backend)
 - **Avatar GitHub:** Integração direta com API do GitHub para avatar via proxy Vite
 - **Tema Persistente:** Sistema de temas com localStorage
@@ -312,7 +269,7 @@ programacao-web/
 - **API Testing:** Interface HTML completa para testes de endpoints
 - **Validação de Dados:** Middleware express-validator para validação de entrada
 - **Middleware Chain:** authMiddleware + roleMiddleware + validationMiddleware
-- **Import em Lote:** Suporte para importar múltiplos utilizadores de uma vez
+- **Import Multiplo:** Suporte para importar múltiplos utilizadores de uma vez
 
 ### Backend (Exercício 3 - MySQL)
 - **MySQL Integration:** Pool de conexões otimizado com mysql2/promise
@@ -336,7 +293,7 @@ programacao-web/
 - **Error Handling:** Tratamento centralizado com detalhes condicionais (apenas em desenvolvimento)
 - **Environment Validation:** Validação de variáveis de ambiente obrigatórias no arranque
 - **CORS Configurable:** CORS configurável por ambiente (permissivo em dev, restritivo em produção)
-- **Graceful Shutdown:** Encerramento gracioso do servidor e pool de conexões
+- **Graceful Shutdown:** Encerramento do servidor e pool de conexões
 - **Health Check:** Verificação automática da conexão MySQL ao iniciar
 - **API Testing:** Interface HTML completa para testes de endpoints
 - **Middleware Chain:** authMiddleware + roleMiddleware
