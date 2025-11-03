@@ -1,182 +1,211 @@
-## Visão geral  
+Instalar o MySQL com Workbench no Windows (pode fazer ANTES da aula)
 
-Este documento descreve, passo a passo, como criar a base de dados **portfolio**, as tabelas necessárias (incluindo a tabela `utilizadores`/`users` para autenticação), popular a base, testar a API e instalar o MySQL/Workbench no Windows.
+Instale o MySQL na máquina Windows
+Instalar o MySQL em uma máquina Windows é simples. Aqui está o método melhor e recomendado para instalar o MySQL no Windows:
 
----  
+Etapas para instalar o MySQL no Windows
+1. Baixe o instalador do MySQL
+Acesse o site MySQL Community Downloads.
+Baixe o MySQL Installer para Windows (de preferência o instalador menor para flexibilidade ou o instalador completo se quiser tudo offline).
 
-## 1. Criação da base de dados  
+Opcionalmente, crie uma Conta Web da Oracle ou não:
 
-```sql
+2. Execute o instalador do MySQL
+Localize o arquivo do instalador baixado e execute-o:
+
+Pode precisar de privilégios de administrador para o processo de instalação.
+3. Escolha o tipo de instalação
+
+O instalador apresentará vários tipos de instalação:
+Somente cliente: Instala apenas os produtos MySQL Client, sem um servidor.
+Somente servidor: Instala apenas o servidor MySQL.
+Personalizado: Permite escolher componentes específicos.
+Full: Instala todos os produtos disponíveis no catálogo, incluindo MySQL Server, MySQL Shell, MySQL Router, MySQL Workbench, documentação, exemplos e muito mais.
+A opção Full é recomendada.
+4. Selecione produtos e recursos
+Revise os componentes selecionados. Pode incluir:
+MySQL Server: o mecanismo de base de dados.
+MySQL Workbench: GUI (interface gráfica) para gestão de bases de dados.
+MySQL Shell: Uma ferramenta de linha de comando para scripts avançados.
+MySQL Router: Útil para configurações de alta disponibilidade.
+
+Durante a execução da instalação, podem ocorrer erros para fazer o carregamento do pacote de instalação para produtos específicos. Neste caso, clique no botão Voltar e verá apenas os produtos não instalados. Clique em Executar para tentar novamente. Repita conforme necessário. Eventualmente, deve concluir o download de todos os produtos.
+
+Depois que todos os pacotes de instalação forem baixados, clique em Executar novamente para instalar os produtos. Isso pode levar algum tempo.
+
+5. Resolva problemas de dependência
+Se o instalador detectar software ausente (por exemplo, Visual C++ Redistributable), solicitará que baixe e instale-o. Siga as instruções.
+6. Configure o servidor MySQL
+Após a instalação, configure o servidor:
+Tipo de configuração do servidor: escolha o tipo de configuração (o computador de desenvolvimento é apropriado).
+
+Número da porta: O padrão é 3306. Mantenha-o, a menos que precise de uma porta personalizada.
+Método de autenticação: escolha Usar criptografia de senha forte para autenticação.
+
+Senha raiz: Defina uma senha forte para o utilizador root (por exemplo, XPTO123&MySQL). Anote para não esquecer.
+
+Criar utilizadores: observe que pode, opcionalmente, criar utilizadores adicionais com funções e privilégios específicos. Isso também pode ser feito mais tarde.
+
+7. Inicie o servidor MySQL
+O instalador iniciará o servidor MySQL automaticamente após a configuração. Depois disso, por padrão, o servidor MySQL será iniciado automaticamente quando o Windows for iniciado, se permitir que ele seja configurado como um serviço (recomendado).
+Não precisa fazer nada na configuração do roteador MySQL por enquanto.
+Pode testar a conexão para garantir que ela esteja em execução.
+8. MySQL Workbench
+Se incluído em sua instalação, pode usar o MySQL Workbench para a gestão de bases de dados por meio de uma interface gráfica. Por padrão, ele será iniciado automaticamente após a instalação.
+O MySQL Shell também será lançado. Para saber o que pode fazer com ele, peça ajuda com o comando \?.
+9. Verifique a instalação
+Abra o cliente de linha de comando ou o Workbench do MySQL.
+Teste com (não se esqueça do ponto e vírgula no final dos comandos):
+SHOW DATABASES;
+
+Dicas
+Certifique-se de ter privilégios de administrador para evitar problemas de permissão durante a instalação.
+Use o MySQL Workbench para gerenciamento de banco de dados baseado em GUI se não estiver familiarizado com comandos SQL. No entanto, a melhor maneira de aprender SQL é escrevendo os comandos e testando-os.
+Atualize regularmente o MySQL para a versão mais recente para segurança e desempenho.
+
+Exemplo de criação da tabela users
+Let's define a clean, practical SQL schema for your project's database called portfolio, containing a users table that fits your current authentication setup (email, password, role, etc.).
+
+Step 1 — Create the database
 CREATE DATABASE IF NOT EXISTS portfolio
   CHARACTER SET utf8mb4
   COLLATE utf8mb4_unicode_ci;
-```
 
-*Define a base `portfolio` com suporte completo a Unicode.*
+This creates the portfolio database with full Unicode support (recommended for modern web apps).
 
-```sql
+Step 2 — Use the new database
 USE portfolio;
-```
 
----  
+Step 3 — Create the users table
+Here's a simple but production-ready structure for your users table:
 
-## 2. Tabela de utilizadores (users)  
-
-```sql
 CREATE TABLE IF NOT EXISTS users (
   id INT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(100) NOT NULL,
   email VARCHAR(150) NOT NULL UNIQUE,
   password VARCHAR(255) NOT NULL,
-  role ENUM('admin', 'user') DEFAULT 'user',
+  role ENUM('admin', 'editor', 'guest') DEFAULT 'guest',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
-```
 
-### Descrição das colunas  
+Explanation of each column
+Column	Type	Description
+id	INT (auto increment)	Unique ID for each user
+name	VARCHAR(100)	User's full name
+email	VARCHAR(150), UNIQUE	Used for login (must be unique)
+password	VARCHAR(255)	Hashed password (fits Argon2 hashes)
+role	ENUM	User role, defaults to guest, can be admin or editor
+created_at	TIMESTAMP	Automatically stores when the record was created
+updated_at	TIMESTAMP	Automatically updates when the record changes
 
-| Coluna       | Tipo                     | Descrição                                            |
-|--------------|--------------------------|------------------------------------------------------|
-| id           | INT AUTO_INCREMENT       | Identificador único do utilizador                    |
-| name         | VARCHAR(100)             | Nome completo                                        |
-| email        | VARCHAR(150) UNIQUE      | Endereço de e‑mail (login)                           |
-| password     | VARCHAR(255)             | Hash da palavra‑passe (ex.: bcrypt)                 |
-| role         | ENUM('admin','user')     | Papel do utilizador (padrão `user`)                 |
-| created_at   | TIMESTAMP                | Data/hora da criação                                 |
-| updated_at   | TIMESTAMP                | Atualiza automaticamente em cada modificação         |
+Step 4 — (Optional) Insert a test user
+You can insert a sample record manually — just for testing your connection.
 
-*Índice opcional (já implícito pela restrição `UNIQUE`):*  
-
-```sql
-CREATE INDEX idx_email ON users (email);
-```
-
----  
-
-## 3. Inserção de utilizador de teste  
-
-```sql
 INSERT INTO users (name, email, password, role)
-VALUES ('Test User', 'test@example.com', 'dummy_hashed_password', 'user');
-```
+VALUES ('Test User', 'test@example.com', 'dummy_hashed_password', 'guest');
 
-> **Nota:** nunca armazene senhas em texto puro; o valor deve ser gerado pelo backend após hashing (ex.: `bcrypt`).
+You should not store plain-text passwords.
+The value should come from your Node.js backend after hashing with Argon2.
 
----  
+Step 5 — Verify the structure
+Run:
 
-## 4. Verificação da estrutura  
-
-```sql
 DESCRIBE users;
-```
 
-Resultado esperado:
+You should see something like:
 
-```
-Field       Type                     Null Key Default Extra
-id          int(11)                  NO   PRI  NULL    auto_increment
-name        varchar(100)             NO        NULL
-email       varchar(150)             NO   UNI  NULL
-password    varchar(255)             NO        NULL
-role        enum('admin','user')     YES        user
-created_at  timestamp                YES   NULL  current_timestamp()
-updated_at  timestamp                YES   NULL  current_timestamp() on update current_timestamp()
-```
+Field	Type	Null	Key	Default	Extra
+id	int	NO	PRI	NULL	auto_increment
+name	varchar(100)	NO		NULL	
+email	varchar(150)	NO	UNI	NULL	
+password	varchar(255)	NO		NULL	
+role	enum('admin','editor','guest')	YES		guest	
+created_at	timestamp	YES		current_timestamp()	
+updated_at	timestamp	YES		current_timestamp()	on update current_timestamp()
 
----  
+Optional improvement: indexing for speed
+If you expect many users and frequent lookups by email (for login), add this index (though MySQL already adds it when you declare UNIQUE):
 
-## 5. Teste dos endpoints da API  
+CREATE INDEX idx_email ON users (email);
 
-### Registo  
+Summary
+Database: portfolio
+Table: users
 
-```
-POST http://localhost:3000/auth/register
+Full SQL Script:
+
+CREATE DATABASE IF NOT EXISTS portfolio
+  CHARACTER SET utf8mb4
+  COLLATE utf8mb4_unicode_ci;
+
+USE portfolio;
+
+CREATE TABLE IF NOT EXISTS users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(150) NOT NULL UNIQUE,
+  password VARCHAR(255) NOT NULL,
+  role ENUM('admin', 'editor', 'guest') DEFAULT 'guest',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+INSERT INTO users (name, email, password, role)
+VALUES ('Test User', 'test@example.com', 'dummy_hashed_password', 'guest');
+
+Testes da API - por exemplo com o Postman
+Test your endpoints
+Use Postman, VSCode REST Client, or curl.
+
+Register (Content-Type is set in the Headers tab)
+POST http://localhost:5000/api/auth/register
 Content-Type: application/json
 
 {
   "name": "Alice Example",
   "email": "alice@example.com",
-  "password": "123456"
+  "password": "senhaSegura123"
 }
-```
 
-**Resposta esperada**
-
-```json
-{
-  "message": "User registered successfully."
-}
-```
-
-### Login  
-
-```
-POST http://localhost:3000/auth/login
-Content-Type: application/json
+Expected response:
 
 {
-  "email": "alice@example.com",
-  "password": "123456"
-}
-```
-
-**Resposta esperada**
-
-```json
-{
-  "message": "Login successful.",
+  "message": "Registado com sucesso",
   "token": "<JWT_TOKEN>",
   "user": {
     "id": 1,
     "name": "Alice Example",
     "email": "alice@example.com",
-    "role": "user"
+    "role": "guest"
   }
 }
-```
 
-### Rota protegida  
+Login
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
 
-```
-GET http://localhost:3000/user/profile
+{
+  "email": "alice@example.com",
+  "password": "senhaSegura123"
+}
+
+Expected response:
+
+{
+  "message": "Login com sucesso",
+  "token": "<JWT_TOKEN>",
+  "user": {
+    "id": 1,
+    "name": "Alice Example",
+    "email": "alice@example.com",
+    "role": "guest"
+  }
+}
+
+Test a Protected Route
+
+In Postman:
+
+GET http://localhost:5000/api/auth/dashboard
 Authorization: Bearer <JWT_TOKEN>
-```
-
----  
-
-## 6. Instalação do MySQL e Workbench no Windows  
-
-1. **Download** – Aceda a *MySQL Community Downloads* e descarregue o *MySQL Installer* (versão mínima ou completa).  
-2. **Execução** – Abra o instalador com privilégios de administrador.  
-3. **Tipo de instalação** – Selecione **Full** (recomendado) para instalar servidor, Workbench, Shell, Router, etc.  
-4. **Componentes** – Verifique que estão marcados:  
-   - MySQL Server  
-   - MySQL Workbench  
-   - MySQL Shell  
-   - (opcional) MySQL Router, documentação, exemplos.  
-5. **Dependências** – O instalador pode solicitar o *Visual C++ Redistributable*; aceite e instale.  
-6. **Configuração do servidor** –  
-   - Tipo: *Development Machine*  
-   - Porta: **3306** (padrão)  
-   - Autenticação: *Strong Password Encryption*  
-   - Senha root: escolha uma senha forte (ex.: `XPTO123&MySQL`).  
-   - Crie utilizadores adicionais, se necessário.  
-7. **Inicialização** – O instalador inicia o serviço MySQL automaticamente e o configura para iniciar com o Windows.  
-8. **Workbench** – Se incluído, será aberto após a instalação; use‑o para gerir bases via GUI.  
-9. **Verificação** – Abra o cliente (linha de comando ou Workbench) e execute:
-
-```sql
-SHOW DATABASES;
-```
-
----  
-
-## 7. Documentação final  
-
-1. **Capturas de ecrã** – Cole prints das seguintes etapas num documento Word:  
-   - Criação da base e da tabela `users`.  
-   - Inserção de utilizador de teste.  
-   - Respostas das chamadas API (registo, login, rota protegida).  
-   - Instalação do MySQL/Workbench (etapas do instalador, configuração do servidor).  
-2. **Exportação** – Salve o documento como PDF e entregue conforme solicitado.  
