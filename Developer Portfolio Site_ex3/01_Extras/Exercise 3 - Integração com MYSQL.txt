@@ -1,0 +1,182 @@
+## Visão geral  
+
+Este documento descreve, passo a passo, como criar a base de dados **portfolio**, as tabelas necessárias (incluindo a tabela `utilizadores`/`users` para autenticação), popular a base, testar a API e instalar o MySQL/Workbench no Windows.
+
+---  
+
+## 1. Criação da base de dados  
+
+```sql
+CREATE DATABASE IF NOT EXISTS portfolio
+  CHARACTER SET utf8mb4
+  COLLATE utf8mb4_unicode_ci;
+```
+
+*Define a base `portfolio` com suporte completo a Unicode.*
+
+```sql
+USE portfolio;
+```
+
+---  
+
+## 2. Tabela de utilizadores (users)  
+
+```sql
+CREATE TABLE IF NOT EXISTS users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(150) NOT NULL UNIQUE,
+  password VARCHAR(255) NOT NULL,
+  role ENUM('admin', 'user') DEFAULT 'user',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+```
+
+### Descrição das colunas  
+
+| Coluna       | Tipo                     | Descrição                                            |
+|--------------|--------------------------|------------------------------------------------------|
+| id           | INT AUTO_INCREMENT       | Identificador único do utilizador                    |
+| name         | VARCHAR(100)             | Nome completo                                        |
+| email        | VARCHAR(150) UNIQUE      | Endereço de e‑mail (login)                           |
+| password     | VARCHAR(255)             | Hash da palavra‑passe (ex.: bcrypt)                 |
+| role         | ENUM('admin','user')     | Papel do utilizador (padrão `user`)                 |
+| created_at   | TIMESTAMP                | Data/hora da criação                                 |
+| updated_at   | TIMESTAMP                | Atualiza automaticamente em cada modificação         |
+
+*Índice opcional (já implícito pela restrição `UNIQUE`):*  
+
+```sql
+CREATE INDEX idx_email ON users (email);
+```
+
+---  
+
+## 3. Inserção de utilizador de teste  
+
+```sql
+INSERT INTO users (name, email, password, role)
+VALUES ('Test User', 'test@example.com', 'dummy_hashed_password', 'user');
+```
+
+> **Nota:** nunca armazene senhas em texto puro; o valor deve ser gerado pelo backend após hashing (ex.: `bcrypt`).
+
+---  
+
+## 4. Verificação da estrutura  
+
+```sql
+DESCRIBE users;
+```
+
+Resultado esperado:
+
+```
+Field       Type                     Null Key Default Extra
+id          int(11)                  NO   PRI  NULL    auto_increment
+name        varchar(100)             NO        NULL
+email       varchar(150)             NO   UNI  NULL
+password    varchar(255)             NO        NULL
+role        enum('admin','user')     YES        user
+created_at  timestamp                YES   NULL  current_timestamp()
+updated_at  timestamp                YES   NULL  current_timestamp() on update current_timestamp()
+```
+
+---  
+
+## 5. Teste dos endpoints da API  
+
+### Registo  
+
+```
+POST http://localhost:3000/auth/register
+Content-Type: application/json
+
+{
+  "name": "Alice Example",
+  "email": "alice@example.com",
+  "password": "123456"
+}
+```
+
+**Resposta esperada**
+
+```json
+{
+  "message": "User registered successfully."
+}
+```
+
+### Login  
+
+```
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+  "email": "alice@example.com",
+  "password": "123456"
+}
+```
+
+**Resposta esperada**
+
+```json
+{
+  "message": "Login successful.",
+  "token": "<JWT_TOKEN>",
+  "user": {
+    "id": 1,
+    "name": "Alice Example",
+    "email": "alice@example.com",
+    "role": "user"
+  }
+}
+```
+
+### Rota protegida  
+
+```
+GET http://localhost:3000/user/profile
+Authorization: Bearer <JWT_TOKEN>
+```
+
+---  
+
+## 6. Instalação do MySQL e Workbench no Windows  
+
+1. **Download** – Aceda a *MySQL Community Downloads* e descarregue o *MySQL Installer* (versão mínima ou completa).  
+2. **Execução** – Abra o instalador com privilégios de administrador.  
+3. **Tipo de instalação** – Selecione **Full** (recomendado) para instalar servidor, Workbench, Shell, Router, etc.  
+4. **Componentes** – Verifique que estão marcados:  
+   - MySQL Server  
+   - MySQL Workbench  
+   - MySQL Shell  
+   - (opcional) MySQL Router, documentação, exemplos.  
+5. **Dependências** – O instalador pode solicitar o *Visual C++ Redistributable*; aceite e instale.  
+6. **Configuração do servidor** –  
+   - Tipo: *Development Machine*  
+   - Porta: **3306** (padrão)  
+   - Autenticação: *Strong Password Encryption*  
+   - Senha root: escolha uma senha forte (ex.: `XPTO123&MySQL`).  
+   - Crie utilizadores adicionais, se necessário.  
+7. **Inicialização** – O instalador inicia o serviço MySQL automaticamente e o configura para iniciar com o Windows.  
+8. **Workbench** – Se incluído, será aberto após a instalação; use‑o para gerir bases via GUI.  
+9. **Verificação** – Abra o cliente (linha de comando ou Workbench) e execute:
+
+```sql
+SHOW DATABASES;
+```
+
+---  
+
+## 7. Documentação final  
+
+1. **Capturas de ecrã** – Cole prints das seguintes etapas num documento Word:  
+   - Criação da base e da tabela `users`.  
+   - Inserção de utilizador de teste.  
+   - Respostas das chamadas API (registo, login, rota protegida).  
+   - Instalação do MySQL/Workbench (etapas do instalador, configuração do servidor).  
+2. **Exportação** – Salve o documento como PDF e entregue conforme solicitado.  
