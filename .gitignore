@@ -1,2 +1,42 @@
+# Dependências
+node_modules/
+
+# Variáveis de ambiente
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+**/*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Ficheiros do sistema operativo
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Saídas de compilação
+dist/
+build/
+*.tsbuildinfo
+
+# Testes
+coverage/
+
+# Ficheiros temporários
+*.tmp
+.cache/
+
+# Documentação
 Developer Portfolio Site_ex3/01_Extras/Demonstração Exercicio 3 Portefolio.pdf
 Developer Portfolio Site_ex3/01_Extras/Demonstração Exercicio 3 Portefolio.docx
