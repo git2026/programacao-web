@@ -30,6 +30,11 @@ dist/
 build/
 *.tsbuildinfo
 
+# Rust/Cargo (WASM build artifacts)
+**/target/
+*.rs.bk
+Cargo.lock
+
 # Testes
 coverage/
 
@@ -38,5 +43,5 @@ coverage/
 .cache/
 
 # Documentação
-Developer Portfolio Site_ex3/01_Extras/Demonstração Exercicio 3 Portefolio.pdf
-Developer Portfolio Site_ex3/01_Extras/Demonstração Exercicio 3 Portefolio.docx
+*.pdf
+*.docx

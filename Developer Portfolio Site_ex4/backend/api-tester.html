@@ -1,0 +1,1346 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backend Dashboard</title>
+    <style>
+        :root {
+            --bg: #0f0f12;
+            --surface: #15161a;
+            --border: #26272b;
+            --text-primary: #e7e7ea;
+            --text-secondary: #a6a7ab;
+            --accent: #7aa2f7;
+            --hover: rgba(122, 162, 247, 0.12);
+            --success: #9ece6a;
+            --error: #f7768e;
+            --warning: #e0af68;
+        }
+
+        [data-theme="light"] {
+            --bg: #f7f7fb;
+            --surface: #ffffff;
+            --border: #e5e7eb;
+            --text-primary: #0b1020;
+            --text-secondary: #4b5563;
+            --accent: #1d4ed8;
+            --hover: rgba(29, 78, 216, 0.08);
+            --success: #059669;
+            --error: #dc2626;
+            --warning: #d97706;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .theme-toggle {
+            background: #3b82f6;
+            border: none;
+            color: #fff;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .theme-toggle:hover {
+            background: #2563eb;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+            overflow-x: auto;
+        }
+
+        .tab {
+            padding: 0.75rem 1.5rem;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 500;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .tab:hover {
+            color: #2563eb;
+            background: rgba(37, 99, 235, 0.08);
+        }
+
+        .tab.active {
+            color: #3b82f6;
+            border-bottom-color: #3b82f6;
+            font-weight: 600;
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.6rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        input::placeholder, textarea::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.5;
+            font-weight: 300;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--accent);
+            background: var(--surface);
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        button {
+            background: #3b82f6;
+            color: #fff;
+            padding: 0.875rem 1.75rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 0.5rem;
+        }
+
+        button:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        .response {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            display: none;
+            scroll-margin-top: 100px;
+        }
+
+        .response.show {
+            display: block;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { 
+                opacity: 0; 
+                transform: translateY(10px);
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0);
+            }
+        }
+
+        .response pre {
+            background: var(--surface);
+            padding: 1rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+
+        .status-200, .status-201 {
+            background: var(--success);
+            color: #fff;
+        }
+
+        .status-400, .status-401, .status-403, .status-404, .status-500 {
+            background: var(--error);
+            color: #fff;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            border-left: 3px solid;
+        }
+
+        .alert.info {
+            background: rgba(122, 162, 247, 0.1);
+            border-color: var(--accent);
+            color: var(--text-primary);
+        }
+
+        .alert.warning {
+            background: rgba(224, 175, 104, 0.1);
+            border-color: var(--warning);
+            color: var(--text-primary);
+        }
+
+        .token-display {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            word-break: break-all;
+            font-size: 0.85rem;
+        }
+
+        .small-text {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .url-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .url-card {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            padding: 1.25rem;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .url-card:hover {
+            border-color: var(--accent);
+            background: var(--hover);
+        }
+
+        .url-icon {
+            font-size: 2rem;
+        }
+
+        .url-card h4 {
+            margin-bottom: 0.25rem;
+            font-size: 0.95rem;
+        }
+
+        .url-link {
+            color: #3b82f6;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            word-break: break-all;
+        }
+
+        .url-link:hover {
+            color: #2563eb;
+            text-decoration: underline;
+        }
+
+        .endpoint-section {
+            margin-top: 1.5rem;
+        }
+
+        .endpoint-section h4 {
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .endpoints-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .endpoints-list li {
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.5rem;
+            background: var(--bg);
+            border-radius: 6px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .method {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .method.get {
+            background: rgba(158, 206, 106, 0.2);
+            color: var(--success);
+        }
+
+        .method.post {
+            background: rgba(122, 162, 247, 0.2);
+            color: var(--accent);
+        }
+
+        .method.put {
+            background: rgba(224, 175, 104, 0.2);
+            color: var(--warning);
+        }
+
+        .method.delete {
+            background: rgba(247, 118, 142, 0.2);
+            color: var(--error);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.65rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: var(--hover);
+            color: var(--text-secondary);
+            margin-left: auto;
+        }
+
+        .badge.admin {
+            background: rgba(247, 118, 142, 0.2);
+            color: var(--error);
+        }
+
+        .badge.protected {
+            background: rgba(224, 175, 104, 0.2);
+            color: var(--warning);
+        }
+
+        h2 {
+            font-size: 1.75rem;
+            margin-bottom: 2rem;
+            font-weight: 600;
+        }
+
+        h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+
+        .button-secondary {
+            background: #3b82f6;
+            color: #fff;
+            border: none;
+        }
+
+        .button-secondary:hover {
+            background: #2563eb;
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Backend Dashboard</h1>
+        <button class="theme-toggle" onclick="toggleTheme()">
+            <span id="theme-icon">☀️</span>
+        </button>
+    </div>
+
+    <div class="container">
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('auth')">🔐 Autenticação</button>
+            <button class="tab" onclick="showTab('users')">👥 Utilizadores</button>
+            <button class="tab" onclick="showTab('projects')">📁 Projetos</button>
+            <button class="tab" onclick="showTab('info')">ℹ️ Informações</button>
+        </div>
+
+        <!-- Autenticação -->
+        <div id="auth" class="section active">
+            <h2>Autenticação</h2>
+            
+            <div class="alert info">
+                💡 Token está a ser guardado automaticamente depois do login
+            </div>
+
+            <div class="grid">
+                <div class="card">
+                    <h3>Registar</h3>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="reg-email" placeholder="admin@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="reg-password" placeholder="admin123">
+                    </div>
+                    <div class="form-group">
+                        <label>Nome</label>
+                        <input type="text" id="reg-name" placeholder="Admin User">
+                    </div>
+                    <div class="form-group">
+                        <label>Cargo</label>
+                        <select id="reg-role">
+                            <option value="guest">Guest</option>
+                            <option value="editor">Editor</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                    <button onclick="register()">Registar</button>
+                </div>
+
+                <div class="card">
+                    <h3>Login</h3>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="login-email" placeholder="">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="login-password" placeholder="">
+                    </div>
+                    <button onclick="login()">Login</button>
+                </div>
+            </div>
+
+            <div id="auth-response" class="response"></div>
+        </div>
+
+        <!-- Utilizadores -->
+        <div id="users" class="section">
+            <h2>Gestão de Utilizadores</h2>
+            
+            <div class="alert warning">
+                ⚠️ Requer Cargo de Admin
+            </div>
+
+            <div class="card">
+                <h3>Listar Utilizadores</h3>
+                <button onclick="getUsers()">Listar Todos</button>
+            </div>
+
+            <div class="grid">
+                <div class="card">
+                <h3>Atualizar Utilizador</h3>
+                <div class="form-group">
+                    <label>ID</label>
+                    <input type="number" id="update-user-id" placeholder="1" oninput="loadUserData(this.value)">
+                </div>
+                    <div class="form-group">
+                        <label>Nome</label>
+                        <input type="text" id="update-user-name">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="update-user-email">
+                    </div>
+                    <div class="form-group">
+                        <label>Cargo</label>
+                        <select id="update-user-role">
+                            <option value="">Nenhum</option>
+                            <option value="guest">Guest</option>
+                            <option value="editor">Editor</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                    <button onclick="updateUser()">Atualizar</button>
+                </div>
+
+                <div class="card">
+                    <h3>Eliminar Utilizador</h3>
+                    <div class="form-group">
+                        <label>ID</label>
+                        <input type="number" id="delete-user-id" placeholder="1">
+                    </div>
+                    <button onclick="deleteUser()">Eliminar</button>
+                </div>
+            </div>
+
+            <div id="users-response" class="response"></div>
+        </div>
+
+        <!-- Projetos -->
+        <div id="projects" class="section">
+            <h2>Gestão de Projetos</h2>
+            
+            <div class="alert warning">
+                ⚠️ Requer Cargo de Admin/Editor
+            </div>
+
+            <div class="card">
+                <h3>Listar Projetos</h3>
+                <button onclick="getProjects()">Listar Projetos</button>
+            </div>
+
+            <div class="card">
+                <h3>Obter Projeto por ID</h3>
+                <div class="form-group">
+                    <label>ID do Projeto</label>
+                    <input type="text" id="project-id" placeholder="1">
+                </div>
+                <button onclick="getProjectById()">Obter Projeto</button>
+            </div>
+
+            <div class="card">
+                <h3>Criar Projeto</h3>
+                <div class="form-group">
+                    <label>Título</label>
+                    <input type="text" id="project-title" placeholder="Nome do projeto">
+                </div>
+                <div class="form-group">
+                    <label>Descrição</label>
+                    <textarea id="project-desc" placeholder="Descrição detalhada..."></textarea>
+                </div>
+                <div class="grid">
+                    <div class="form-group">
+                        <label>Tecnologias (separadas por vírgula)</label>
+                        <input type="text" id="project-tech" placeholder="React, Node.js">
+                    </div>
+                    <div class="form-group">
+                        <label>Caminho da Imagem</label>
+                        <input type="text" id="project-image" placeholder="/assets/projeto1.png">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Repositório GitHub</label>
+                    <input type="text" id="project-github" placeholder="https://github.com/...">
+                </div>
+                <button onclick="createProject()">Criar Projeto</button>
+            </div>
+
+            <div class="card">
+                <h3>Atualizar Projeto</h3>
+                <div class="form-group">
+                    <label>ID</label>
+                    <input type="text" id="update-project-id" placeholder="1" oninput="loadProjectData(this.value)">
+                </div>
+                <div class="grid">
+                    <div class="form-group">
+                        <label>Título</label>
+                        <input type="text" id="update-project-title">
+                    </div>
+                    <div class="form-group">
+                        <label>Caminho da Imagem</label>
+                        <input type="text" id="update-project-image">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Descrição</label>
+                    <textarea id="update-project-desc"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Tecnologias (separadas por vírgula)</label>
+                    <input type="text" id="update-project-tech">
+                </div>
+                <div class="form-group">
+                    <label>Repositório GitHub</label>
+                    <input type="text" id="update-project-github">
+                </div>
+                <button onclick="updateProject()">Atualizar Projeto</button>
+            </div>
+
+            <div class="card">
+                <h3>Eliminar Projeto</h3>
+                <div class="form-group">
+                    <label>ID</label>
+                    <input type="text" id="delete-project-id" placeholder="1">
+                </div>
+                <button onclick="deleteProject()">Eliminar Projeto</button>
+            </div>
+
+            <div id="projects-response" class="response"></div>
+        </div>
+
+        <!-- Informações -->
+        <div id="info" class="section">
+            <h2>Informação</h2>
+
+            <div class="card">
+                <h3>URLs da App</h3>
+                <div class="url-grid">
+                    <div class="url-card">
+                        <div class="url-icon">🎨</div>
+                        <div>
+                            <h4>Frontend</h4>
+                            <a href="http://localhost:5173" target="_blank" class="url-link">http://localhost:5173</a>
+                        </div>
+                    </div>
+                    <div class="url-card">
+                        <div class="url-icon">⚙️</div>
+                        <div>
+                            <h4>Backend</h4>
+                            <a href="http://localhost:5000" target="_blank" class="url-link">http://localhost:5000</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Endpoints Disponíveis</h3>
+                
+                <!-- Autenticação -->
+                <div class="endpoint-section">
+                    <h4>🔐 Autenticação</h4>
+                    
+                    <h5 style="margin-top: 1rem; margin-bottom: 0.5rem; color: var(--text-secondary); font-size: 0.9rem;">Públicos</h5>
+                    <ul class="endpoints-list">
+                        <li><span class="method post">POST</span>/api/auth/register <span class="badge">Público</span></li>
+                        <li><span class="method post">POST</span>/api/auth/login <span class="badge">Público</span></li>
+                    </ul>
+                    
+                    <h5 style="margin-top: 1rem; margin-bottom: 0.5rem; color: var(--text-secondary); font-size: 0.9rem;">Protegidos (Token)</h5>
+                    <ul class="endpoints-list">
+                        <li><span class="method get">GET</span>/api/auth/dashboard <span class="badge protected">Protegido</span></li>
+                    </ul>
+                    
+                    <h5 style="margin-top: 1rem; margin-bottom: 0.5rem; color: var(--text-secondary); font-size: 0.9rem;">Administração</h5>
+                    <ul class="endpoints-list">
+                        <li><span class="method get">GET</span>/api/auth/users <span class="badge admin">Admin</span></li>
+                        <li><span class="method get">GET</span>/api/auth/users/export <span class="badge admin">Admin</span></li>
+                        <li><span class="method post">POST</span>/api/auth/users/import <span class="badge admin">Admin</span></li>
+                        <li><span class="method put">PUT</span>/api/auth/users/:id <span class="badge admin">Admin</span></li>
+                        <li><span class="method delete">DELETE</span>/api/auth/users/:id <span class="badge admin">Admin</span></li>
+                        <li><span class="method delete">DELETE</span>/api/auth/users <span class="badge admin">Admin</span></li>
+                        <li><span class="method post">POST</span>/api/auth/users/reset-ids <span class="badge admin">Admin</span></li>
+                    </ul>
+                </div>
+
+                <!-- Projetos -->
+                <div class="endpoint-section">
+                    <h4>📁 Projetos</h4>
+                    
+                    <h5 style="margin-top: 1rem; margin-bottom: 0.5rem; color: var(--text-secondary); font-size: 0.9rem;">Públicos</h5>
+                    <ul class="endpoints-list">
+                        <li><span class="method get">GET</span>/api/projects <span class="badge">Público</span></li>
+                        <li><span class="method get">GET</span>/api/projects/:id <span class="badge">Público</span></li>
+                        <li><span class="method get">GET</span>/api/projects/skills <span class="badge">Público</span></li>
+                        <li><span class="method get">GET</span>/api/projects/export <span class="badge">Público</span></li>
+                    </ul>
+                    
+                    <h5 style="margin-top: 1rem; margin-bottom: 0.5rem; color: var(--text-secondary); font-size: 0.9rem;">Protegidos (Admin/Editor)</h5>
+                    <ul class="endpoints-list">
+                        <li><span class="method post">POST</span>/api/projects <span class="badge protected">Admin/Editor</span></li>
+                        <li><span class="method post">POST</span>/api/projects/import <span class="badge protected">Admin/Editor</span></li>
+                        <li><span class="method put">PUT</span>/api/projects/:id <span class="badge protected">Admin/Editor</span></li>
+                    </ul>
+                    
+                    <h5 style="margin-top: 1rem; margin-bottom: 0.5rem; color: var(--text-secondary); font-size: 0.9rem;">Administração</h5>
+                    <ul class="endpoints-list">
+                        <li><span class="method delete">DELETE</span>/api/projects/:id <span class="badge admin">Admin</span></li>
+                        <li><span class="method delete">DELETE</span>/api/projects <span class="badge admin">Admin</span></li>
+                        <li><span class="method post">POST</span>/api/projects/reset-ids <span class="badge admin">Admin</span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="token-display" id="current-token-display" style="display: none;">
+                <strong>🔑 Token Atual:</strong><br>
+                <span id="token-text"></span>
+            </div>
+
+            <div class="card">
+                <h3>⚙️ Operações Avançadas</h3>
+                
+                <div style="margin-bottom: 20px;">
+                    <h4 style="margin-bottom: 10px; color: var(--text-secondary);">🔧 Servidor e Token</h4>
+                    <div class="button-group">
+                        <button onclick="testServer()">Testar Servidor</button>
+                        <button class="button-secondary" onclick="clearAllTokens()">Limpar Tokens</button>
+                        <button class="button-secondary" onclick="clearLocalStorage()">Limpar Cache</button>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <h4 style="margin-bottom: 10px; color: var(--text-secondary);">👥 Utilizadores</h4>
+                    <div class="button-group">
+                        <button class="button-secondary" onclick="exportUsers()">Exportar Utilizadores</button>
+                        <button class="button-secondary" onclick="document.getElementById('import-users-file').click()">Importar Utilizadores</button>
+                        <input type="file" id="import-users-file" accept=".json" style="display: none" onchange="importUsers(event)">
+                    </div>
+                    <div class="button-group" style="margin-top: 0.5rem;">
+                        <button class="button-secondary" onclick="clearAllUsers()">Limpar Utilizadores</button>
+                        <button class="button-secondary" onclick="resetUserIds()">Reiniciar IDs dos Utilizadores</button>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <h4 style="margin-bottom: 10px; color: var(--text-secondary);">📁 Projetos</h4>
+                    <div class="button-group">
+                        <button class="button-secondary" onclick="exportProjects()">Exportar Projetos</button>
+                        <button class="button-secondary" onclick="document.getElementById('import-projects-file').click()">Importar Projetos</button>
+                        <input type="file" id="import-projects-file" accept=".json" style="display: none" onchange="importProjects(event)">
+                    </div>
+                    <div class="button-group" style="margin-top: 0.5rem;">
+                        <button class="button-secondary" onclick="clearAllProjects()">Limpar Projetos</button>
+                        <button class="button-secondary" onclick="resetProjectIds()">Reiniciar IDs dos Projetos</button>
+                    </div>
+                </div>
+
+                <div class="alert warning">
+                    ⚠️ Operações destrutivas são irreversíveis e podem causar perda de dados
+                </div>
+            </div>
+
+            <div id="info-response" class="response"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:5000';
+        let authToken = localStorage.getItem('authToken') || '';
+
+        // Alternar tema
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? '' : 'light';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            document.getElementById('theme-icon').textContent = newTheme === 'light' ? '🌙' : '☀️';
+        }
+
+        // Carregar tema guardado
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            document.getElementById('theme-icon').textContent = savedTheme === 'light' ? '🌙' : '☀️';
+        }
+
+        if (authToken) updateTokenDisplay();
+
+        function showTab(tabName) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function updateTokenDisplay() {
+            const tokenDisplay = document.getElementById('current-token-display');
+            const tokenText = document.getElementById('token-text');
+            if (authToken) {
+                tokenDisplay.style.display = 'block';
+                tokenText.textContent = authToken;
+            } else {
+                tokenDisplay.style.display = 'none';
+            }
+        }
+
+        function saveToken(token) {
+            authToken = token;
+            localStorage.setItem('authToken', token);
+            updateTokenDisplay();
+        }
+
+
+        function showResponse(elementId, data, status) {
+            const responseEl = document.getElementById(elementId);
+            const statusClass = 'status-' + status;
+            const statusText = status < 300 ? '✅' : '❌';
+            
+            responseEl.innerHTML = `
+                <strong>${statusText} <span class="status-badge ${statusClass}">${status}</span></strong>
+                <pre>${JSON.stringify(data, null, 2)}</pre>
+            `;
+            responseEl.classList.add('show');
+            
+            // Deslocar automaticamente para a resposta
+            setTimeout(() => {
+                responseEl.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'nearest' 
+                });
+            }, 100);
+        }
+
+        async function makeRequest(endpoint, method = 'GET', body = null, requireAuth = false) {
+            const headers = { 'Content-Type': 'application/json' };
+            if (requireAuth && authToken) headers['Authorization'] = `Bearer ${authToken}`;
+
+            const options = { method, headers };
+            if (body) options.body = JSON.stringify(body);
+
+            try {
+                const response = await fetch(API_URL + endpoint, options);
+                const data = await response.json();
+                if (data.token) saveToken(data.token);
+                if (response.status === 401) {
+                    authToken = '';
+                    localStorage.removeItem('authToken');
+                    updateTokenDisplay();
+                }
+                return { data, status: response.status };
+            } catch (error) {
+                return { data: { error: error.message }, status: 500 };
+            }
+        }
+
+        // Funções de autenticação
+        async function register() {
+            const email = document.getElementById('reg-email').value;
+            const password = document.getElementById('reg-password').value;
+            const name = document.getElementById('reg-name').value;
+            const role = document.getElementById('reg-role').value;
+
+            const { data, status } = await makeRequest('/api/auth/register', 'POST', { email, password, name, role });
+            showResponse('auth-response', data, status);
+        }
+
+        async function login() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            const { data, status } = await makeRequest('/api/auth/login', 'POST', { email, password });
+            showResponse('auth-response', data, status);
+        }
+
+        // Funções de utilizadores
+        async function getUsers() {
+            const { data, status } = await makeRequest('/api/auth/users', 'GET', null, true);
+            showResponse('users-response', data, status);
+        }
+
+        async function loadUserData(userId) {
+            if (!userId) {
+                // Limpar campos se ID foi removido
+                document.getElementById('update-user-name').value = '';
+                document.getElementById('update-user-email').value = '';
+                document.getElementById('update-user-role').value = '';
+                return;
+            }
+            
+            const { data, status } = await makeRequest('/api/auth/users', 'GET', null, true);
+            if (status === 200 && Array.isArray(data)) {
+                const user = data.find(u => u.id === parseInt(userId));
+                if (user) {
+                    document.getElementById('update-user-name').value = user.name || '';
+                    document.getElementById('update-user-email').value = user.email || '';
+                    document.getElementById('update-user-role').value = user.role || '';
+                    
+                    // Feedback visual
+                    const idInput = document.getElementById('update-user-id');
+                    idInput.style.borderColor = 'var(--success)';
+                    setTimeout(() => {
+                        idInput.style.borderColor = '';
+                    }, 1000);
+                } else {
+                    // Utilizador não encontrado
+                    document.getElementById('update-user-name').value = '';
+                    document.getElementById('update-user-email').value = '';
+                    document.getElementById('update-user-role').value = '';
+                    
+                    const idInput = document.getElementById('update-user-id');
+                    idInput.style.borderColor = 'var(--error)';
+                    setTimeout(() => {
+                        idInput.style.borderColor = '';
+                    }, 1000);
+                }
+            }
+        }
+
+        async function updateUser() {
+            const id = document.getElementById('update-user-id').value;
+            const name = document.getElementById('update-user-name').value;
+            const email = document.getElementById('update-user-email').value;
+            const roleSelect = document.getElementById('update-user-role');
+            const role = roleSelect.value;
+
+            const body = {};
+            if (name) body.name = name;
+            if (email) body.email = email;
+            body.role = role === '' ? null : role;
+
+            const { data, status } = await makeRequest(`/api/auth/users/${id}`, 'PUT', body, true);
+            showResponse('users-response', data, status);
+        }
+
+        async function deleteUser() {
+            const id = document.getElementById('delete-user-id').value;
+            const { data, status } = await makeRequest(`/api/auth/users/${id}`, 'DELETE', null, true);
+            showResponse('users-response', data, status);
+        }
+
+        // Funções de projetos
+        async function getProjects() {
+            const { data, status } = await makeRequest('/api/projects');
+            showResponse('projects-response', data, status);
+        }
+
+        async function getProjectById() {
+            const id = document.getElementById('project-id').value;
+            const { data, status } = await makeRequest(`/api/projects/${id}`);
+            showResponse('projects-response', data, status);
+        }
+
+        async function loadProjectData(projectId) {
+            if (!projectId) {
+                // Limpar campos se ID foi removido
+                document.getElementById('update-project-title').value = '';
+                document.getElementById('update-project-desc').value = '';
+                document.getElementById('update-project-tech').value = '';
+                document.getElementById('update-project-image').value = '';
+                document.getElementById('update-project-github').value = '';
+                return;
+            }
+            
+            const { data, status } = await makeRequest(`/api/projects/${projectId}`);
+            if (status === 200) {
+                document.getElementById('update-project-title').value = data.title || '';
+                document.getElementById('update-project-desc').value = data.description || '';
+                document.getElementById('update-project-tech').value = data.technologies ? data.technologies.join(', ') : '';
+                document.getElementById('update-project-image').value = data.image || '';
+                document.getElementById('update-project-github').value = data.github || '';
+                
+                // Feedback visual
+                const idInput = document.getElementById('update-project-id');
+                idInput.style.borderColor = 'var(--success)';
+                setTimeout(() => {
+                    idInput.style.borderColor = '';
+                }, 1000);
+            } else {
+                // Projeto não encontrado
+                document.getElementById('update-project-title').value = '';
+                document.getElementById('update-project-desc').value = '';
+                document.getElementById('update-project-tech').value = '';
+                document.getElementById('update-project-image').value = '';
+                document.getElementById('update-project-github').value = '';
+                
+                const idInput = document.getElementById('update-project-id');
+                idInput.style.borderColor = 'var(--error)';
+                setTimeout(() => {
+                    idInput.style.borderColor = '';
+                }, 1000);
+            }
+        }
+
+        async function createProject() {
+            const title = document.getElementById('project-title').value;
+            const description = document.getElementById('project-desc').value;
+            const technologies = document.getElementById('project-tech').value.split(',').map(t => t.trim());
+            const image = document.getElementById('project-image').value;
+            const github = document.getElementById('project-github').value;
+
+            const { data, status } = await makeRequest('/api/projects', 'POST', {
+                title, description, technologies, image, github
+            }, true);
+
+            showResponse('projects-response', data, status);
+        }
+
+        async function updateProject() {
+            const id = document.getElementById('update-project-id').value;
+            const title = document.getElementById('update-project-title').value;
+            const description = document.getElementById('update-project-desc').value;
+            const techString = document.getElementById('update-project-tech').value;
+            const image = document.getElementById('update-project-image').value;
+            const github = document.getElementById('update-project-github').value;
+
+            const body = {};
+            if (title) body.title = title;
+            if (description) body.description = description;
+            if (techString) body.technologies = techString.split(',').map(t => t.trim());
+            if (image) body.image = image;
+            if (github) body.github = github;
+
+            const { data, status } = await makeRequest(`/api/projects/${id}`, 'PUT', body, true);
+            showResponse('projects-response', data, status);
+        }
+
+        async function deleteProject() {
+            const id = document.getElementById('delete-project-id').value;
+            const { data, status } = await makeRequest(`/api/projects/${id}`, 'DELETE', null, true);
+            showResponse('projects-response', data, status);
+        }
+
+        // Funções de informação
+        async function testServer() {
+            const { data, status } = await makeRequest('/');
+            showResponse('info-response', data, status);
+        }
+
+        // Operações avançadas
+        async function clearAllUsers() {
+            if (!confirm('⚠️ Tem a certeza que deseja eliminar TODOS os utilizadores? Esta ação é irreversível!')) {
+                return;
+            }
+
+            try {
+                const { data, status } = await makeRequest('/api/auth/users', 'DELETE', null, true);
+                
+                if (status === 200) {
+                    authToken = '';
+                    localStorage.removeItem('authToken');
+                    updateTokenDisplay();
+                    showResponse('info-response', data, status);
+                } else {
+                    showResponse('info-response', data || { error: 'Falha ao eliminar utilizadores' }, status);
+                }
+            } catch (error) {
+                showResponse('info-response', { error: 'Falha ao eliminar utilizadores: ' + error.message }, 500);
+            }
+        }
+
+        async function resetUserIds() {
+            if (!confirm('⚠️ Tem a certeza que deseja reiniciar os IDs dos utilizadores?')) {
+                return;
+            }
+
+            try {
+                const { data, status } = await makeRequest('/api/auth/users/reset-ids', 'POST', null, true);
+                
+                if (status === 200) {
+                    showResponse('info-response', data, status);
+                } else {
+                    showResponse('info-response', data || { error: 'Falha ao reiniciar IDs' }, status);
+                }
+            } catch (error) {
+                showResponse('info-response', { error: 'Falha ao reiniciar IDs: ' + error.message }, 500);
+            }
+        }
+
+        async function clearAllProjects() {
+            if (!confirm('⚠️ Tem a certeza que deseja eliminar TODOS os projetos? Esta ação é irreversível!')) {
+                return;
+            }
+
+            try {
+                const { data, status } = await makeRequest('/api/projects', 'DELETE', null, true);
+                
+                if (status === 200) {
+                    showResponse('info-response', data, status);
+                } else {
+                    showResponse('info-response', data || { error: 'Falha ao eliminar projetos' }, status);
+                }
+
+            } catch (error) {
+                showResponse('info-response', { error: 'Falha ao eliminar projetos: ' + error.message }, 500);
+            }
+        }
+
+        async function resetProjectIds() {
+            if (!confirm('⚠️ Tem a certeza que deseja reiniciar os IDs dos projetos?')) {
+                return;
+            }
+
+            try {
+                const { data, status } = await makeRequest('/api/projects/reset-ids', 'POST', null, true);
+                
+                if (status === 200) {
+                    showResponse('info-response', data, status);
+                } else {
+                    showResponse('info-response', data || { error: 'Falha ao reiniciar IDs' }, status);
+                }
+            } catch (error) {
+                showResponse('info-response', { error: 'Falha ao reiniciar IDs: ' + error.message }, 500);
+            }
+        }
+
+        async function clearAllTokens() {
+            authToken = '';
+            localStorage.removeItem('authToken');
+            updateTokenDisplay();
+            showResponse('info-response', {
+                message: '✅ Todos os tokens foram limpos do armazenamento local',
+                info: 'Os tokens tornam-se inválidos quando os utilizadores são eliminados ou quando expiram (12h)'
+            }, 200);
+        }
+
+        async function clearLocalStorage() {
+            if (!confirm('⚠️ Tem a certeza que deseja limpar a cache? Isto inclui tokens e preferências de tema!')) {
+                return;
+            }
+
+            const itemsCleared = localStorage.length;
+            localStorage.clear();
+            authToken = '';
+            updateTokenDisplay();
+            
+            // Redefinir tema
+            document.documentElement.setAttribute('data-theme', '');
+            document.getElementById('theme-icon').textContent = '☀️';
+
+            showResponse('info-response', {
+                message: `✅ Cache limpa com sucesso`,
+                itemsCleared: itemsCleared,
+                info: 'Tema reiniciado para modo escuro e tokens removidos'
+            }, 200);
+        }
+
+        // Funções de importação/exportação
+
+        async function exportUsers() {
+            try {
+                // Usar endpoint /export que retorna utilizadores com passwords
+                const { data: users, status } = await makeRequest('/api/auth/users/export', 'GET', null, true);
+                
+                if (status === 200 && Array.isArray(users)) {
+                    const dataStr = JSON.stringify(users, null, 2);
+                    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+                    const url = URL.createObjectURL(dataBlob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = `users_${new Date().toISOString().split('T')[0]}.json`;
+                    link.click();
+                    URL.revokeObjectURL(url);
+                    
+                    showResponse('info-response', {
+                        message: '✅ Utilizadores exportados com sucesso',
+                        count: users.length
+                    }, 200);
+                } else {
+                    const errorMsg = users && users.error ? users.error : 'Falha ao exportar utilizadores';
+                    showResponse('info-response', { error: errorMsg }, status);
+                }
+            } catch (error) {
+                showResponse('info-response', { error: 'Erro ao exportar: ' + error.message }, 500);
+            }
+        }
+
+        async function importUsers(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            try {
+                const text = await file.text();
+                const users = JSON.parse(text);
+                
+                if (!Array.isArray(users)) {
+                    showResponse('info-response', { error: 'Ficheiro inválido. Deve conter um array de utilizadores' }, 400);
+                    event.target.value = '';
+                    return;
+                }
+
+                const { data, status } = await makeRequest('/api/auth/users/import', 'POST', { users }, true);
+                
+                if (status === 200) {
+                    showResponse('info-response', data, 200);
+                } else {
+                    showResponse('info-response', data || { error: 'Falha ao importar utilizadores' }, status);
+                }
+            } catch (error) {
+                showResponse('info-response', { error: 'Erro ao importar: ' + error.message }, 500);
+            }
+            
+                event.target.value = '';
+        }
+
+        async function exportProjects() {
+            try {
+                const { data: projects, status } = await makeRequest('/api/projects');
+                
+                if (status === 200 && Array.isArray(projects)) {
+                    const dataStr = JSON.stringify(projects, null, 2);
+                    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+                    const url = URL.createObjectURL(dataBlob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = `projects_${new Date().toISOString().split('T')[0]}.json`;
+                    link.click();
+                    URL.revokeObjectURL(url);
+                    
+                    showResponse('info-response', {
+                        message: '✅ Projetos exportados com sucesso',
+                        count: projects.length
+                    }, 200);
+                } else {
+                    const errorMsg = projects && projects.error ? projects.error : 'Falha ao exportar projetos';
+                    showResponse('info-response', { error: errorMsg }, status);
+                }
+            } catch (error) {
+                showResponse('info-response', { error: 'Erro ao exportar: ' + error.message }, 500);
+            }
+        }
+
+        async function importProjects(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            try {
+                const text = await file.text();
+                const projects = JSON.parse(text);
+                
+                if (!Array.isArray(projects)) {
+                    showResponse('info-response', { error: 'Ficheiro inválido. Deve conter um array de projetos' }, 400);
+                    return;
+                }
+
+                let imported = 0;
+                let errors = 0;
+                let errorMessages = [];
+
+                for (const project of projects) {
+                    const { data, status } = await makeRequest('/api/projects', 'POST', {
+                        title: project.title,
+                        description: project.description,
+                        technologies: project.technologies || [],
+                        image: project.image || '',
+                        github: project.github || ''
+                    }, true);
+                    
+                    if (status === 201) {
+                        imported++;
+                    } else {
+                        errors++;
+                        if (data && data.error) {
+                            errorMessages.push(`${project.title || 'Projeto sem título'}: ${data.error}`);
+                        }
+                    }
+                }
+
+                const responseData = {
+                    message: `Importação concluída: ${imported} projeto(s) importado(s), ${errors} erro(s)`,
+                    imported,
+                    errors
+                };
+
+                if (errorMessages.length > 0) {
+                    responseData.errorDetails = errorMessages.slice(0, 5);
+                }
+
+                showResponse('info-response', responseData, errors > 0 ? 400 : 200);
+            } catch (error) {
+                showResponse('info-response', { error: 'Erro ao importar: ' + error.message }, 500);
+            }
+            
+                event.target.value = '';
+        }
+    </script>
+</body>
+</html>

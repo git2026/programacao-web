@@ -70,6 +70,46 @@ Desenvolvimento de Website Full Stack progressivo ao logo dos exercicios, dispon
 
 **Process Management:** Script automatizado (start.js) para iniciar frontend e backend simultaneamente
 
+### Exercício 4 - Backend + Full-Stack com MySQL e WebAssembly
+
+**Runtime:** Node.js com Express para criação da API REST (ES Modules)
+
+**Base de Dados:** MySQL com mysql2/promise para operações assíncronas
+
+**Autenticação:** JSON Web Tokens (JWT) com expiração de 12 horas
+
+**Segurança:** 
+- **WebAssembly (WASM)** para hashing de passwords compilado de Rust
+- SHA-512 com 10.000 iterações
+- Salt único gerado para cada password (16 caracteres aleatórios)
+- Validação de password (12 a 20 caracteres)
+- Validação de nome mínima (5 caracteres)
+- Proteção XSS avançada: Sanitização HTML completa, validação de URLs, proteção contra eventos JavaScript
+- Validação de email
+- Normalização de dados (lowercase, trim)
+
+**WebAssembly Module:**
+- Módulo compilado de Rust (`password_hash.wasm` - 65.7 KB) em `backend/wasm/build/`
+- SHA-512 com 10.000 iterações e salt único (16 caracteres)
+- Formato de hash: `$wasm$<salt_base64>$<hash_hex>`
+- Carregamento direto via API nativa do WebAssembly do Node.js
+- Código fonte Rust em `01_Extras/wasm-source/password-hash/`
+- Recompilação opcional: `npm run wasm:build` (requer Rust, target wasm32-wasip1 e Visual Studio Build Tools no Windows)
+
+**Persistência:** Base de dados MySQL com pool de conexões otimizado
+
+**Import/Export:** Funcionalidade para importar e exportar dados entre JSON e MySQL
+
+**Skills Organization:** Sistema inteligente de organização de competências com scoring baseado em frequência e categoria
+
+**API URL:** Configuração dinâmica com proxy Vite em desenvolvimento e detecção automática de ambientes em produção através do .env
+
+**Error Handling:** Tratamento centralizado de erros com detalhes condicionais (apenas em modo desenvolvimento)
+
+**Mobile Responsive:** Layout otimizado para dispositivos móveis
+
+**Process Management:** Script automatizado (start.js) para iniciar frontend e backend simultaneamente
+
 ## 2. Requisitos para Execução do Projeto
 
 ### Exercício 1 - Frontend
@@ -99,6 +139,23 @@ npm start
 
 Comandos:
 cd "Developer Portfolio Site_ex3"
+npm start
+
+**URLs Disponíveis:**
+- Frontend: http://localhost:5173
+- Backend: http://localhost:5000
+- API Tester: http://localhost:5000/api-tester.html
+- LAN Access: http://IP:5173 (frontend) e http://IP:5000 (backend)
+
+### Exercício 4 - Full-Stack com MySQL e WebAssembly
+
+**Pré-requisitos:**
+- MySQL instalado e em execução
+- Base de dados criada (executar `SQL_BD.sql` em `01_Extras/`)
+- Módulo WASM já compilado está incluído
+
+Comandos:
+cd "Developer Portfolio Site_ex4"
 npm start
 
 **URLs Disponíveis:**
@@ -213,12 +270,61 @@ programacao-web/
 │   ├── package.json                 # Root package.json
 │   └── start.js                     # Script para iniciar frontend + backend
 │
+├── Developer Portfolio Site_ex4/    # Exercício 4
+│   ├── backend/
+│   │   ├── controllers/
+│   │   │   ├── authController.js    # Lógica de autenticação (WASM)
+│   │   │   └── projectController.js # Lógica de projetos e skills
+│   │   ├── models/
+│   │   │   ├── userModel.js         # Modelo de utilizador (MySQL)
+│   │   │   └── projectModel.js     # Modelo de projeto (MySQL)
+│   │   ├── middleware/
+│   │   │   ├── authMiddleware.js    # Verificação JWT
+│   │   │   └── roleMiddleware.js    # Verificação de roles
+│   │   ├── routes/
+│   │   │   ├── authRoutes.js        # Rotas de autenticação
+│   │   │   └── projectRoutes.js     # Rotas de projetos
+│   │   ├── utils/
+│   │   │   ├── wasmHash.js          # Carregador WebAssembly
+│   │   │   ├── validation.js       # Validações de segurança
+│   │   │   ├── errorHandler.js     # Tratamento centralizado de erros
+│   │   │   └── tokenUtils.js        # Utilidades JWT
+│   │   ├── wasm/
+│   │   │   └── build/
+│   │   │       └── password_hash.wasm # Módulo WASM compilado
+│   │   ├── db.js                    # Pool de conexões MySQL
+│   │   ├── api-tester.html          # Interface de testes da API
+│   │   ├── server.js                # Entry point
+│   │   └── package.json             # type: "module"
+│   ├── frontend/                    # Frontend React
+│   │   ├── src/
+│   │   │   ├── components/          # Header, Footer, ThemeToggle
+│   │   │   ├── sections/            # About, Projects, Skills
+│   │   │   ├── data/                # config.ts, profile.ts
+│   │   │   ├── styles/
+│   │   │   │   └── globals.css      # Estilos globais e variáveis CSS
+│   │   │   ├── App.tsx              # Componente principal com routing
+│   │   │   └── main.tsx             # Entry point
+│   │   ├── public/
+│   │   │   └── assets/              # Imagens (profile.svg, projeto1-6.png)
+│   │   ├── index.html
+│   │   ├── package.json
+│   │   ├── tsconfig.json
+│   │   └── vite.config.ts           # Config com proxy API e GitHub
+│   ├── 01_Extras/
+│   │   ├── wasm-source/             # Código fonte Rust do WASM
+│   │   │   └── password-hash/
+│   │   ├── SQL_BD.sql               # Script de criação da base de dados
+│   │   └── README.md                # Documentação dos extras
+│   ├── package.json                 # Root package.json
+│   └── start.js                     # Script para iniciar frontend + backend
+│
 └── LICENSE                          # GNU v3.0
 ```
 
 ## Endpoints da API
 
-### Exercício 2 e 3 (compatíveis)
+### Exercícios 2, 3 e 4 (compatíveis)
 
 **Autenticação:**
 - `POST /api/auth/register` - Registar utilizador (público)
@@ -251,7 +357,7 @@ programacao-web/
 
 ## Funcionalidades Principais
 
-### Frontend (Exercícios 2 e 3)
+### Frontend (Exercícios 2, 3 e 4)
 - **Integração com API:** Fetch automático de projetos do backend MySQL
 - **API URL Dinâmica:** Configuração automática com proxy Vite em dev e detecção em produção
 - **Cache-busting:** Sistema para forçar atualização de imagens via timestamp
@@ -271,7 +377,7 @@ programacao-web/
 - **Middleware Chain:** authMiddleware + roleMiddleware + validationMiddleware
 - **Import Multiplo:** Suporte para importar múltiplos utilizadores de uma vez
 
-### Backend (Exercício 3 - MySQL)
+### Backend (Exercícios 3 e 4 - MySQL)
 - **MySQL Integration:** Pool de conexões otimizado com mysql2/promise
 - **ID Management:** Sistema para garantir IDs sequenciais e reorganização de IDs
 - **Import/Export:** Funcionalidade completa para importar e exportar dados entre JSON e MySQL
@@ -287,7 +393,6 @@ programacao-web/
     - Proteção contra eventos JavaScript (onclick, onerror, etc.)
     - Encoding HTML (escape de caracteres especiais)
     - Validação de comprimento para todos os campos
-  - Argon2 para hashing de senhas (configuração máxima: 128 MB, 5 iterações)
   - Normalização de dados (lowercase, trim)
 - **Skills Organization:** Sistema inteligente de organização de competências com scoring baseado em frequência, categoria e posição
 - **Error Handling:** Tratamento centralizado com detalhes condicionais (apenas em desenvolvimento)
@@ -300,6 +405,15 @@ programacao-web/
 - **Sistema de Cache:** Headers HTTP para controlo de cache (5 minutos) com ETag e Last-Modified
 - **Serving de Assets:** Middleware para servir imagens estáticas com cache otimizado
 - **LAN Access:** Configuração para acesso via rede local
+
+**Diferenças entre Exercícios 3 e 4:**
+- **Exercício 3:** Argon2 para hashing de passwords (configuração máxima: 128 MB, 5 iterações)
+- **Exercício 4:** WebAssembly Password Hashing - Módulo WASM compilado de Rust
+  - SHA-512 com 10.000 iterações
+  - Salt único gerado para cada password (16 caracteres aleatórios)
+  - Formato de hash: `$wasm$<salt_base64>$<hash_hex>`
+  - Carregamento direto via API nativa do WebAssembly do Node.js
+  - Performance superior com criptografia nativa
 
 ## Licença
 GNU v3.0
