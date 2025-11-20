@@ -315,7 +315,6 @@ programacao-web/
 │   │   ├── wasm-source/             # Código fonte Rust do WASM
 │   │   │   └── password-hash/
 │   │   ├── SQL_BD.sql               # Script de criação da base de dados
-│   │   └── README.md                # Documentação dos extras
 │   ├── package.json                 # Root package.json
 │   └── start.js                     # Script para iniciar frontend + backend
 │
