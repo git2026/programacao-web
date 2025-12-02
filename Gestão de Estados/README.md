@@ -39,7 +39,7 @@ npm start
 A aplicação deverá abrir automaticamente em http://localhost:3000
 
 ## Estrutura do Projeto
-
+```
 react-app/
 ├── src/
 │   ├── components/
@@ -53,7 +53,7 @@ react-app/
 │   └── index.js                       # Ponto de entrada
 ├── package.json
 └── README.md
-
+```
 ## Conceitos Demonstrados
 
 - **useState**: Estado local em componentes
