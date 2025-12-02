@@ -38,7 +38,7 @@ npm start
 
 A aplicação deverá abrir automaticamente em http://localhost:3000
 
-## 📁 Estrutura do Projeto
+## Estrutura do Projeto
 
 react-app/
 ├── src/
