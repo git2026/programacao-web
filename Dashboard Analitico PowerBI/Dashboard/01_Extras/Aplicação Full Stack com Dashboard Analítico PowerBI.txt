@@ -1,0 +1,165 @@
+Enunciado do Projeto desta Semana
+Aplicação Full Stack com Dashboard Analítico estilo PowerBI
+1. Objetivo Geral
+Desenvolver uma aplicação Web completa (full stack) com:
+
+Backend: Node.js + Express
+
+Base de Dados: MySQL
+
+Frontend: React
+
+Visualização de Dados: Recharts (ou outra biblioteca adequada)
+
+A aplicação deverá apresentar um dashboard interativo e responsivo ao estilo PowerBI, baseado em dados fictícios ou históricos, permitindo consultar, analisar e visualizar indicadores relevantes.
+
+2. Contexto
+As organizações modernas dependem de dados para tomar decisões. Uma aplicação capaz de recolher, armazenar e analisar informação fornece um valor significativo, quer seja em educação, saúde, comércio, história, desporto ou outro domínio.
+
+Neste projeto, cada grupo deverá:
+
+Escolher um domínio temático, tal como:
+
+Análises de vendas / inventário
+
+Indicadores educacionais / académicos
+
+Dados históricos (ex.: arquivo institucional, demografia local, migrações, eventos)
+
+Saúde e bem-estar
+
+Mobilidade e transportes
+
+Desporto e performance
+
+Sustentabilidade e ambiente
+
+Outro domínio aprovado pelo docente
+
+Criar uma base de dados em MySQL com registos suficientes para suportar visualizações estatísticas credíveis.
+
+Construir a aplicação web full stack com dashboard moderno, filtros e gráficos significativos.
+
+3. Requisitos Técnicos
+3.1 Backend — Node.js + Express + MySQL
+O backend deve incluir:
+
+Ligação segura à base de dados MySQL
+
+CRUD mínimo (READ obrigatório; CREATE/UPDATE/DELETE conforme o tema)
+
+Endpoints REST para fornecer dados ao dashboard
+
+Organização modular (ex.: /routes, /controllers, /services)
+
+Utilização de prepared statements (mysql2)
+
+Validação básica dos dados
+
+Estrutura de projeto clara e bem comentada
+
+Sugestão de componentes obrigatórios:
+
+GET /api/stats/... — estatísticas agregadas
+
+GET /api/items — listagem de dados brutos
+
+GET /api/items/:id — detalhe
+
+(opcional) Autenticação simples (JWT)
+
+3.2 Base de Dados — MySQL
+Deve conter pelo menos 4–6 tabelas relacionadas entre si
+
+Deve incluir dados suficientes para análises (100–200 registos no mínimo)
+
+Dados podem ser:
+
+fictícios
+
+gerados com IA
+
+históricos reais (ex.: arquivos, datasets públicos)
+
+Se usarem dados históricos, devem referenciar a fonte.
+
+3.3 Frontend — React
+O frontend deve:
+
+Consumir dados do backend (via fetch ou axios)
+
+Exibir:
+
+Dashboard com 3–5 gráficos
+
+Filtros interativos (ex.: ano, categoria, tipo de evento, região)
+
+Indicadores KPI (cards com totais)
+
+Páginas ou secções adicionais (ex.: listagem de registos, formulário opcional)
+
+Ser responsivo, funcionando em desktop e dispositivo móvel
+
+Ter um design moderno (Tailwind, Bootstrap ou CSS próprio)
+
+3.4 Visualização — Recharts
+O dashboard deve incluir, pelo menos:
+
+1 gráfico de linha (tendência temporal)
+
+1 gráfico de barras (comparação de categorias)
+
+1 gráfico pie/donut (composições percentuais)
+
+1 painel KPI com contadores
+
+Gráficos adicionais são bem-vindos (heatmap, área, radar, etc.).
+
+4. Utilização de IA no Projeto
+Os estudantes podem utilizar ferramentas de IA generativa para:
+
+gerar ideias para o domínio e modelo de dados
+
+gerar dados fictícios realistas
+
+ajudar a construir trechos de código
+
+criar textos, documentação ou explicações
+
+No entanto, devem cumprir as regras seguintes:
+
+✔ A IA atua como assistente, não como substituto do trabalho académico
+✔ O código deve ser compreendido, ajustado e conter comentários (ver abaixo) pelos alunos
+✔ Todas as ferramentas de IA utilizadas devem ser referenciadas na documentação
+✔ Os alunos são responsáveis por garantir a qualidade, segurança e coerência da aplicação
+
+5. Critérios de Avaliação
+Critério	Peso
+Modelação e estrutura da BD	20%
+Backend (API, organização, segurança mínima)	20%
+Frontend React (qualidade, usabilidade)	20%
+Dashboard analítico (Recharts, interatividade, KPIs)	25%
+Documentação e explicação do uso de IA	10%
+Apresentação final	5%
+6. Entregáveis
+Cada aluno deverá entregar:
+
+✔ GitHub do Código completo (Node/Express + React)
+✔ Script SQL (criação + inserção de dados)
+✔ Comentários nos códigos esclarecendo:
+descrição do domínio
+
+modelo de dados (MER + tabelas)
+
+arquitetura do sistema
+
+exemplos de queries
+
+screenshots do dashboard
+
+explicação de como a IA foi utilizada
+
+reflexão final sobre limitações e melhorias
+
+✔ Vídeo de apresentação (5–10 minutos)
+Demonstração da aplicação a funcionar.

@@ -1,0 +1,47 @@
+# Dependências
+node_modules/
+
+# Variáveis de ambiente
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+**/*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Ficheiros do sistema operativo
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Saídas de compilação
+dist/
+build/
+*.tsbuildinfo
+
+# Rust/Cargo (WASM build artifacts)
+**/target/
+*.rs.bk
+Cargo.lock
+
+# Testes
+coverage/
+
+# Ficheiros temporários
+*.tmp
+.cache/
+
+# Documentação
+*.pdf
+*.docx
