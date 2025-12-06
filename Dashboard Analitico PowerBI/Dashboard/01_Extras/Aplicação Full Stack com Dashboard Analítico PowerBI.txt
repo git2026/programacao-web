@@ -160,6 +160,3 @@ screenshots do dashboard
 explicação de como a IA foi utilizada
 
 reflexão final sobre limitações e melhorias
-
-✔ Vídeo de apresentação (5–10 minutos)
-Demonstração da aplicação a funcionar.
