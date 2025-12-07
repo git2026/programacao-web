@@ -1,0 +1,83 @@
+{
+  "overview": {
+    "total_distritos": 2,
+    "total_concelhos": 3,
+    "total_codigos_postais": 120,
+    "total_enderecos": 300,
+    "cobertura_media_transportes": 82.3,
+    "total_rotas_transportes": 42
+  },
+  "distritos": [
+    {
+      "id": 1,
+      "codigo": "01",
+      "nome": "Lisboa",
+      "num_concelhos": 2,
+      "num_codigos_postais": 60,
+      "total_enderecos": 150
+    },
+    {
+      "id": 2,
+      "codigo": "13",
+      "nome": "Porto",
+      "num_concelhos": 1,
+      "num_codigos_postais": 60,
+      "total_enderecos": 150
+    }
+  ],
+  "timeline": [
+    {
+      "ano": 2023,
+      "tipo_transporte": "metro",
+      "cobertura_media": 80,
+      "total_rotas": 20,
+      "num_distritos": 1
+    },
+    {
+      "ano": 2024,
+      "tipo_transporte": "autocarro",
+      "cobertura_media": 70,
+      "total_rotas": 22,
+      "num_distritos": 1
+    }
+  ],
+  "distribution": [
+    {
+      "tipo_transporte": "metro",
+      "num_registos": 10,
+      "cobertura_media": 80,
+      "total_rotas": 20,
+      "percentagem_rotas": 60
+    },
+    {
+      "tipo_transporte": "autocarro",
+      "num_registos": 5,
+      "cobertura_media": 70,
+      "total_rotas": 22,
+      "percentagem_rotas": 40
+    }
+  ],
+  "coverage": [
+    {
+      "distrito": "Lisboa",
+      "tipo_transporte": "metro",
+      "cobertura_media": 80,
+      "total_rotas": 20
+    },
+    {
+      "distrito": "Porto",
+      "tipo_transporte": "autocarro",
+      "cobertura_media": 70,
+      "total_rotas": 22
+    }
+  ],
+  "filters": {
+    "distritos": [
+      { "id": 1, "codigo": "01", "nome": "Lisboa", "num_concelhos": 2, "num_codigos_postais": 60 },
+      { "id": 2, "codigo": "13", "nome": "Porto", "num_concelhos": 1, "num_codigos_postais": 60 }
+    ],
+    "anos": [2023, 2024],
+    "tipos_transporte": ["metro", "autocarro"]
+  }
+}
+

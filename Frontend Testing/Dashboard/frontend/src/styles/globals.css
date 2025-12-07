@@ -1,0 +1,61 @@
+/* Variáveis CSS e estilos base definidos */
+:root {
+  --bg: #0f0f12;
+  --surface: #15161a;
+  --border: #26272b;
+  --text-primary: #e7e7ea;
+  --text-secondary: #a6a7ab;
+  --accent: #7aa2f7;
+  --hover: rgba(122, 162, 247, 0.12);
+}
+
+/* Modo claro */
+[data-theme="light"] {
+  --bg: #f7f7fb;
+  --surface: #ffffff;
+  --border: #e5e7eb;
+  --text-primary: #0b1020;
+  --text-secondary: #4b5563;
+  --accent: #1d4ed8;
+  --hover: rgba(29, 78, 216, 0.08);
+}
+
+/* Estilos base */
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; }
+body {
+  margin: 0;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  background: var(--bg);
+  color: var(--text-primary);
+  line-height: 1.6;
+}
+
+/* Estilos de títulos e parágrafos */
+h1, h2, h3 { line-height: 1.25; }
+p { margin: 0 0 12px 0; }
+a { color: var(--text-primary); }
+img { max-width: 100%; display: block; }
+main { display: block; }
+
+/* Estilos de foco */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Estilos de link de salto */
+.visually-hidden-focusable {
+  position: absolute;
+  left: -9999px;
+}
+
+/* Estilos de link de salto focável */
+.visually-hidden-focusable:focus {
+  left: 8px;
+  top: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 8px 10px;
+  border-radius: 6px;
+}

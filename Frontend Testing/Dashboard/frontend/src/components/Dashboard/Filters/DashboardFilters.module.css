@@ -1,0 +1,117 @@
+/* Container dos filtros */
+
+.filtersContainer {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  background: var(--color-card-bg, #ffffff);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1.5rem;
+}
+
+/* Grupo de filtros */
+.filterGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 200px;
+  flex: 1;
+}
+
+/* Label do filtro */
+.filterLabel {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text-secondary, #666);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Select do filtro */
+.filterSelect {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--color-border, #e5e7eb);
+  border-radius: 8px;
+  font-size: 1rem;
+  color: var(--color-text-primary, #1a1a1a);
+  background-color: var(--color-input-bg, #ffffff);
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Efeito de hover */
+.filterSelect:hover {
+  border-color: #3b82f6;
+}
+
+/* Efeito de focus */
+.filterSelect:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Botão de reset */
+.resetButton {
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  white-space: nowrap;
+}
+
+/* Efeito de hover */
+.resetButton:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+/* Efeito de active */
+.resetButton:active {
+  transform: translateY(0);
+}
+
+/* Mensagem de carregamento */
+.loading {
+  color: var(--color-text-secondary, #666);
+  text-align: center;
+  padding: 1rem;
+}
+
+/* Modo Escuro */
+[data-theme="dark"] .filtersContainer {
+  --color-card-bg: #1f2937;
+  --color-text-primary: #f9fafb;
+  --color-text-secondary: #d1d5db;
+  --color-border: #374151;
+  --color-input-bg: #374151;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .filterSelect {
+  color: #f9fafb;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .filtersContainer {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .filterGroup {
+    min-width: 100%;
+  }
+  
+  .resetButton {
+    width: 100%;
+  }
+}

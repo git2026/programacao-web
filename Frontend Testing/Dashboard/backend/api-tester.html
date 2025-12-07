@@ -1,0 +1,2266 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>API Tester - Dashboard Transportes</title>
+    <style>
+        :root {
+            --bg: #0f0f12;
+            --surface: #15161a;
+            --border: #26272b;
+            --text-primary: #e7e7ea;
+            --text-secondary: #a6a7ab;
+            --accent: #7aa2f7;
+            --hover: rgba(122, 162, 247, 0.12);
+            --success: #9ece6a;
+            --error: #f7768e;
+            --warning: #e0af68;
+        }
+
+        [data-theme="light"] {
+            --bg: #f7f7fb;
+            --surface: #ffffff;
+            --border: #e5e7eb;
+            --text-primary: #0b1020;
+            --text-secondary: #4b5563;
+            --accent: #1d4ed8;
+            --hover: rgba(29, 78, 216, 0.08);
+            --success: #059669;
+            --error: #dc2626;
+            --warning: #d97706;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .theme-toggle {
+            background: #3b82f6;
+            border: none;
+            color: #fff;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .theme-toggle:hover {
+            background: #2563eb;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+            overflow-x: auto;
+        }
+
+        .tab {
+            padding: 0.75rem 1.5rem;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 500;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .tab:hover {
+            color: #2563eb;
+            background: rgba(37, 99, 235, 0.08);
+        }
+
+        .tab.active {
+            color: #3b82f6;
+            border-bottom-color: #3b82f6;
+            font-weight: 600;
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.6rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            font-family: inherit;
+            min-height: 42px;
+        }
+
+        textarea {
+            padding: 0.875rem 1rem;
+            min-height: 100px;
+        }
+
+        input::placeholder, textarea::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.5;
+            font-weight: 300;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--accent);
+            background: var(--surface);
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        button {
+            background: #3b82f6;
+            color: #fff;
+            padding: 0.875rem 1.75rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 0.5rem;
+        }
+
+        button:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        .response {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            display: none;
+            scroll-margin-top: 100px;
+        }
+
+        .response.show {
+            display: block;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { 
+                opacity: 0; 
+                transform: translateY(10px);
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0);
+            }
+        }
+
+        .response pre {
+            background: var(--surface);
+            padding: 1rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+
+        .status-200, .status-201 {
+            background: var(--success);
+            color: #fff;
+        }
+
+        .status-400, .status-401, .status-403, .status-404, .status-500 {
+            background: var(--error);
+            color: #fff;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            border-left: 3px solid;
+        }
+
+        .alert.info {
+            background: rgba(122, 162, 247, 0.1);
+            border-color: var(--accent);
+            color: var(--text-primary);
+        }
+
+        .alert.warning {
+            background: rgba(224, 175, 104, 0.1);
+            border-color: var(--warning);
+            color: var(--text-primary);
+        }
+
+        .token-display {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            word-break: break-all;
+            font-size: 0.85rem;
+        }
+
+        .small-text {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+            margin-bottom: 1rem;
+        }
+
+        h2 {
+            font-size: 1.75rem;
+            margin-bottom: 2rem;
+            font-weight: 600;
+        }
+
+        h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+
+        .button-secondary {
+            background: #3b82f6;
+            color: #fff;
+            border: none;
+        }
+
+        .button-secondary:hover {
+            background: #2563eb;
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+        }
+
+        .button-danger {
+            background: var(--error) !important;
+            color: #fff !important;
+        }
+
+        .button-danger:hover {
+            background: #dc2626 !important;
+            box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4);
+        }
+        
+        .url-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .url-card {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            padding: 1.25rem;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .url-card:hover {
+            border-color: var(--accent);
+            background: var(--hover);
+        }
+
+        .url-icon {
+            font-size: 2rem;
+        }
+
+        .url-card h4 {
+            margin-bottom: 0.25rem;
+            font-size: 0.95rem;
+        }
+
+        .url-link {
+            color: #3b82f6;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            word-break: break-all;
+        }
+
+        .url-link:hover {
+            color: #2563eb;
+            text-decoration: underline;
+        }
+
+        .endpoint-section {
+            margin-top: 1.5rem;
+        }
+
+        .endpoint-section h4 {
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .endpoints-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .endpoints-list li {
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.5rem;
+            background: var(--bg);
+            border-radius: 6px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .method {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .method.get {
+            background: rgba(158, 206, 106, 0.2);
+            color: var(--success);
+        }
+
+        .method.post {
+            background: rgba(122, 162, 247, 0.2);
+            color: var(--accent);
+        }
+
+        .method.put {
+            background: rgba(224, 175, 104, 0.2);
+            color: var(--warning);
+        }
+
+        .method.delete {
+            background: rgba(247, 118, 142, 0.2);
+            color: var(--error);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.65rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: var(--hover);
+            color: var(--text-secondary);
+            margin-left: auto;
+        }
+
+        .badge.admin {
+            background: rgba(247, 118, 142, 0.2);
+            color: var(--error);
+        }
+
+        .badge.protected {
+            background: rgba(224, 175, 104, 0.2);
+            color: var(--warning);
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>API Tester - Dashboard Transportes</h1>
+        <button class="theme-toggle" onclick="toggleTheme()">
+            <span id="theme-icon">☀️</span>
+        </button>
+    </div>
+
+    <div class="container">
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('auth')">🔐 Autenticação</button>
+            <button class="tab" onclick="showTab('users')">👥 Utilizadores</button>
+            <button class="tab" onclick="showTab('dashboard')">📊 Dashboard</button>
+            <button class="tab" onclick="showTab('import')">📂 Importar</button>
+            <button class="tab" onclick="showTab('info')">ℹ️ Informações</button>
+        </div>
+
+        <!-- Autenticação -->
+        <div id="auth" class="section active">
+            <h2> Gestão de Autenticação</h2>
+            
+            <div class="alert info">
+                💡 Token está a ser guardado automaticamente depois do login
+            </div>
+
+            <div class="grid">
+                <div class="card">
+                    <h3>Registar</h3>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="reg-email" placeholder="admin@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="reg-password" placeholder="admin123">
+                    </div>
+                    <div class="form-group">
+                        <label>Nome</label>
+                        <input type="text" id="reg-name" placeholder="Admin User">
+                    </div>
+                    <div class="form-group">
+                        <label>Cargo</label>
+                        <select id="reg-role">
+                            <option value="guest">Guest</option>
+                            <option value="editor">Editor</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                    <button onclick="register()">Registar</button>
+                </div>
+
+                <div class="card">
+                    <h3>Login</h3>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="login-email" placeholder="">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="login-password" placeholder="">
+                    </div>
+                    <button onclick="login()">Login</button>
+                </div>
+            </div>
+
+            <div id="auth-response" class="response"></div>
+        </div>
+
+        <!-- Utilizadores -->
+        <div id="users" class="section">
+            <h2>Gestão de Utilizadores</h2>
+            
+            <div class="alert warning">
+                🔒 Requer Cargo de Admin
+            </div>
+
+            <div class="card">
+                <h3>Listar Utilizadores</h3>
+                <div class="form-group">
+                    <label>ID do Utilizador</label>
+                    <input type="number" id="get-user-id" placeholder="ID do Utilizador (Deixar vazio para obter todos)" oninput="checkUserId()">
+                </div>
+                <button onclick="getUsers()">Obter Utilizadores</button>
+            </div>
+
+            <div class="grid">
+                <div class="card">
+                <h3>Atualizar Utilizador</h3>
+                <div class="form-group">
+                    <label>ID</label>
+                    <input type="number" id="update-user-id" placeholder="1" oninput="loadUserData(this.value)">
+                </div>
+                    <div class="form-group">
+                        <label>Nome</label>
+                        <input type="text" id="update-user-name">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="update-user-email">
+                    </div>
+                    <div class="form-group">
+                        <label>Cargo</label>
+                        <select id="update-user-role">
+                            <option value="">Nenhum</option>
+                            <option value="guest">Guest</option>
+                            <option value="editor">Editor</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                    <button onclick="updateUser()">Atualizar</button>
+                </div>
+
+                <div class="card">
+                    <h3>Eliminar Utilizador</h3>
+                    <div class="form-group">
+                        <label>ID</label>
+                        <input type="number" id="delete-user-id" placeholder="1" oninput="checkDeleteUserId()">
+                    </div>
+                    <button onclick="deleteUser()">Eliminar</button>
+                </div>
+            </div>
+
+            <div id="users-response" class="response"></div>
+        </div>
+
+        <!-- Dashboard -->
+        <div id="dashboard" class="section">
+            <h2>Gestão de Dashboard</h2>
+
+            <!-- Estatísticas Gerais -->
+            <div class="card">
+                <h3>📊 Estatísticas Gerais</h3>
+                <button onclick="getOverviewStats()">Obter KPIs</button>
+            </div>
+
+            <!-- Estatísticas por Distrito -->
+            <div class="card">
+                <h3>📍 Estatísticas por Distrito</h3>
+                <div class="grid">
+                    <div class="form-group">
+                        <label>Limite</label>
+                        <input type="number" id="district-limit" value="10" min="1" max="30">
+                    </div>
+                    <div class="form-group">
+                        <label>Ordenar Por</label>
+                        <select id="district-order">
+                            <option value="codigos_postais">Códigos Postais</option>
+                            <option value="concelhos">Concelhos</option>
+                            <option value="enderecos">Endereços</option>
+                        </select>
+                    </div>
+                </div>
+                <button onclick="getStatsByDistrict()">Obter Estatísticas por Distrito</button>
+            </div>
+
+            <!-- Estatísticas de Transportes -->
+            <div class="card">
+                <h3>🚌 Estatísticas de Transportes</h3>
+                
+                <!-- Evolução Temporal -->
+                <div style="margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border);">
+                    <h4 style="font-size: 1rem; color: var(--text-primary); margin-bottom: 0.75rem; font-weight: 600;">📈 Evolução Temporal</h4>
+                    <div class="form-group">
+                        <label>Tipo de Transporte</label>
+                        <select id="transport-type">
+                            <option value="">Todos (opcional)</option>
+                            <option value="metro">Metro</option>
+                            <option value="autocarro">Autocarro</option>
+                            <option value="comboio">Comboio</option>
+                            <option value="ferry">Ferry</option>
+                            <option value="outros">Outros</option>
+                        </select>
+                    </div>
+                    <button onclick="getTransportTimeline()">Obter Evolução Temporal</button>
+                </div>
+                
+                <!-- Distribuição -->
+                <div>
+                    <h4 style="font-size: 1rem; color: var(--text-primary); margin-bottom: 0.75rem; font-weight: 600;">📊 Distribuição</h4>
+                    <div class="form-group">
+                        <label>Ano</label>
+                        <input type="number" id="distribution-year" placeholder="Ano (opcional) - ex: 2024" min="2018" max="2024" oninput="checkDistributionYear()">
+                    </div>
+                    <button onclick="getTransportDistribution()">Obter Distribuição de Transportes</button>
+                </div>
+            </div>
+
+            <!-- Listas e Pesquisas -->
+            <div class="card">
+                <h3>🔍 Listas e Pesquisas</h3>
+                <div style="margin-bottom: 1rem;">
+                    <h4 style="font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 0.5rem;">📍 Distritos</h4>
+                    <div class="form-group" style="margin-bottom: 0.5rem;">
+                        <label>ID do Distrito</label>
+                        <input type="number" id="district-id" placeholder="ID do Distrito (opcional)" oninput="checkDistrictId()">
+                    </div>
+                    <button onclick="getAllDistricts()">Obter Distritos</button>
+                </div>
+                <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border); margin-bottom: 1rem;">
+                    <h4 style="font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 0.5rem;">🏘️ Concelhos</h4>
+                    <div class="form-group">
+                        <label>Distrito ID</label>
+                        <input type="number" id="county-district-id" placeholder="Distrito ID (opcional) - ex: 11 (Lisboa)" oninput="checkCountyDistrictId()">
+                    </div>
+                    <button onclick="getAllCounties()">Obter Concelhos</button>
+                </div>
+                <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border);">
+                    <h4 style="font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 0.5rem;">📮 Códigos Postais</h4>
+                    <div class="form-group">
+                        <label>Termo de Pesquisa</label>
+                        <input type="text" id="search-term" placeholder="Lisboa, 1000, etc." oninput="checkSearchTerm()">
+                    </div>
+                    <button onclick="searchPostalCodes()">Pesquisar Códigos Postais</button>
+                </div>
+            </div>
+
+            <div id="dashboard-response" class="response"></div>
+        </div>
+
+        <!-- Importar  -->
+        <div id="import" class="section">
+            <h2>Importação de Dados</h2>
+
+            <div class="alert warning">
+                🔒 Requer Cargo (Admin/Editor)
+                </div>
+
+            <div class="card">
+                <h3>Importar Distritos</h3>
+                <div class="form-group">
+                    <label>CSV de Distritos (codigo,nome)</label>
+                    <textarea id="import-distritos-csv" placeholder="01,Aveiro&#10;02,Beja&#10;03,Braga&#10;..." rows="4"></textarea>
+                </div>
+                <div style="display: flex; gap: 0.5rem;">
+                    <button onclick="loadCSVFile('distritos')">Carregar Ficheiro</button>
+                    <button onclick="importDistritos()">Importar Distritos</button>
+            </div>
+            </div>
+
+            <div class="card">
+                <h3>Importar Concelhos</h3>
+                <div class="form-group">
+                    <label>CSV de Concelhos (codigo_concelho,codigo_distrito,nome)</label>
+                    <textarea id="import-concelhos-csv" placeholder="01,01,Águeda&#10;02,01,Albergaria-a-Velha&#10;..." rows="4"></textarea>
+                </div>
+                <div style="display: flex; gap: 0.5rem;">
+                    <button onclick="loadCSVFile('concelhos')">Carregar Ficheiro</button>
+                    <button onclick="importConcelhos()">Importar Concelhos</button>
+            </div>
+        </div>
+
+            <div class="card">
+                <h3>Importar Códigos Postais</h3>
+                <div class="form-group">
+                    <label>CSV de Códigos Postais (formato completo)</label>
+                    <textarea id="import-cps-csv" placeholder="Formato: codigo_distrito,codigo_concelho,...,localidade,...,cp4,cp3" rows="4"></textarea>
+                        </div>
+                <div style="display: flex; gap: 0.5rem;">
+                    <button onclick="loadCSVFile('codigos-postais')">Carregar Ficheiro</button>
+                    <button onclick="importCodigosPostais()">Importar CPs</button>
+                    </div>
+                        </div>
+
+            <div class="card">
+                <h3>Importar Transportes</h3>
+                <div class="form-group">
+                    <label>CSV de Transportes (distrito_id,tipo_transporte,cobertura_percent,num_rotas,ano)</label>
+                    <textarea id="import-transportes-csv" placeholder="1,metro,75.50,5,2024&#10;1,autocarro,80.25,50,2024&#10;..." rows="4"></textarea>
+                    </div>
+                <div style="display: flex; gap: 0.5rem;">
+                    <button onclick="loadCSVFile('transportes')">Carregar Ficheiro</button>
+                    <button onclick="importTransportes()">Importar Transportes</button>
+                </div>
+            </div>
+
+            <div id="import-response" class="response"></div>
+        </div>
+
+        <!-- Informações -->
+        <div id="info" class="section">
+            <h2>Informações</h2>
+
+            <div class="card">
+                <h3>🔗 URLs da App</h3>
+                <div class="url-grid">
+                    <div class="url-card">
+                        <div class="url-icon">🎨</div>
+                        <div>
+                            <h4>Frontend</h4>
+                            <a href="http://localhost:5173" target="_blank" class="url-link">http://localhost:5173</a>
+                        </div>
+                    </div>
+                    <div class="url-card">
+                        <div class="url-icon">⚙️</div>
+                        <div>
+                            <h4>Backend</h4>
+                            <a href="http://localhost:5000" target="_blank" class="url-link">http://localhost:5000</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>📡 Endpoints Disponíveis</h3>
+                
+                <!-- Autenticação -->
+                <div class="endpoint-section">
+                    <h4>🔐 Autenticação</h4>
+                    
+                    <h5 style="margin-top: 1rem; margin-bottom: 0.5rem; color: var(--text-secondary); font-size: 0.9rem;">Públicos</h5>
+                    <ul class="endpoints-list">
+                        <li><span class="method post">POST</span>/api/auth/registar <span class="badge">Público</span></li>
+                        <li><span class="method post">POST</span>/api/auth/login <span class="badge">Público</span></li>
+                    </ul>
+                    
+                    <h5 style="margin-top: 1rem; margin-bottom: 0.5rem; color: var(--text-secondary); font-size: 0.9rem;">Protegidos</h5>
+                    <ul class="endpoints-list">
+                        <li><span class="method get">GET</span>/api/auth/painel <span class="badge protected">Autenticado</span></li>
+                    </ul>
+                    
+                    <h5 style="margin-top: 1rem; margin-bottom: 0.5rem; color: var(--text-secondary); font-size: 0.9rem;">Administração</h5>
+                    <ul class="endpoints-list">
+                        <li><span class="method get">GET</span>/api/auth/utilizadores <span class="badge admin">Admin</span></li>
+                        <li><span class="method get">GET</span>/api/auth/utilizadores/exportar <span class="badge admin">Admin</span></li>
+                        <li><span class="method post">POST</span>/api/auth/utilizadores/importar <span class="badge admin">Admin</span></li>
+                        <li><span class="method put">PUT</span>/api/auth/utilizadores/:id <span class="badge admin">Admin</span></li>
+                        <li><span class="method delete">DELETE</span>/api/auth/utilizadores/:id <span class="badge admin">Admin</span></li>
+                        <li><span class="method delete">DELETE</span>/api/auth/utilizadores <span class="badge admin">Admin</span></li>
+                        <li><span class="method post">POST</span>/api/auth/utilizadores/reiniciar-ids <span class="badge admin">Admin</span></li>
+                    </ul>
+            </div>
+
+                <!-- Dashboard -->
+                <div class="endpoint-section">
+                    <h4>📊 Dashboard</h4>
+                    
+                    <h5 style="margin-top: 1rem; margin-bottom: 0.5rem; color: var(--text-secondary); font-size: 0.9rem;">Públicos</h5>
+                    <ul class="endpoints-list">
+                        <li><span class="method get">GET</span>/api/dashboard/stats/resumo <span class="badge">Público</span></li>
+                        <li><span class="method get">GET</span>/api/dashboard/stats/por-distrito <span class="badge">Público</span></li>
+                        <li><span class="method get">GET</span>/api/dashboard/stats/densidade-distrito <span class="badge">Público</span></li>
+                        <li><span class="method get">GET</span>/api/dashboard/stats/por-concelho <span class="badge">Público</span></li>
+                        <li><span class="method get">GET</span>/api/dashboard/stats/evolucao-transportes <span class="badge">Público</span></li>
+                        <li><span class="method get">GET</span>/api/dashboard/stats/distribuicao-transportes <span class="badge">Público</span></li>
+                        <li><span class="method get">GET</span>/api/dashboard/stats/cobertura-transportes <span class="badge">Público</span></li>
+                        <li><span class="method get">GET</span>/api/dashboard/distritos <span class="badge">Público</span></li>
+                        <li><span class="method get">GET</span>/api/dashboard/concelhos <span class="badge">Público</span></li>
+                        <li><span class="method get">GET</span>/api/dashboard/transportes <span class="badge">Público</span></li>
+                        <li><span class="method get">GET</span>/api/dashboard/codigos-postais/pesquisar <span class="badge">Público</span></li>
+                        <li><span class="method get">GET</span>/api/dashboard/filtros <span class="badge">Público</span></li>
+                    </ul>
+                </div>
+
+                <!-- Importação -->
+                <div class="endpoint-section">
+                    <h4>📂 Importação</h4>
+                    
+                    <h5 style="margin-top: 1rem; margin-bottom: 0.5rem; color: var(--text-secondary); font-size: 0.9rem;">Protegidos (Admin/Editor)</h5>
+                    <ul class="endpoints-list">
+                        <li><span class="method post">POST</span>/api/import/distritos <span class="badge protected">Admin/Editor</span></li>
+                        <li><span class="method post">POST</span>/api/import/concelhos <span class="badge protected">Admin/Editor</span></li>
+                        <li><span class="method post">POST</span>/api/import/codigos-postais <span class="badge protected">Admin/Editor</span></li>
+                        <li><span class="method post">POST</span>/api/import/transportes <span class="badge protected">Admin/Editor</span></li>
+                        <li><span class="method post">POST</span>/api/import/tudo <span class="badge protected">Admin/Editor</span></li>
+                    </ul>
+                    
+                    <h5 style="margin-top: 1rem; margin-bottom: 0.5rem; color: var(--text-secondary); font-size: 0.9rem;">Administração</h5>
+                    <ul class="endpoints-list">
+                        <li><span class="method delete">DELETE</span>/api/import/limpar-tabelas <span class="badge admin">Admin</span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="token-display" id="current-token-display" style="display: none;">
+                <strong>🔑 Token Atual:</strong><br>
+                <span id="token-text"></span>
+            </div>
+
+            <div class="card">
+                <h3>⚙️ Operações Avançadas</h3>
+                
+                <div style="margin-bottom: 20px;">
+                    <h4 style="margin-bottom: 10px; color: var(--text-secondary);">🔧 Servidor e Token</h4>
+                    <div class="button-group">
+                        <button onclick="testServer()">Testar Servidor</button>
+                        <button class="button-secondary" onclick="clearAllTokens()">Limpar Tokens</button>
+                        <button class="button-secondary" onclick="clearLocalStorage()">Limpar Cache</button>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <h4 style="margin-bottom: 10px; color: var(--text-secondary);">👥 Utilizadores</h4>
+                    <div class="button-group">
+                        <button class="button-secondary" onclick="exportUsers()">Exportar Utilizadores</button>
+                        <button class="button-secondary" onclick="document.getElementById('import-users-file').click()">Importar Utilizadores</button>
+                        <input type="file" id="import-users-file" accept=".json" style="display: none" onchange="importUsers(event)">
+                    </div>
+                    <div class="button-group" style="margin-top: 0.5rem;">
+                        <button class="button-secondary" onclick="clearAllUsers()">Limpar Utilizadores</button>
+                        <button class="button-secondary" onclick="resetUserIds()">Reiniciar IDs dos Utilizadores</button>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <h4 style="margin-bottom: 10px; color: var(--text-secondary);">📂 Importação</h4>
+                    <div class="button-group">
+                        <button class="button-secondary" onclick="exportAllTables()">Exportar Dados</button>
+                        <button class="button-secondary" onclick="document.getElementById('import-data-file').click()">Importar Dados</button>
+                        <input type="file" id="import-data-file" accept=".json" style="display: none" onchange="importAllData(event)">
+                        <button class="button-secondary" id="clear-tables-button">Limpar Dados</button>
+                    </div>
+                </div>
+
+                <div class="alert warning">
+                    ⚠️ Operações destrutivas são irreversíveis e podem causar perda de dados
+                </div>
+            </div>
+
+            <div id="info-response" class="response"></div>
+        </div>
+    </div>
+
+    <input type="file" id="csv-file-input" accept=".csv" style="display:none;">
+
+    <script>
+        const API_URL = 'http://localhost:5000';
+        let authToken = localStorage.getItem('authToken') || '';
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? '' : 'light';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            document.getElementById('theme-icon').textContent = newTheme === 'light' ? '🌙' : '☀️';
+        }
+
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            document.getElementById('theme-icon').textContent = savedTheme === 'light' ? '🌙' : '☀️';
+        }
+
+        if (authToken) updateTokenDisplay();
+
+        function showTab(tabName) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function updateTokenDisplay() {
+            const tokenDisplay = document.getElementById('current-token-display');
+            const tokenText = document.getElementById('token-text');
+            if (authToken) {
+                tokenDisplay.style.display = 'block';
+                tokenText.textContent = authToken;
+            } else {
+                tokenDisplay.style.display = 'none';
+            }
+        }
+
+        function saveToken(token) {
+            authToken = token;
+            localStorage.setItem('authToken', token);
+            updateTokenDisplay();
+        }
+
+        // Decodifica token JWT e retorna o ID do utilizador (ou null se inválido)
+        function getCurrentUserId() {
+            if (!authToken) return null;
+            try {
+                // JWT tem formato: header.payload.signature
+                const parts = authToken.split('.');
+                if (parts.length !== 3) return null;
+                
+                const payload = parts[1];
+                if (!payload) return null;
+                
+                // Decodificar base64 (adicionar padding se necessário)
+                let base64 = payload.replace(/-/g, '+').replace(/_/g, '/');
+                while (base64.length % 4) {
+                    base64 += '=';
+                }
+                
+                const decoded = JSON.parse(atob(base64));
+                return decoded.id || null;
+            } catch (error) {
+                return null;
+            }
+        }
+
+        function showResponse(elementId, data, status) {
+            const responseEl = document.getElementById(elementId);
+            const statusClass = 'status-' + status;
+            const statusText = status < 300 ? 'Sucesso' : 'Erro';
+            
+            responseEl.innerHTML = `
+                <strong>${statusText} <span class="status-badge ${statusClass}">${status}</span></strong>
+                <pre>${JSON.stringify(data, null, 2)}</pre>
+            `;
+            responseEl.classList.add('show');
+            
+            setTimeout(() => {
+                responseEl.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'nearest' 
+                });
+            }, 100);
+        }
+
+        async function makeRequest(endpoint, method = 'GET', body = null, requireAuth = false) {
+            const headers = { 'Content-Type': 'application/json' };
+            if (requireAuth && authToken) headers['Authorization'] = `Bearer ${authToken}`;
+
+            const options = { method, headers };
+            if (body) {
+                try {
+                    options.body = JSON.stringify(body);
+                } catch (e) {
+                    console.error('[Client] Erro ao fazer stringify:', e);
+                    return { data: { error: 'Erro ao preparar dados: ' + e.message }, status: 500 };
+                }
+            }
+
+            try {
+                const response = await fetch(API_URL + endpoint, options);
+                
+                // Verificar se a resposta é JSON antes de fazer parse
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    const text = await response.text();
+                    console.error('[Client] Resposta não é JSON. Content-Type:', contentType);
+                    return { 
+                        data: { 
+                            error: 'Resposta não é JSON', 
+                            contentType: contentType,
+                            preview: text.substring(0, 200)
+                        }, 
+                        status: response.status 
+                    };
+                }
+                
+                const data = await response.json();
+                if (data.token) saveToken(data.token);
+                
+                // Limpar token se autenticação falhar
+                if (response.status === 401) {
+                    authToken = '';
+                    localStorage.removeItem('authToken');
+                    updateTokenDisplay();
+                }
+                return { data, status: response.status };
+            } catch (error) {
+                console.error('[Client] Erro no fetch:', error);
+                return { data: { error: error.message }, status: 500 };
+            }
+        }
+
+        // Auth
+        async function register() {
+            const email = document.getElementById('reg-email').value;
+            const password = document.getElementById('reg-password').value;
+            const name = document.getElementById('reg-name').value;
+            const role = document.getElementById('reg-role').value;
+
+            const { data, status } = await makeRequest('/api/auth/registar', 'POST', { email, password, name, role });
+            showResponse('auth-response', data, status);
+        }
+
+        async function login() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            const { data, status } = await makeRequest('/api/auth/login', 'POST', { email, password });
+            showResponse('auth-response', data, status);
+        }
+
+        async function getUsers() {
+            const idInput = document.getElementById('get-user-id');
+            const id = idInput.value.trim();
+            
+            try {
+            const { data, status } = await makeRequest('/api/auth/utilizadores', 'GET', null, true);
+                
+                if (id) {
+                    const userId = parseInt(id);
+                    if (isNaN(userId) || userId <= 0) {
+                        setInputFeedback(idInput, false);
+                        showResponse('users-response', { error: 'ID inválido' }, 400);
+                        return;
+                    }
+                    
+                    // Filtrar utilizador específico da lista completa
+                    if (status === 200 && Array.isArray(data)) {
+                        const user = data.find(u => u.id === userId);
+                        if (user) {
+                            setInputFeedback(idInput, true);
+                            showResponse('users-response', user, 200);
+                        } else {
+                            setInputFeedback(idInput, false);
+                            showResponse('users-response', { 
+                                error: 'Utilizador não encontrado',
+                                message: `Nenhum utilizador encontrado com o ID ${userId}`
+                            }, 404);
+                        }
+                    } else {
+            showResponse('users-response', data, status);
+                    }
+                } else {
+                    showResponse('users-response', data, status);
+                }
+            } catch (error) {
+                showResponse('users-response', { error: 'Erro: ' + error.message }, 500);
+            }
+        }
+
+        // Muda cor da borda do input (verde/vermelho) conforme validação
+        function setInputFeedback(input, success) {
+            input.style.borderColor = success ? 'var(--success)' : 'var(--error)';
+            setTimeout(() => {
+                input.style.borderColor = '';
+            }, 1500);
+        }
+
+        async function loadUserData(userId) {
+            const idInput = document.getElementById('update-user-id');
+            
+            if (!userId) {
+                document.getElementById('update-user-name').value = '';
+                document.getElementById('update-user-email').value = '';
+                document.getElementById('update-user-role').value = '';
+                return;
+            }
+            
+            const { data, status } = await makeRequest('/api/auth/utilizadores', 'GET', null, true);
+            if (status === 200 && Array.isArray(data)) {
+                const user = data.find(u => u.id === parseInt(userId));
+                if (user) {
+                    document.getElementById('update-user-name').value = user.name || '';
+                    document.getElementById('update-user-email').value = user.email || '';
+                    document.getElementById('update-user-role').value = user.role || '';
+                    setInputFeedback(idInput, true);
+                } else {
+                    document.getElementById('update-user-name').value = '';
+                    document.getElementById('update-user-email').value = '';
+                    document.getElementById('update-user-role').value = '';
+                    setInputFeedback(idInput, false);
+                }
+            }
+        }
+
+        async function updateUser() {
+            const idInput = document.getElementById('update-user-id');
+            const id = idInput.value.trim();
+            
+            if (!id) {
+                alert('Por favor, insira um ID de utilizador');
+                idInput.focus();
+                return;
+            }
+            
+            const name = document.getElementById('update-user-name').value;
+            const email = document.getElementById('update-user-email').value;
+            const roleSelect = document.getElementById('update-user-role');
+            const role = roleSelect.value;
+
+            const body = {};
+            if (name) body.name = name;
+            if (email) body.email = email;
+            body.role = role === '' ? null : role;
+
+            const { data, status } = await makeRequest(`/api/auth/utilizadores/${id}`, 'PUT', body, true);
+            setInputFeedback(idInput, status === 200);
+            showResponse('users-response', data, status);
+        }
+
+        async function deleteUser() {
+            const idInput = document.getElementById('delete-user-id');
+            const id = idInput.value.trim();
+            
+            if (!id) {
+                alert('Por favor, insira um ID de utilizador');
+                idInput.focus();
+                return;
+            }
+            
+            const userIdToDelete = parseInt(id);
+            const currentUserId = getCurrentUserId();
+            
+            const { data, status } = await makeRequest(`/api/auth/utilizadores/${id}`, 'DELETE', null, true);
+            setInputFeedback(idInput, status === 200);
+            showResponse('users-response', data, status);
+            
+            // Se eliminou o próprio utilizador, limpar token (utilizador já não existe)
+            if (status === 200 && currentUserId && userIdToDelete === currentUserId) {
+                authToken = '';
+                localStorage.removeItem('authToken');
+                updateTokenDisplay();
+                alert('O seu utilizador foi eliminado. Sessão terminada.');
+            }
+        }
+
+        // Dashboard
+        async function getOverviewStats() {
+            const { data, status } = await makeRequest('/api/dashboard/stats/resumo');
+            showResponse('dashboard-response', data, status);
+        }
+
+        async function getStatsByDistrict() {
+            const limit = document.getElementById('district-limit').value;
+            const orderBy = document.getElementById('district-order').value;
+            const { data, status } = await makeRequest(`/api/dashboard/stats/por-distrito?limit=${limit}&orderBy=${orderBy}`);
+            showResponse('dashboard-response', data, status);
+        }
+
+        async function getTransportTimeline() {
+            const type = document.getElementById('transport-type').value;
+            const endpoint = type ? `/api/dashboard/stats/evolucao-transportes?tipo_transporte=${type}` : '/api/dashboard/stats/evolucao-transportes';
+            const { data, status } = await makeRequest(endpoint);
+            showResponse('dashboard-response', data, status);
+        }
+
+        async function getTransportDistribution() {
+            try {
+                const yearInput = document.getElementById('distribution-year');
+                const year = yearInput.value.trim();
+                
+                if (year) {
+                    const yearNum = parseInt(year);
+                    if (isNaN(yearNum) || yearNum < 2018 || yearNum > 2024) {
+                        setInputFeedback(yearInput, false);
+                        alert('Ano deve estar entre 2018 e 2024');
+                        return;
+                    }
+                }
+                
+            const endpoint = year ? `/api/dashboard/stats/distribuicao-transportes?ano=${year}` : '/api/dashboard/stats/distribuicao-transportes';
+            const { data, status } = await makeRequest(endpoint);
+                
+                if (year) {
+                    const results = status === 200 ? (data.data || data || []) : [];
+                    setInputFeedback(yearInput, status === 200 && results.length > 0);
+                }
+                
+            showResponse('dashboard-response', data, status);
+            } catch (error) {
+                showResponse('dashboard-response', { error: 'Erro ao obter distribuição: ' + error.message }, 500);
+            }
+        }
+
+
+        async function getAllDistricts() {
+            try {
+                const idInput = document.getElementById('district-id');
+                const districtId = idInput.value.trim();
+                
+            const { data, status } = await makeRequest('/api/dashboard/distritos');
+                // Extrair dados corretamente
+                let districts = status === 200 ? (data.data || data || []) : [];
+                
+                // Se foi especificado um ID, filtrar
+                if (districtId) {
+                    const districtIdNum = parseInt(districtId);
+                    if (!isNaN(districtIdNum)) {
+                        const district = districts.find(d => d.id === districtIdNum);
+                        if (district) {
+                            setInputFeedback(idInput, true);
+                            showResponse('dashboard-response', district, status);
+                            return;
+                        } else {
+                            setInputFeedback(idInput, false);
+                            showResponse('dashboard-response', { 
+                                error: 'Distrito não encontrado',
+                                message: `Nenhum distrito encontrado com o ID ${districtIdNum}`
+                            }, 404);
+                            return;
+                        }
+                    }
+                }
+                
+                showResponse('dashboard-response', districts, status);
+            } catch (error) {
+                showResponse('dashboard-response', { error: 'Erro ao obter distritos: ' + error.message }, 500);
+            }
+        }
+
+        // Validação em tempo real (feedback visual nos inputs)
+        async function checkUserId() {
+            const idInput = document.getElementById('get-user-id');
+            const id = idInput.value.trim();
+            
+            if (!id) {
+                idInput.style.borderColor = '';
+                return;
+            }
+            
+            const idNum = parseInt(id);
+            if (isNaN(idNum) || idNum <= 0) {
+                setInputFeedback(idInput, false);
+                return;
+            }
+            
+            // Verificar se existe
+            try {
+                const { data, status } = await makeRequest('/api/auth/utilizadores', 'GET', null, true);
+                if (status === 200 && Array.isArray(data)) {
+                    const user = data.find(u => u.id === idNum);
+                    setInputFeedback(idInput, !!user);
+                }
+            } catch (error) {
+            }
+        }
+
+        async function checkDeleteUserId() {
+            const idInput = document.getElementById('delete-user-id');
+            const id = idInput.value.trim();
+            
+            if (!id) {
+                idInput.style.borderColor = '';
+                return;
+            }
+            
+            const idNum = parseInt(id);
+            if (isNaN(idNum) || idNum <= 0) {
+                setInputFeedback(idInput, false);
+                return;
+            }
+            
+            // Verificar se existe
+            try {
+                const { data, status } = await makeRequest('/api/auth/utilizadores', 'GET', null, true);
+                if (status === 200 && Array.isArray(data)) {
+                    const user = data.find(u => u.id === idNum);
+                    setInputFeedback(idInput, !!user);
+                }
+            } catch (error) {
+            }
+        }
+
+        async function checkDistrictId() {
+            const idInput = document.getElementById('district-id');
+            const id = idInput.value.trim();
+            
+            if (!id) {
+                idInput.style.borderColor = '';
+                return;
+            }
+            
+            const idNum = parseInt(id);
+            if (isNaN(idNum) || idNum <= 0) {
+                setInputFeedback(idInput, false);
+                return;
+            }
+            
+            // Verificar se existe
+            try {
+                const { data, status } = await makeRequest('/api/dashboard/distritos');
+                const districts = status === 200 ? (data.data || data || []) : [];
+                const district = districts.find(d => d.id === idNum);
+                setInputFeedback(idInput, !!district);
+            } catch (error) {
+            }
+        }
+
+        async function checkCountyDistrictId() {
+            const idInput = document.getElementById('county-district-id');
+            const id = idInput.value.trim();
+            
+            if (!id) {
+                idInput.style.borderColor = '';
+                return;
+            }
+            
+            const idNum = parseInt(id);
+            if (isNaN(idNum) || idNum <= 0) {
+                setInputFeedback(idInput, false);
+                return;
+            }
+            
+            // Verificar se existe
+            try {
+                const { data, status } = await makeRequest('/api/dashboard/distritos');
+                const districts = status === 200 ? (data.data || data || []) : [];
+                const district = districts.find(d => d.id === idNum);
+                setInputFeedback(idInput, !!district);
+            } catch (error) {
+            }
+        }
+
+        async function checkSearchTerm() {
+            const searchInput = document.getElementById('search-term');
+            const q = searchInput.value.trim();
+            
+            if (!q) {
+                searchInput.style.borderColor = '';
+                return;
+            }
+            
+            if (q.length < 2) {
+                setInputFeedback(searchInput, false);
+                return;
+            }
+            
+            // Verificar se há resultados
+            try {
+                const { data, status } = await makeRequest(`/api/dashboard/codigos-postais/pesquisar?q=${encodeURIComponent(q)}&limit=1`);
+                const results = status === 200 ? (data.data || data || []) : [];
+                setInputFeedback(searchInput, results.length > 0);
+            } catch (error) {
+            }
+        }
+
+        async function checkDistributionYear() {
+            const yearInput = document.getElementById('distribution-year');
+            const year = yearInput.value.trim();
+            
+            if (!year) {
+                yearInput.style.borderColor = '';
+                return;
+            }
+            
+            const yearNum = parseInt(year);
+            if (isNaN(yearNum) || yearNum < 2018 || yearNum > 2024) {
+                setInputFeedback(yearInput, false);
+                return;
+            }
+            
+            // Verificar se há dados para esse ano
+            try {
+                const { data, status } = await makeRequest(`/api/dashboard/stats/distribuicao-transportes?ano=${yearNum}`);
+                const results = status === 200 ? (data.data || data || []) : [];
+                setInputFeedback(yearInput, results.length > 0);
+            } catch (error) {
+            }
+        }
+
+        async function getAllCounties() {
+            try {
+                const idInput = document.getElementById('county-district-id');
+                const distritoId = idInput.value.trim();
+            const endpoint = distritoId ? `/api/dashboard/concelhos?distrito_id=${distritoId}` : '/api/dashboard/concelhos';
+            const { data, status } = await makeRequest(endpoint);
+                
+                // Extrair dados corretamente
+                const counties = status === 200 ? (data.data || data || []) : [];
+                
+                if (distritoId) {
+                    // Se foi especificado um distrito, dar feedback se foi encontrado
+                    const distritoIdNum = parseInt(distritoId);
+                    if (!isNaN(distritoIdNum)) {
+                        setInputFeedback(idInput, status === 200 && counties.length > 0);
+                    }
+                }
+                
+                showResponse('dashboard-response', counties, status);
+            } catch (error) {
+                showResponse('dashboard-response', { error: 'Erro ao obter concelhos: ' + error.message }, 500);
+            }
+        }
+
+        async function searchPostalCodes() {
+            try {
+                const searchInput = document.getElementById('search-term');
+                const q = searchInput.value.trim();
+                
+            if (!q) {
+                    alert('Insira um termo de pesquisa (mínimo 2 caracteres)');
+                    searchInput.focus();
+                return;
+            }
+                
+                if (q.length < 2) {
+                    alert('O termo de pesquisa deve ter pelo menos 2 caracteres');
+                    searchInput.focus();
+                    return;
+                }
+                
+                const { data, status } = await makeRequest(`/api/dashboard/codigos-postais/pesquisar?q=${encodeURIComponent(q)}&limit=1000`);
+                
+                // Extrair dados corretamente
+                const results = status === 200 ? (data.data || data || []) : [];
+                setInputFeedback(searchInput, status === 200 && results.length > 0);
+                showResponse('dashboard-response', results, status);
+            } catch (error) {
+                showResponse('dashboard-response', { error: 'Erro ao pesquisar códigos postais: ' + error.message }, 500);
+            }
+        }
+
+        // Cria e descarrega ficheiro JSON no browser
+        function downloadJSON(data, filename) {
+            const dataStr = JSON.stringify(data, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename;
+            link.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Função genérica para importar CSV (reutilizável para distritos, concelhos, transportes)
+        async function importCSV(textareaId, endpoint, cleanEncoding = false) {
+            const textarea = document.getElementById(textareaId);
+            if (!textarea) {
+                alert('Erro: Campo de CSV não encontrado');
+                return;
+            }
+            
+            let csvData = textarea.value;
+            if (!csvData || csvData.trim().length === 0) {
+                alert('Por favor, insira ou carregue dados CSV');
+                return;
+            }
+            
+            // Limpar encoding se necessário (útil para ficheiros Windows)
+            if (cleanEncoding) {
+                csvData = cleanEncodingClient(csvData);
+            }
+            
+            const { data, status } = await makeRequest(endpoint, 'POST', { csvData }, true);
+            showResponse('import-response', data, status);
+            
+            // Limpar campo apenas se importação foi bem-sucedida
+            if (status === 200 && data.success) {
+                textarea.value = '';
+            }
+        }
+
+        // Import
+        async function importDistritos() {
+            await importCSV('import-distritos-csv', '/api/import/distritos');
+        }
+
+        async function importConcelhos() {
+            await importCSV('import-concelhos-csv', '/api/import/concelhos');
+        }
+
+        // Flag para evitar múltiplas chamadas simultâneas
+        let isImportingCodigosPostais = false;
+
+        // Tornar função globalmente acessível
+        window.importCodigosPostais = async function importCodigosPostais() {
+            try { 
+                // Prevenir múltiplas chamadas simultâneas
+                if (isImportingCodigosPostais) {
+                    alert('Importação já em curso. Por favor, aguarde...');
+                    return;
+                }
+
+                const csvElement = document.getElementById('import-cps-csv');
+                if (!csvElement) {
+                    alert('Erro: Campo de CSV não encontrado');
+                    return;
+                }
+
+                let csvData = csvElement.value;
+                if (!csvData || csvData.trim().length === 0) {
+                    alert('Por favor, insira ou carregue dados CSV');
+                    return;
+                }
+            
+                const lineCount = csvData.split('\n').length;
+                
+                // Limpar encoding antes de enviar (corrige problemas com ficheiros Windows)
+                csvData = cleanEncodingClient(csvData);
+                
+                // Desabilitar botão durante importação para evitar duplicados
+                isImportingCodigosPostais = true;
+                const importButton = document.querySelector('button[onclick="importCodigosPostais()"]');
+                if (importButton) {
+                    importButton.disabled = true;
+                    importButton.textContent = 'A importar...';
+                }
+                
+                showResponse('import-response', { 
+                    message: 'A importar códigos postais...', 
+                    progress: 'Isto pode demorar vários minutos. Por favor, aguarde...',
+                    linhas: lineCount
+                }, 200);
+            
+            try {
+                const { data, status } = await makeRequest('/api/import/codigos-postais', 'POST', { csvData }, true);
+                showResponse('import-response', data, status);
+                if (status === 200 && data.success) {
+                    document.getElementById('import-cps-csv').value = '';
+                }
+            } catch (error) {
+                console.error('[Client] Erro ao importar:', error);
+                showResponse('import-response', { 
+                    error: 'Erro ao importar códigos postais: ' + (error.message || 'Erro desconhecido'),
+                    details: error.toString()
+                }, 500);
+            } finally {
+                isImportingCodigosPostais = false;
+                if (importButton) {
+                    importButton.disabled = false;
+                    importButton.textContent = 'Importar CPs';
+                }
+            }
+            } catch (outerError) {
+                console.error('[Client] Erro crítico em importCodigosPostais:', outerError);
+                alert('Erro crítico: ' + outerError.message);
+                isImportingCodigosPostais = false;
+            }
+        };
+
+        async function importTransportes() {
+            await importCSV('import-transportes-csv', '/api/import/transportes', true);
+        }
+
+        async function importAll() {
+            let distritosCSV = document.getElementById('import-distritos-csv').value;
+            let concelhosCSV = document.getElementById('import-concelhos-csv').value;
+            let codigosPostaisCSV = document.getElementById('import-cps-csv').value;
+            let transportesCSV = document.getElementById('import-transportes-csv').value;
+            
+            if (!distritosCSV || !concelhosCSV || !codigosPostaisCSV) {
+                alert('Por favor, carregue todos os ficheiros CSV necessários (distritos, concelhos e códigos postais). Transportes é opcional.');
+                return;
+            }
+            
+            // Limpar encoding antes de enviar
+            distritosCSV = cleanEncodingClient(distritosCSV);
+            concelhosCSV = cleanEncodingClient(concelhosCSV);
+            codigosPostaisCSV = cleanEncodingClient(codigosPostaisCSV);
+            if (transportesCSV) {
+                transportesCSV = cleanEncodingClient(transportesCSV);
+            }
+            
+            if (!confirm('Isto irá importar todos os dados. Pode demorar vários minutos. Continuar?')) {
+                return;
+            }
+            
+            const { data, status } = await makeRequest('/api/import/tudo', 'POST', {
+                distritosCSV,
+                concelhosCSV,
+                codigosPostaisCSV,
+                transportesCSV: transportesCSV || null
+            }, true);
+            showResponse('import-response', data, status);
+            
+            // Limpar todos os campos de importação se operação foi bem-sucedida
+            if (status === 200 && data.success) {
+                ['import-distritos-csv', 'import-concelhos-csv', 'import-cps-csv', 'import-transportes-csv'].forEach(id => {
+                    const field = document.getElementById(id);
+                    if (field) field.value = '';
+                });
+            }
+        }
+
+        // Tornar função globalmente acessível
+        window.clearAllTables = async function clearAllTables() {
+            if (!confirm('Tem a certeza que deseja eliminar TODOS os dados? Esta ação é irreversível!')) {
+                return;
+            }
+
+            try {
+                showResponse('info-response', { message: 'A limpar todas as tabelas...' }, 200);
+                const { data, status } = await makeRequest('/api/import/limpar-tabelas', 'DELETE', null, true);
+                showResponse('info-response', data, status);
+            } catch (error) {
+                showResponse('info-response', { error: 'Erro ao limpar tabelas: ' + (error.message || 'Erro desconhecido') }, 500);
+            }
+        };
+
+        // Tornar função globalmente acessível
+        window.exportAllTables = async function exportAllTables() {
+            try {
+                showResponse('info-response', { message: 'A exportar dados...' }, 200);
+                
+                // Obter todos os dados das tabelas
+                const [distritosRes, concelhosRes, transportesRes] = await Promise.all([
+                    makeRequest('/api/dashboard/distritos'),
+                    makeRequest('/api/dashboard/concelhos'),
+                    makeRequest('/api/dashboard/transportes')
+                ]);
+
+                // Extrair dados corretamente
+                const distritos = distritosRes.status === 200 ? (distritosRes.data.data || distritosRes.data || []) : [];
+                const concelhos = concelhosRes.status === 200 ? (concelhosRes.data.data || concelhosRes.data || []) : [];
+                const transportes = transportesRes.status === 200 ? (transportesRes.data.data || transportesRes.data || []) : [];
+
+                // Códigos postais não têm endpoint direto, temos de pesquisar por distrito/concelho
+                let codigosPostais = [];
+                const seenIds = new Set(); // Evita duplicados usando Set para IDs únicos
+                
+                // Adiciona códigos postais sem duplicados (usa Set para verificar IDs)
+                const addPostalCodes = (data) => {
+                    if (Array.isArray(data)) {
+                        data.forEach(cp => {
+                            if (cp.id && !seenIds.has(cp.id)) {
+                                seenIds.add(cp.id);
+                                codigosPostais.push(cp);
+                            }
+                        });
+                    }
+                };
+                
+                // Pesquisar por cada distrito para obter códigos postais
+                for (const distrito of distritos) {
+                    try {
+                        const result = await makeRequest(`/api/dashboard/codigos-postais/pesquisar?q=${encodeURIComponent(distrito.nome)}&limit=10000`);
+                        if (result.status === 200) {
+                            addPostalCodes(result.data.data || result.data || []);
+                        }
+                    } catch (e) {
+                    }
+                }
+                
+                showResponse('info-response', { 
+                    message: `A exportar códigos postais... (${concelhos.length} concelhos a processar)`,
+                    progress: 'Isto pode demorar alguns minutos'
+                }, 200);
+                
+                // Pesquisar por cada concelho (mais completo que distritos)
+                for (let i = 0; i < concelhos.length; i++) {
+                    try {
+                        const result = await makeRequest(`/api/dashboard/codigos-postais/pesquisar?q=${encodeURIComponent(concelhos[i].nome)}&limit=10000`);
+                        if (result.status === 200) {
+                            addPostalCodes(result.data.data || result.data || []);
+                        }
+                        
+                        // Atualizar progresso a cada 50 concelhos (evita spam de mensagens)
+                        if ((i + 1) % 50 === 0) {
+                            showResponse('info-response', { 
+                                message: `A exportar códigos postais... (${i + 1}/${concelhos.length} concelhos processados)`,
+                                codigosPostaisEncontrados: codigosPostais.length
+                            }, 200);
+                        }
+                    } catch (e) {
+                    }
+                }
+                
+                // Backup: pesquisar por códigos numéricos comuns para garantir cobertura completa
+                for (let i = 1000; i <= 9000; i += 1000) {
+                    try {
+                        const result = await makeRequest(`/api/dashboard/codigos-postais/pesquisar?q=${i}&limit=10000`);
+                        if (result.status === 200) {
+                            addPostalCodes(result.data.data || result.data || []);
+                        }
+                    } catch (e) {
+                    }
+                }
+
+                const exportData = {
+                    exportDate: new Date().toISOString(),
+                    distritos: Array.isArray(distritos) ? distritos : [],
+                    concelhos: Array.isArray(concelhos) ? concelhos : [],
+                    codigosPostais: codigosPostais,
+                    transportes: Array.isArray(transportes) ? transportes : []
+                };
+
+                downloadJSON(exportData, `dashboard_data_${new Date().toISOString().split('T')[0]}.json`);
+
+                showResponse('info-response', {
+                    message: 'Dados exportados com sucesso',
+                    distritos: exportData.distritos.length,
+                    concelhos: exportData.concelhos.length,
+                    codigosPostais: exportData.codigosPostais.length,
+                    transportes: exportData.transportes.length
+                }, 200);
+            } catch (error) {
+                showResponse('info-response', { error: 'Erro ao exportar: ' + error.message }, 500);
+            }
+        };
+
+        async function importAllData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            try {
+                const text = await file.text();
+                const importData = JSON.parse(text);
+
+                const hasData = (importData.distritos && importData.distritos.length > 0) ||
+                                (importData.concelhos && importData.concelhos.length > 0) ||
+                                (importData.codigosPostais && importData.codigosPostais.length > 0) ||
+                                (Array.isArray(importData.transportes) && importData.transportes.length > 0);
+                
+                if (!hasData) {
+                    showResponse('info-response', { error: 'Ficheiro inválido. Deve conter dados de distritos, concelhos, códigos postais ou transportes' }, 400);
+                    event.target.value = '';
+                    return;
+                }
+
+                const transportesCount = Array.isArray(importData.transportes) ? importData.transportes.length : 0;
+                if (!confirm(`Ficheiro contém:\n- ${importData.distritos?.length || 0} distritos\n- ${importData.concelhos?.length || 0} concelhos\n- ${importData.codigosPostais?.length || 0} códigos postais\n- ${transportesCount} transportes\n\nIsto irá importar todos os dados. Pode demorar vários minutos. Continuar?`)) {
+                    event.target.value = '';
+                    return;
+                }
+
+                // Converter arrays JSON para formato CSV e preparar tarefas de importação
+                let results = { success: true, imported: {} };
+                const importTasks = [];
+
+                // Preparar importação de distritos (formato: codigo,nome)
+                if (importData.distritos && importData.distritos.length > 0) {
+                    const csvData = importData.distritos.map(d => `${d.codigo || d.id},${d.nome}`).join('\n');
+                    importTasks.push({
+                        name: 'distritos',
+                        count: importData.distritos.length,
+                        request: makeRequest('/api/import/distritos', 'POST', { csvData }, true)
+                    });
+                }
+
+                // Preparar importação de concelhos (formato: codigo,distrito_id,nome)
+                if (importData.concelhos && importData.concelhos.length > 0) {
+                    const csvData = importData.concelhos.map(c => `${c.codigo || c.id},${c.distrito_id},${c.nome}`).join('\n');
+                    importTasks.push({
+                        name: 'concelhos',
+                        count: importData.concelhos.length,
+                        request: makeRequest('/api/import/concelhos', 'POST', { csvData }, true)
+                    });
+                }
+
+                // Preparar importação de códigos postais (formato: codigo_postal,localidade,distrito_id,concelho_id)
+                if (importData.codigosPostais && importData.codigosPostais.length > 0) {
+                    const csvData = importData.codigosPostais.map(cp => {
+                        const codigo = cp.codigo_postal || cp.codigo || '';
+                        const localidade = cp.localidade || cp.nome || '';
+                        const distritoId = cp.distrito_id || '';
+                        const concelhoId = cp.concelho_id || '';
+                        return `${codigo},${localidade},${distritoId},${concelhoId}`;
+                    }).join('\n');
+                    importTasks.push({
+                        name: 'codigosPostais',
+                        count: importData.codigosPostais.length,
+                        request: makeRequest('/api/import/codigos-postais', 'POST', { csvData }, true)
+                    });
+                }
+
+                // Preparar importação de transportes (formato: distrito_id,concelho_id,tipo_transporte,cobertura_percent,num_rotas,ano)
+                if (importData.transportes && Array.isArray(importData.transportes) && importData.transportes.length > 0) {
+                    const csvData = importData.transportes.map(t => {
+                        const distritoId = t.distrito_id || '';
+                        const concelhoId = t.concelho_id || '';
+                        const tipo = t.tipo_transporte || '';
+                        const cobertura = t.cobertura_percent || t.cobertura || '';
+                        const rotas = t.num_rotas || t.rotas || '';
+                        const ano = t.ano || '';
+                        return `${distritoId},${concelhoId},${tipo},${cobertura},${rotas},${ano}`;
+                    }).join('\n');
+                    importTasks.push({
+                        name: 'transportes',
+                        count: importData.transportes.length,
+                        request: makeRequest('/api/import/transportes', 'POST', { csvData }, true)
+                    });
+                }
+
+                // Executar todas as importações sequencialmente (evita sobrecarga do servidor)
+                for (const task of importTasks) {
+                    try {
+                        const { status } = await task.request;
+                        results.imported[task.name] = status === 200 ? task.count : 0;
+                    } catch (error) {
+                        results.imported[task.name] = 0;
+                    }
+                }
+
+                showResponse('info-response', {
+                    message: 'Importação concluída',
+                    ...results.imported
+                }, 200);
+
+            } catch (error) {
+                showResponse('info-response', { error: 'Erro ao importar: ' + error.message }, 500);
+            }
+
+            event.target.value = '';
+        }
+
+        // Corrige encoding corrompido (Windows-1252 mal interpretado como UTF-8)
+        function cleanEncodingClient(text) {
+            if (!text) return text;
+            
+            let cleaned = text;
+            
+            // Re-interpretar bytes como Windows-1252 e converter para UTF-8
+            // Funciona quando ficheiros Windows são lidos como UTF-8
+            try {
+                const bytes = new Uint8Array(cleaned.length);
+                for (let i = 0; i < cleaned.length; i++) {
+                    bytes[i] = cleaned.charCodeAt(i);
+                }
+                const decoder = new TextDecoder('windows-1252');
+                cleaned = decoder.decode(bytes);
+            } catch (e) {
+                // Se falhar, tenta outras estratégias
+            }
+            
+            // Mapeamento direto de sequências corrompidas comuns
+            const fixes = {
+                // Minúsculas com acento agudo
+                'Ã¡': 'á', 'Ã©': 'é', 'Ã­': 'í', 'Ã³': 'ó', 'Ãº': 'ú',
+                // Minúsculas com acento circunflexo
+                'Ã¢': 'â', 'Ãª': 'ê', 'Ã´': 'ô',
+                // Minúsculas com til
+                'Ã£': 'ã', 'Ãµ': 'õ',
+                // Minúsculas com cedilha
+                'Ã§': 'ç',
+                // Maiúsculas com acento agudo
+                'Ã€': 'À', 'Ã‰': 'É', 'Ã': 'Í', 'Ã"': 'Ó', 'Ãš': 'Ú',
+                // Maiúsculas com acento circunflexo
+                'Ã': 'Â', 'Ã': 'Ê', 'Ã': 'Ô',
+                // Maiúsculas com til
+                'Ã': 'Ã', 'Ã•': 'Õ',
+                // Maiúsculas com cedilha
+                'Ã‡': 'Ç',
+                // Caracteres especiais
+                'â€œ': '"', 'â€': '"', 'â€™': "'",
+                'Â': ''
+            };
+            
+            for (const [wrong, correct] of Object.entries(fixes)) {
+                const escaped = wrong.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                cleaned = cleaned.replace(new RegExp(escaped, 'g'), correct);
+            }
+            
+            // Padrões específicos para nomes portugueses (corrige "ï¿½" que aparece em encoding corrompido)
+            const portuguesePatterns = [
+
+                // Distritos
+                [/Mourï¿½o/gi, 'Mourão'],
+                [/Loulï¿½/gi, 'Loulé'],
+                [/Figueirï¿½/gi, 'Figueiró'],
+                [/Santarï¿½m/gi, 'Santarém'],
+                [/Braganï¿½a/gi, 'Bragança'],
+                [/Setï¿½bal/gi, 'Setúbal'],
+                [/ï¿½vora/gi, 'Évora'],
+                [/Sï¿½o/gi, 'São'],
+                [/ï¿½gueda/gi, 'Águeda'],
+                [/ï¿½lvaro/gi, 'Álvaro'],
+                [/ï¿½guas/gi, 'Águas'],
+
+                // Concelhos
+                [/Gï¿½is/gi, 'Góis'],
+                [/Lousï¿½/gi, 'Lousã'],
+                [/Castanheira de Pï¿½ra/gi, 'Castanheira de Pêra'],
+                [/Murï¿½a/gi, 'Murça'],
+                [/Guimarï¿½es/gi, 'Guimarães'],
+                [/Proenï¿½a-a-Nova/gi, 'Proença-a-Nova'],
+                
+                // Padrões genéricos para "ï¿½"
+                [/ï¿½i/gi, 'ói'],
+                [/ï¿½a$/gm, 'ã'],
+                [/ï¿½e$/gm, 'ê'],
+                [/ï¿½a(?=[\s,-])/gi, 'ã'],
+                [/ï¿½e(?=[\s,-])/gi, 'ê'],
+                [/ï¿½a/gi, 'ã'],
+                [/ï¿½([ou])/gi, 'ã$1'],
+                [/ï¿½$/gm, 'ó'],
+                [/ï¿½/gi, 'ã'],
+            ];
+            
+            for (const [pattern, replacement] of portuguesePatterns) {
+                cleaned = cleaned.replace(pattern, replacement);
+            }
+            
+            cleaned = cleaned.replace(/\uFFFD/g, '');
+            
+            // Padrões com caracteres de substituição Unicode
+            const commonPatterns = [
+                [/S([\uFFFD\u00FF])o/gi, 'São'],
+                [/([\uFFFD\u00FF])vora/gi, 'Évora'],
+                [/Santar([\uFFFD\u00FF])m/gi, 'Santarém'],
+                [/Set([\uFFFD\u00FF])bal/gi, 'Setúbal'],
+                [/Bragan([\uFFFD\u00FF])a/gi, 'Bragança'],
+                [/Ilha de S([\uFFFD\u00FF])o Miguel/gi, 'Ilha de São Miguel'],
+                [/Ilha de S([\uFFFD\u00FF])o Jorge/gi, 'Ilha de São Jorge']
+            ];
+            
+            for (const [pattern, replacement] of commonPatterns) {
+                cleaned = cleaned.replace(pattern, replacement);
+            }
+            
+            // Último recurso: substituir caracteres de substituição entre letras por 'ã'
+            cleaned = cleaned.replace(/([a-zA-Z])\uFFFD([a-zA-Z])/g, '$1ã$2');
+            return cleaned;
+        }
+
+        function loadCSVFile(type) {
+            const fileInput = document.getElementById('csv-file-input');
+            
+            const textareaMap = {
+                'distritos': 'import-distritos-csv',
+                'concelhos': 'import-concelhos-csv',
+                'codigos-postais': 'import-cps-csv',
+                'transportes': 'import-transportes-csv'
+            };
+            
+            const textareaId = textareaMap[type] || `import-${type}-csv`;
+            const targetTextarea = document.getElementById(textareaId);
+            
+            if (!targetTextarea) {
+                alert(`Erro: Campo de texto não encontrado para ${type}`);
+                return;
+            }
+            
+            if (!fileInput) {
+                alert('Erro: Campo de ficheiro não encontrado');
+                return;
+            }
+            
+            fileInput.onchange = (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                // Ler como ArrayBuffer para controlar encoding (importante para ficheiros Windows)
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    try {
+                        const arrayBuffer = event.target.result;
+                        const bytes = new Uint8Array(arrayBuffer);
+                        
+                        let text = '';
+                        // Tentar Windows-1252 primeiro (formato comum em ficheiros Windows)
+                        try {
+                            const decoder = new TextDecoder('windows-1252');
+                            text = decoder.decode(bytes);
+                        } catch (e) {
+                            // Fallback para UTF-8 ou latin1
+                            try {
+                                const decoder = new TextDecoder('utf-8');
+                                text = decoder.decode(bytes);
+                            } catch (e2) {
+                                text = new TextDecoder('latin1').decode(bytes);
+                            }
+                        }
+                        
+                        text = cleanEncodingClient(text);
+                        
+                        if (!targetTextarea) {
+                            alert('Erro: Campo de texto não encontrado');
+                            return;
+                        }
+                        
+                        targetTextarea.value = text;
+                        alert(`Ficheiro ${file.name} carregado com sucesso (${text.split('\n').length} linhas)`);
+                    } catch (error) {
+                        console.error('[loadCSVFile] Erro ao processar ficheiro:', error);
+                        alert(`Erro ao carregar ficheiro: ${error.message}`);
+                    }
+                };
+                
+                reader.onerror = (error) => {
+                    console.error('[loadCSVFile] Erro ao ler ficheiro:', error);
+                    alert('Erro ao ler ficheiro');
+                };
+                
+                reader.readAsArrayBuffer(file);
+            };
+            
+            fileInput.click();
+        }
+
+        // Info
+        async function testServer() {
+            const { data, status } = await makeRequest('/');
+            showResponse('info-response', data, status);
+        }
+
+        async function clearAllUsers() {
+            if (!confirm('Tem a certeza que deseja eliminar TODOS os utilizadores? Esta ação é irreversível!')) {
+                return;
+            }
+
+            try {
+                const { data, status } = await makeRequest('/api/auth/utilizadores', 'DELETE', null, true);
+                
+                if (status === 200) {
+                    authToken = '';
+                    localStorage.removeItem('authToken');
+                    updateTokenDisplay();
+                    showResponse('info-response', data, status);
+                } else {
+                    showResponse('info-response', data || { error: 'Falha ao eliminar utilizadores' }, status);
+                }
+            } catch (error) {
+                showResponse('info-response', { error: 'Falha ao eliminar utilizadores: ' + error.message }, 500);
+            }
+        }
+
+        async function resetUserIds() {
+            if (!confirm('Tem a certeza que deseja reiniciar os IDs dos utilizadores?')) {
+                return;
+            }
+
+            try {
+                const { data, status } = await makeRequest('/api/auth/utilizadores/reiniciar-ids', 'POST', null, true);
+                
+                if (status === 200) {
+                    showResponse('info-response', data, status);
+                } else {
+                    showResponse('info-response', data || { error: 'Falha ao reiniciar IDs' }, status);
+                }
+            } catch (error) {
+                showResponse('info-response', { error: 'Falha ao reiniciar IDs: ' + error.message }, 500);
+            }
+        }
+
+        async function clearAllTokens() {
+            authToken = '';
+            localStorage.removeItem('authToken');
+            updateTokenDisplay();
+            showResponse('info-response', {
+                message: 'Todos os tokens foram limpos do armazenamento local',
+                info: 'Os tokens tornam-se inválidos quando os utilizadores são eliminados ou quando expiram (12h)'
+            }, 200);
+        }
+
+        async function clearLocalStorage() {
+            if (!confirm('Tem a certeza que deseja limpar a cache? Isto inclui tokens e preferências de tema!')) {
+                return;
+            }
+
+            const itemsCleared = localStorage.length;
+            localStorage.clear();
+            authToken = '';
+            updateTokenDisplay();
+            
+            document.documentElement.setAttribute('data-theme', '');
+            document.getElementById('theme-icon').textContent = '☀️';
+
+            showResponse('info-response', {
+                message: 'Cache limpa com sucesso',
+                itemsCleared: itemsCleared,
+                info: 'Tema reiniciado para modo escuro e tokens removidos'
+            }, 200);
+        }
+
+        async function exportUsers() {
+            try {
+                const { data: users, status } = await makeRequest('/api/auth/utilizadores/exportar', 'GET', null, true);
+                
+                if (status === 200 && Array.isArray(users)) {
+                    downloadJSON(users, `users_${new Date().toISOString().split('T')[0]}.json`);
+                    
+                    showResponse('info-response', {
+                        message: 'Utilizadores exportados com sucesso',
+                        count: users.length
+                    }, 200);
+                } else {
+                    const errorMsg = users && users.error ? users.error : 'Falha ao exportar utilizadores';
+                    showResponse('info-response', { error: errorMsg }, status);
+                }
+            } catch (error) {
+                showResponse('info-response', { error: 'Erro ao exportar: ' + error.message }, 500);
+            }
+        }
+
+        async function importUsers(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            try {
+                const text = await file.text();
+                const users = JSON.parse(text);
+                
+                if (!Array.isArray(users)) {
+                    showResponse('info-response', { error: 'Ficheiro inválido. Deve conter um array de utilizadores' }, 400);
+                    event.target.value = '';
+                    return;
+                }
+
+                const { data, status } = await makeRequest('/api/auth/utilizadores/importar', 'POST', { users }, true);
+                
+                if (status === 200) {
+                    showResponse('info-response', data, 200);
+                } else {
+                    showResponse('info-response', data || { error: 'Falha ao importar utilizadores' }, status);
+                }
+            } catch (error) {
+                showResponse('info-response', { error: 'Erro ao importar: ' + error.message }, 500);
+            }
+            
+                event.target.value = '';
+        }
+
+        // Limpeza automática de encoding nos textareas CSV quando o utilizador cola texto
+        let domContentLoadedExecuted = false;
+        document.addEventListener('DOMContentLoaded', () => {
+            // Prevenir execução múltipla
+            if (domContentLoadedExecuted) {
+                return;
+            }
+            domContentLoadedExecuted = true;
+            
+            // Adicionar event listener alternativo para o botão de importar CPs (apenas se necessário)
+            const importCpsButton = document.querySelector('button[onclick="importCodigosPostais()"]');
+            if (importCpsButton && !importCpsButton.hasAttribute('data-listener-added')) {
+                importCpsButton.setAttribute('data-listener-added', 'true');
+                importCpsButton.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (window.importCodigosPostais) {
+                        window.importCodigosPostais();
+                    } else {
+                        alert('Erro: Função de importação não encontrada');
+                    }
+                });
+            }
+            
+            // Adicionar event listener para o botão de limpar dados
+            const clearTablesButton = document.getElementById('clear-tables-button');
+            if (clearTablesButton && !clearTablesButton.hasAttribute('data-listener-added')) {
+                clearTablesButton.setAttribute('data-listener-added', 'true');
+                clearTablesButton.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (window.clearAllTables && typeof window.clearAllTables === 'function') {
+                        window.clearAllTables();
+                    } else {
+                        alert('Erro: Função de limpar dados não encontrada');
+                    }
+                });
+            }
+            
+            const csvTextareas = ['import-distritos-csv', 'import-concelhos-csv', 'import-cps-csv', 'import-transportes-csv'];
+            
+            csvTextareas.forEach(id => {
+                const textarea = document.getElementById(id);
+                if (textarea) {
+                    // Limpar encoding quando cola texto (corrige problemas com ficheiros copiados)
+                    textarea.addEventListener('paste', (e) => {
+                        setTimeout(() => {
+                            const original = textarea.value;
+                            const cleaned = cleanEncodingClient(original);
+                            if (cleaned !== original) {
+                                textarea.value = cleaned;
+                            }
+                        }, 10);
+                    });
+                    
+                    // Detectar e corrigir encoding em tempo real enquanto escreve
+                    let lastValue = textarea.value;
+                    const checkAndClean = () => {
+                        const current = textarea.value;
+                        if (current !== lastValue) {
+                            lastValue = current;
+                            // Detectar caracteres corrompidos comuns (Ã, \uFFFD)
+                            if (current.includes('Ã') || current.includes('\uFFFD') || /[^\x00-\x7F]/.test(current) && current.match(/[Ã]/)) {
+                                const cleaned = cleanEncodingClient(current);
+                                if (cleaned !== current) {
+                                    textarea.value = cleaned;
+                                    lastValue = cleaned;
+                                }
+                            }
+                        }
+                    };
+                    
+                    // Verificar periodicamente e em eventos
+                    textarea.addEventListener('input', checkAndClean);
+                    textarea.addEventListener('change', checkAndClean);
+                    
+                    // Última verificação quando perde o foco
+                    textarea.addEventListener('blur', () => {
+                        const cleaned = cleanEncodingClient(textarea.value);
+                        if (cleaned !== textarea.value) {
+                            textarea.value = cleaned;
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

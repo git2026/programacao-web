@@ -1,0 +1,14 @@
+/* Rodapé */
+.footer {
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+}
+
+/* Container interno do rodapé */
+.inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px 16px;
+  color: var(--text-secondary);
+  text-align: center;
+}

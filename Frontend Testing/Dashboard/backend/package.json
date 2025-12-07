@@ -1,0 +1,38 @@
+{
+  "name": "dashboard-transportes-backend",
+  "version": "1.0.0",
+  "description": "Backend API for Dashboard Transportes",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "audit": "npm audit",
+    "audit:fix": "npm audit fix",
+    "db:test": "node -e \"import('./db.js').then(m => m.pool.query('SELECT 1').then(() => console.log('MySQL OK')).catch(e => console.error('MySQL Error:', e.message)))\"",
+    "fix:encoding": "node scripts/fix-all-encoding.js",
+    "fix:encoding:reset-ids": "node scripts/fix-all-encoding.js --reset-ids"
+  },
+  "keywords": [
+    "dashboard",
+    "analytics",
+    "api",
+    "express",
+    "mysql",
+    "transportes"
+  ],
+  "author": "git2026",
+  "license": "MIT",
+  "dependencies": {
+    "@wasmer/wasi": "^1.2.1",
+    "@wasmer/wasmfs": "^0.12.0",
+    "chardet": "^2.1.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "iconv-lite": "^0.7.0",
+    "jsonwebtoken": "^9.0.2",
+    "mysql2": "^3.6.5",
+    "sanitize-html": "^2.17.0"
+  }
+}

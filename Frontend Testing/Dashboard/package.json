@@ -1,0 +1,33 @@
+{
+  "name": "dashboard-transportes",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Dashboard Transportes",
+  "scripts": {
+    "start": "node start.js",
+    "dev": "node start.js --dev",
+    "build": "cd frontend && npm run build",
+    "install-all": "npm install && cd frontend && npm install && cd ../backend && npm install",
+    "backend": "cd backend && npm start",
+    "frontend": "cd frontend && npm start",
+    "test-api": "start http://localhost:5000/api-tester.html",
+    "setup-db": "echo 'Execute: mysql -u root -p < 01_Extras/SQL_BD.sql' && echo 'Depois use API Tester para importar dados'",
+    "generate-transport": "cd backend && node scripts/generate-transport-data.js",
+    "split-csv": "cd backend && node scripts/split-csv.js"
+  },
+  "keywords": [
+    "dashboard",
+    "analytics",
+    "react",
+    "nodejs",
+    "express",
+    "mysql",
+    "recharts",
+    "transportes",
+    "fullstack"
+  ],
+  "author": "git2026",
+  "license": "MIT",
+  "dependencies": {}
+}
