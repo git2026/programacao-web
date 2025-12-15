@@ -1,0 +1,23 @@
+{
+  "name": "advanced-nodejs-app",
+  "version": "1.0.0",
+  "description": "Integrated Node.js Application",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js"
+  },
+  "keywords": [
+    "nodejs",
+    "streams",
+    "clusters",
+    "child-processes"
+  ],
+  "author": "",
+  "license": "MIT",
+  
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
