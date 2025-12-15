@@ -32,3 +32,7 @@ out/
 *.tmp
 *.temp
 .cache/
+
+# Documentos de entrega
+*.docx
+*Entrega*.pdf
