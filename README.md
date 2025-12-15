@@ -9,3 +9,6 @@ Cada pasta tem o seu próprio README com instruções específicas.
 
 ## Observação
 Os projetos podem ser só frontend ou full-stack (backend + frontend).
+
+## Licença
+GNU v3.0
