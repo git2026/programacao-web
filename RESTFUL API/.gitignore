@@ -1,0 +1,27 @@
+# Dependências
+node_modules/
+
+# Logs
+*.log
+logs/
+
+# Ficheiros do sistema
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Variáveis de ambiente
+.env
+.env.local
+.env.*.local
+
+# Ficheiros temporários
+*.tmp
+*.temp
+.cache/
+
+# Documentos de entrega
+*.docx
+*Entrega*.pdf

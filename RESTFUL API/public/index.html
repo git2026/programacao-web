@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API RESTful - Exercícios</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .section {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .section h2 {
+            color: #1976D2;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #2196F3;
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        input, button {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #2196F3;
+        }
+
+        button {
+            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.2s;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .response {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            border-left: 4px solid #2196F3;
+            display: none;
+        }
+
+        .response.show {
+            display: block;
+        }
+
+        .response h3 {
+            color: #1976D2;
+            margin-bottom: 10px;
+        }
+
+        .response pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .headers {
+            margin-top: 15px;
+            padding: 10px;
+            background: #e9ecef;
+            border-radius: 5px;
+            font-size: 12px;
+        }
+
+        .headers strong {
+            color: #1976D2;
+        }
+
+        .pagination-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .pagination-controls button {
+            flex: 1;
+        }
+
+        .pagination-controls button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .token-display {
+            background: #fff3cd;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-size: 12px;
+            word-break: break-all;
+        }
+
+        .token-display strong {
+            color: #856404;
+        }
+
+        .info-box {
+            background: #e7f3ff;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+
+        .info-box p {
+            color: #0c5460;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>RESTful API - Testes dos Exercícios</h1>
+        <div class="section">
+            <h2>📝 Exercício 4.12: Login com Rate Limiting</h2>
+            <div class="info-box">
+                <p><strong>Rate Limit:</strong> 10 pedidos por 10 minutos</p>
+                <p><strong>Endpoint:</strong> POST /api/auth/login</p>
+            </div>
+            <div class="form-group">
+                <label for="username">Nome de Utilizador:</label>
+                <input type="text" id="username" value="user123" placeholder="Digite o nome de utilizador">
+            </div>
+            <div class="form-group">
+                <label for="password">Palavra-passe:</label>
+                <input type="password" id="password" value="password123" placeholder="Digite a palavra-passe">
+            </div>
+            <button onclick="testLogin()">🔐 Fazer Login</button>
+            <div id="loginResponse" class="response"></div>
+        </div>
+
+        <div class="section">
+            <h2>🛍️ Exercício 5.12: Produtos com Paginação, Cache e Rate Limiting</h2>
+            <div class="info-box">
+                <p><strong>Rate Limit:</strong> 100 pedidos por 15 minutos</p>
+                <p><strong>Limite Máximo:</strong> 50 itens por página</p>
+                <p><strong>Cache:</strong> ETag com suporte a If-None-Match</p>
+            </div>
+            <div class="form-group">
+                <label for="limit">Limite (máx: 50):</label>
+                <input type="number" id="limit" value="10" min="1" max="50" placeholder="Itens por página">
+            </div>
+            <div class="form-group">
+                <label for="cursor">Cursor (opcional):</label>
+                <input type="text" id="cursor" placeholder="Cursor para a próxima página">
+            </div>
+            <button onclick="getProducts()">📦 Buscar Produtos</button>
+            <div class="pagination-controls">
+                <button onclick="getProducts(true)" id="prevBtn" disabled>⬅️ Página Anterior</button>
+                <button onclick="getProducts(false, true)" id="nextBtn">➡️ Próxima Página</button>
+            </div>
+            <div id="productsResponse" class="response"></div>
+        </div>
+
+        <div class="section">
+            <h2>🔒 Endpoint Protegido</h2>
+            <div class="info-box">
+                <p><strong>Rate Limit:</strong> 500 pedidos por 15 minutos (autenticados)</p>
+                <p><strong>Requer:</strong> Token de autenticação</p>
+            </div>
+            <button onclick="testProtected()">🔐 Testar Endpoint Protegido</button>
+            <div id="protectedResponse" class="response"></div>
+        </div>
+
+        <div class="section">
+            <h2>⚡ Teste de Rate Limiting</h2>
+            <div class="info-box">
+                <p><strong>Teste:</strong> Enviar múltiplos pedidos para verificar rate limiting</p>
+            </div>
+            <div class="form-group">
+                <label for="testCount">Número de Pedidos:</label>
+                <input type="number" id="testCount" value="15" min="1" max="50" placeholder="Quantos pedidos enviar">
+            </div>
+            <button onclick="testRateLimit()">🚀 Testar Rate Limit (Login)</button>
+            <div id="rateLimitResponse" class="response"></div>
+        </div>
+    </div>
+
+    <script>
+        // Configuração da URL base da API
+        const API_BASE = window.location.protocol === 'file:' 
+            ? 'http://localhost:3000' 
+            : window.location.origin;
+        
+        // Variáveis globais para gestão de estado
+        let currentToken = null;
+        let currentCursor = null;
+        let previousCursors = [];
+
+        async function testLogin() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const responseDiv = document.getElementById('loginResponse');
+
+            // Validação: verificar se os campos estão preenchidos
+            if (!username || !password) {
+                showResponse(responseDiv, 'error', 'Nome de utilizador e palavra-passe são obrigatórios');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/api/auth/login`, {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+
+                const headers = getRateLimitHeaders(response);
+
+                if (response.ok) {
+                    currentToken = data.token;
+                    showResponse(responseDiv, 'success', {
+                        message: 'Login realizado com sucesso!',
+                        data: data,
+                        headers: headers
+                    });
+                } else {
+                    showResponse(responseDiv, 'error', {
+                        message: `Erro ${response.status}: ${data.error || 'Erro desconhecido'}`,
+                        data: data,
+                        headers: headers
+                    });
+                }
+            } catch (error) {
+                showResponse(responseDiv, 'error', {
+                    message: 'Erro de conexão',
+                    error: error.message
+                });
+            }
+        }
+
+        async function getProducts(usePrevious = false, useNext = false) {
+            const limit = document.getElementById('limit').value;
+            let cursor = document.getElementById('cursor').value;
+
+            // Se usar próximo, usar o cursor atual
+            if (useNext && currentCursor) {
+                cursor = currentCursor;
+            }
+            // Se usar anterior, pegar do histórico
+            else if (usePrevious && previousCursors.length > 0) {
+                cursor = previousCursors[previousCursors.length - 1];
+                previousCursors.pop();
+            }
+
+            const responseDiv = document.getElementById('productsResponse');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+
+            if (!limit || limit < 1 || limit > 50) {
+                showResponse(responseDiv, 'error', 'Limite deve estar entre 1 e 50');
+                return;
+            }
+
+            try {
+                let url = `${API_BASE}/api/products?limit=${limit}`;
+                if (cursor) {
+                    url += `&cursor=${cursor}`;
+                }
+
+                // Verificar se temos ETag guardado e enviar no header If-None-Match
+                const savedETag = localStorage.getItem('productsETag');
+                const headers = savedETag ? { 'If-None-Match': savedETag } : {};
+
+                const response = await fetch(url, { headers });
+
+                const headersInfo = getRateLimitHeaders(response);
+                const cacheHeaders = getCacheHeaders(response);
+
+                // Se o servidor retornar 304, o conteúdo não mudou (cache válido)
+                if (response.status === 304) {
+                    showResponse(responseDiv, 'info', {
+                        message: '304 Not Modified - Conteúdo em cache (ETag)',
+                        headers: { ...headersInfo, ...cacheHeaders }
+                    });
+                    return;
+                }
+
+                const data = await response.json();
+
+                // Guardar ETag e atualizar estado de navegação
+                const etag = response.headers.get('ETag');
+                if (etag) localStorage.setItem('productsETag', etag);
+
+                if (cursor && !usePrevious) previousCursors.push(cursor);
+                currentCursor = data.pagination?.nextCursor || null;
+
+                prevBtn.disabled = previousCursors.length === 0;
+                nextBtn.disabled = !currentCursor;
+
+                showResponse(responseDiv, 'success', {
+                    message: `Produtos carregados: ${data.data.length} itens`,
+                    data: data,
+                    headers: { ...headersInfo, ...cacheHeaders }
+                });
+            } catch (error) {
+                showResponse(responseDiv, 'error', {
+                    message: 'Erro de conexão',
+                    error: error.message
+                });
+            }
+        }
+
+        // Endpoint Protegido
+        async function testProtected() {
+            const responseDiv = document.getElementById('protectedResponse');
+
+            // Verificar se o utilizador está autenticado
+            if (!currentToken) {
+                showResponse(responseDiv, 'error', {
+                    message: 'Precisa de fazer login primeiro!',
+                    hint: 'Utilize o formulário de login acima'
+                });
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/api/protected`, {
+                    headers: {
+                        'Authorization': currentToken
+                    }
+                });
+
+                const data = await response.json();
+                const headers = getRateLimitHeaders(response);
+
+                if (response.ok) {
+                    showResponse(responseDiv, 'success', {
+                        message: 'Acesso autorizado!',
+                        data: data,
+                        headers: headers
+                    });
+                } else {
+                    showResponse(responseDiv, 'error', {
+                        message: `Erro ${response.status}`,
+                        data: data,
+                        headers: headers
+                    });
+                }
+            } catch (error) {
+                showResponse(responseDiv, 'error', {
+                    message: 'Erro de conexão',
+                    error: error.message
+                });
+            }
+        }
+
+        // Teste de Rate Limiting
+        async function testRateLimit() {
+            const count = parseInt(document.getElementById('testCount').value) || 15;
+            const responseDiv = document.getElementById('rateLimitResponse');
+            
+            showResponse(responseDiv, 'info', {
+                message: `Enviando ${count} pedidos...`,
+                data: { status: 'Iniciando teste...' }
+            });
+
+            const results = [];
+            let successCount = 0;
+            let rateLimitCount = 0;
+
+            for (let i = 0; i < count; i++) {
+                try {
+                    const response = await fetch(`${API_BASE}/api/auth/login`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ 
+                            username: `test${i}`, 
+                            password: 'test' 
+                        })
+                    });
+
+                    const data = await response.json();
+                    const headers = getRateLimitHeaders(response);
+
+                    if (response.status === 429) {
+                        rateLimitCount++;
+                        results.push({
+                            request: i + 1,
+                            status: '429 Rate Limited',
+                            remaining: headers['RateLimit-Remaining'] || 'N/A',
+                            reset: headers['RateLimit-Reset'] || 'N/A'
+                        });
+                    } else if (response.ok) {
+                        successCount++;
+                        results.push({
+                            request: i + 1,
+                            status: '200 OK',
+                            remaining: headers['RateLimit-Remaining'] || 'N/A'
+                        });
+                    } else {
+                        results.push({
+                            request: i + 1,
+                            status: `${response.status}`,
+                            error: data.error
+                        });
+                    }
+
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                } catch (error) {
+                    results.push({
+                        request: i + 1,
+                        status: 'Erro',
+                        error: error.message
+                    });
+                }
+            }
+
+            showResponse(responseDiv, rateLimitCount > 0 ? 'error' : 'success', {
+                message: `Teste concluído: ${successCount} sucessos, ${rateLimitCount} bloqueados por rate limit`,
+                summary: {
+                    total: count,
+                    success: successCount,
+                    rateLimited: rateLimitCount
+                },
+                results: results
+            });
+        }
+
+        // Funções Auxiliares
+        function getRateLimitHeaders(response) {
+            return {
+                'RateLimit-Limit': response.headers.get('RateLimit-Limit') || 'N/A',
+                'RateLimit-Remaining': response.headers.get('RateLimit-Remaining') || 'N/A',
+                'RateLimit-Reset': response.headers.get('RateLimit-Reset') || 'N/A'
+            };
+        }
+
+        function getCacheHeaders(response) {
+            return {
+                'ETag': response.headers.get('ETag') || 'N/A',
+                'Cache-Control': response.headers.get('Cache-Control') || 'N/A',
+                'Last-Modified': response.headers.get('Last-Modified') || 'N/A'
+            };
+        }
+
+        // Mostrar resposta formatada na interface
+        function showResponse(div, type, content) {
+            div.className = 'response show';
+            
+            let html = '';
+            
+            if (typeof content === 'string') {
+                html = `<span class="status ${type}">${type.toUpperCase()}</span>
+                        <p>${content}</p>`;
+            } else {
+                    html = `<span class="status ${type}">${type === 'success' ? 'SUCESSO' : type === 'error' ? 'ERRO' : 'INFO'}</span>
+                        <h3>${content.message || 'Resposta'}</h3>`;
+                
+                if (content.data) {
+                    html += `<pre>${JSON.stringify(content.data, null, 2)}</pre>`;
+                }
+                
+                if (content.headers) {
+                    html += `<div class="headers">
+                        <strong>Headers:</strong><br>`;
+                    for (const [key, value] of Object.entries(content.headers)) {
+                        html += `${key}: ${value}<br>`;
+                    }
+                    html += `</div>`;
+                }
+                
+                if (content.summary) {
+                    html += `<div class="headers">
+                        <strong>Resumo:</strong><br>
+                        Total: ${content.summary.total}<br>
+                        Sucessos: ${content.summary.success}<br>
+                        Rate Limited: ${content.summary.rateLimited}<br>
+                    </div>`;
+                }
+                
+                if (content.results) {
+                    html += `<div class="headers">
+                        <strong>Resultados Detalhados:</strong><br>
+                        <pre>${JSON.stringify(content.results, null, 2)}</pre>
+                    </div>`;
+                }
+                
+                if (content.error) {
+                    html += `<p style="color: #721c24;">Erro: ${content.error}</p>`;
+                }
+            }
+            
+            div.innerHTML = html;
+        }
+
+    </script>
+</body>
+</html>
